@@ -1,0 +1,1 @@
+this is mostly just me playing around with the mastodon api atm. Its going to be a long time before it actually does anything
