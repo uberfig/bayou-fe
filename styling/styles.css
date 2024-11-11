@@ -1,0 +1,61 @@
+html {
+  background-color: #212225;
+}
+
+a {
+  color: #149262;
+}
+
+body {
+  font: 100% Helvetica, sans-serif;
+  color: rgb(221, 243, 229);
+}
+
+.timeline {
+  max-width: 800px;
+  background-color: #272b30;
+  padding: 10px;
+}
+
+.timeline-pfp {
+  width: 3em;
+}
+
+.inline {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.no-decoration {
+  text-decoration: none;
+  color: rgb(221, 243, 229);
+}
+
+.no-margin {
+  margin: 0%;
+}
+
+.timeline .user-link {
+  gap: 15px;
+}
+
+.pronouns {
+  margin-left: 1em;
+}
+
+.button {
+  padding: 0;
+  border: none;
+  font: inherit;
+  color: inherit;
+  background-color: transparent;
+}
+
+.status-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}/*# sourceMappingURL=styles.css.map */

@@ -1,7 +1,8 @@
 use super::serde_fns::*;
 use serde::{Deserialize, Serialize};
+use url::Url;
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Post {
     pub id: String,
     #[serde(deserialize_with = "deserialize_time")]
@@ -13,8 +14,10 @@ pub struct Post {
     pub spoiler_text: String,
     pub visibility: String,
     // pub language: Value,
-    pub uri: String,
-    pub url: String,
+    /// the actual activitypub representation
+    pub uri: Url,
+    /// the link for the frontend for users to use
+    pub url: Url,
     pub replies_count: i64,
     pub reblogs_count: i64,
     pub favourites_count: i64,
@@ -32,10 +35,11 @@ pub struct Post {
     // pub poll: Value,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Account {
     pub id: String,
     pub username: String,
+    /// in the format username@domain.com
     pub acct: String,
     pub display_name: String,
     // pub locked: bool,
@@ -45,8 +49,10 @@ pub struct Account {
     // pub group: bool,
     pub created_at: String,
     pub note: String,
-    pub url: String,
-    pub uri: String,
+    /// the link for the frontend for users to use
+    pub url: Url,
+    /// the actual activitypub representation
+    pub uri: Url,
     pub avatar: String,
     pub avatar_static: String,
     pub header: String,
@@ -57,7 +63,7 @@ pub struct Account {
     pub last_status_at: String,
     // pub hide_collections: bool,
     // pub emojis: Vec<Value>,
-    // pub fields: Vec<Field>,
+    pub fields: Vec<Field>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]

@@ -1,45 +1,92 @@
 use bayou_fe::masto_types::timeline_item::Post;
 use gloo_net::http::Request;
+use serde::{Deserialize, Serialize};
 use web_sys::Node;
 use yew::{prelude::*, virtual_dom::VNode};
+use yew_feather::{Bookmark, MessageSquare, Repeat, Share2, Star};
+
+
+
+#[derive(Properties, PartialEq, Deserialize, Serialize, Clone)]
+struct PostWrap {
+    #[serde(flatten)]
+    post: Post,
+}
+
+#[function_component]
+fn TimelinePost(post: &PostWrap) -> Html {
+    let post = &post.post;
+    let div = web_sys::window()
+        .unwrap()
+        .document()
+        .unwrap()
+        .create_element("div")
+        .unwrap();
+    div.set_inner_html(&post.content);
+
+    let node = Node::from(div);
+    let vnode = VNode::VRef(node);
+
+    let mut pronouns = None;
+    for prop in &post.account.fields {
+        if prop.name.eq_ignore_ascii_case("Pronouns") {
+            pronouns = Some(html! {
+                <p class={classes!("pronouns", "no-margin")}>{ prop.value.clone() }</p>
+            })
+        }
+    }
+
+    let display_name = match &post.account.display_name.is_empty() {
+        true => post.account.username.clone(),
+        false => post.account.display_name.clone(),
+    };
+
+    html! {
+        <div class={classes!("post")}>
+            <hr />
+            <div class={classes!("user-link", "inline")}>
+                <a href={ format!("/@{}", post.account.acct) }>
+                    <img src={ post.account.avatar.clone() } class={classes!("timeline-pfp")} />
+                </a>
+                <a href={ format!("/@{}", post.account.acct)} class={classes!("no-decoration")}>
+                    <div class={classes!("inline")}>
+                        <h3 class={classes!("no-margin")}>{ display_name }</h3>
+                        { for pronouns }
+                    </div>
+                    <p class={classes!("no-margin")}>{ format!("@{}", post.account.acct) }</p>
+                </a>
+            </div>
+
+            <p key={post.id.clone()}>
+            { vnode }
+            </p>
+            <div class={classes!("status-actions")}>
+                <button><MessageSquare /></button>
+                <button><Repeat /></button>
+                <button><Star /></button>
+                <button><Bookmark /></button>
+                <button><Share2 /></button>
+            </div>
+            <hr />
+        </div>
+    }
+}
 
 #[derive(Properties, PartialEq)]
 struct VideosListProps {
-    videos: Vec<Post>,
-    on_click: Callback<Post>,
+    videos: Vec<PostWrap>,
+    on_click_load_more: Callback<Post>,
 }
 
 #[function_component(PostsList)]
-fn videos_list(VideosListProps { videos, on_click }: &VideosListProps) -> Html {
-    let on_click = on_click.clone();
+fn timeline(VideosListProps { videos, on_click_load_more: on_click_newer }: &VideosListProps) -> Html {
+    let on_click = on_click_newer.clone();
     videos
         .iter()
-        .map(|video| {
-            let on_video_select = {
-                let on_click = on_click.clone();
-                let video = video.clone();
-                Callback::from(move |_| on_click.emit(video.clone()))
-            };
-
-            let div = web_sys::window()
-                .unwrap()
-                .document()
-                .unwrap()
-                .create_element("div")
-                .unwrap();
-            div.set_inner_html(&video.content);
-
-            let node = Node::from(div);
-            let vnode = VNode::VRef(node);
+        .map(|post| {
+            // let post = post.clone();
             html! {
-                <a href={ "" } class={classes!("post")}>
-                    <hr />
-                    <h3>{ video.account.display_name.clone() }</h3>
-                    <p key={video.id.clone()} onclick={on_video_select}>
-                    { vnode }
-                    </p>
-                    <hr />
-                </a>
+                <TimelinePost post={post.post.clone()} />
             }
         })
         .collect()
@@ -79,7 +126,7 @@ fn app() -> Html {
         use_effect_with((), move |_| {
             let videos = posts.clone();
             wasm_bindgen_futures::spawn_local(async move {
-                let fetched_posts: Vec<Post> =
+                let fetched_posts: Vec<PostWrap> =
                     Request::get("https://mastodon.social/api/v1/timelines/public")
                         .send()
                         .await
@@ -108,8 +155,8 @@ fn app() -> Html {
     html! {
         <>
             <h1>{ "M.social public timeline" }</h1>
-            <div>
-                <PostsList videos={(*posts).clone()} on_click={on_video_select.clone()} />
+            <div class={classes!("timeline")}>
+                <PostsList videos={(*posts).clone()} on_click_load_more={on_video_select.clone()} />
             </div>
             { for details }
         </>
