@@ -17,8 +17,8 @@ $hovermenu_bg_color: rgb(44, 46, 51);
 $hovermenu_bg_hover_color: rgb(51, 53, 58);
 
 $accent_very_dark: #126445;
-$accent_dark: #149262;
-$accent_light: #27b17c;
+$accent_dark: #2cc288;
+$accent_light: #48f3b1;
 
 $border_color: #1e1f22;
 
@@ -35,6 +35,9 @@ html {
 
 a {
     color: $accent_dark;
+    &:hover {
+        color: $accent_light;
+    }
 }
 
 body {
@@ -70,6 +73,8 @@ body {
 
 .timeline .user-link {
     gap: 15px;
+    align-items: center;
+    // width: min-content;
 }
 
 .pronouns {

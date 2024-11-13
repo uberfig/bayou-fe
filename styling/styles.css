@@ -3,7 +3,10 @@ html {
 }
 
 a {
-  color: #149262;
+  color: #2cc288;
+}
+a:hover {
+  color: #48f3b1;
 }
 
 body {
@@ -39,6 +42,7 @@ body {
 
 .timeline .user-link {
   gap: 15px;
+  align-items: center;
 }
 
 .pronouns {
