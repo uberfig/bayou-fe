@@ -1,80 +1,13 @@
-use bayou_fe::masto_types::timeline_item::Post;
+use bayou_fe::{masto_types::timeline_item::Post, timeline::segments::{Segment, TimelineSegment}};
 use gloo_net::http::Request;
 use leptos::{
-    component, create_resource, create_signal, html::div, view, For, IntoView, ReadSignal,
-    Resource, SignalGet, SignalSet, SignalUpdate, WriteSignal,
+    component, create_resource, create_signal, view, IntoView, ReadSignal, SignalGet, SignalSet, SignalUpdate, WriteSignal,
 };
-use leptos_lucide_icons::{Bookmark, MessageSquare, Repeat, Share2, Star};
 
 #[component]
-fn TimelinePost(post: Post) -> impl IntoView {
-    let content = div().inner_html(post.content);
-
-    let display_name = match &post.account.display_name.is_empty() {
-        true => post.account.username,
-        false => post.account.display_name,
-    };
-
-    let mut pronouns = None;
-    for prop in &post.account.fields {
-        if prop.name.eq_ignore_ascii_case("Pronouns") {
-            pronouns = Some(view! {
-                <p class=("pronouns", true) class=("no-margin", true)>{ prop.value.clone() }</p>
-            })
-        }
-    }
-
-    view! {
-        <div class="post">
-        <hr />
-            <a href={ format!("/@{}", post.account.acct) } class="user-link inline no-decoration">
-                    <img src={ post.account.avatar.clone() } class="timeline-pfp" />
-                <div href={ format!("/@{}", post.account.acct)} class="no-decoration">
-                    <div class="inline">
-                        <h3 class="no-margin">{ display_name }</h3>
-                        {pronouns}
-                    </div>
-                    <p class="no-margin">{ format!("@{}", post.account.acct) }</p>
-                </div>
-            </a>
-            {content}
-
-            <div class="status-actions">
-                <button><MessageSquare/></button>
-                <button><Repeat /></button>
-                <button><Star /></button>
-                <button><Bookmark /></button>
-                <button><Share2 /></button>
-            </div>
-        <hr />
-        </div>
-    }
-}
-
-#[component]
-fn TimelineSegment(posts: Vec<Post>) -> impl IntoView {
-    view! {
-        <For
-            each=move || posts.clone()
-            key=|post| post.id.clone()
-            children=move |post: Post| {
-                view! {
-                  <TimelinePost post=post/>
-                }
-              }
-        />
-    }
-}
-
-pub struct Segment {
-    pub contents: Resource<(), Vec<Post>>,
-    pub id: String,
-}
-
-#[component]
-fn LoadOlder(
-    oldest: ReadSignal<Option<String>>,
-    set_oldest: WriteSignal<Option<String>>,
+pub fn LoadOlder(
+    oldest: ReadSignal<FeedPos>,
+    set_oldest: WriteSignal<FeedPos>,
     state: ReadSignal<State>,
     segments: WriteSignal<Vec<Segment>>,
 ) -> impl IntoView {
@@ -87,12 +20,12 @@ fn LoadOlder(
                     <button
                         on:click= move |_| {
                             set_loading.set(true);
-                            let curr_oldest: Option<String> = oldest.get();
-                            let curr_oldest = curr_oldest.unwrap_or(state.get().get_timeline());
-                            let tmp_oldest = curr_oldest.clone();
+                            let feed_state = oldest.get();
+                            let segment_link: String = feed_state.older_posts_link(&state.get());
+                            let tmp_link = segment_link.clone();
 
                             let posts = create_resource(|| (), move |_| {
-                            let value = curr_oldest.clone();
+                            let value = segment_link.clone();
                             async move {
                                 let curr_oldest = value.clone();
                                 let fetched_posts: Vec<Post> =
@@ -105,9 +38,9 @@ fn LoadOlder(
                                             .unwrap();
                                     set_loading.set(false);
                                     set_oldest.update(|x| {
-                                        *x = match fetched_posts.last() {
-                                            Some(post) => Some(post.id.clone()),
-                                            None => None,
+                                        match fetched_posts.last() {
+                                            Some(post) => x.oldest_id = Some(post.id.clone()),
+                                            None => x.end_of_feed = true,
                                         };
                                     });
                                     fetched_posts
@@ -115,7 +48,7 @@ fn LoadOlder(
                             });
 
                             segments.update(|x| {
-                                x.push(Segment { contents: posts, id: tmp_oldest });
+                                x.push(Segment { contents: posts, id: tmp_link });
                             });
 
 
@@ -136,9 +69,24 @@ fn LoadOlder(
 }
 
 #[derive(Clone)]
+pub struct FeedPos {
+    pub oldest_id: Option<String>,
+    pub end_of_feed: bool,
+}
+
+impl FeedPos {
+    pub fn older_posts_link(&self, state: &State) -> String {
+        match &self.oldest_id {
+            Some(oldest) => state.get_older(&oldest),
+            None => state.get_timeline(),
+        }
+    }
+}
+
+#[derive(Clone)]
 pub struct State {
-    domain: String,
-    limit: usize,
+    pub domain: String,
+    pub limit: usize,
 }
 
 impl State {
@@ -155,7 +103,7 @@ impl State {
 
 #[component]
 fn App() -> impl IntoView {
-    let (segments, set_segments) = create_signal(Vec::<leptos::Resource<(), Vec<Post>>>::new());
+    let (segments, set_segments) = create_signal(Vec::<Segment>::new());
     let (oldest, set_oldest) = create_signal(None::<String>);
 
     let (state, set_state) = create_signal(State {
