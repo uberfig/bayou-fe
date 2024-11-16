@@ -1,4 +1,4 @@
-use leptos::{component, view, For, IntoView, Resource, SignalGet};
+use leptos::{component, view, For, IntoView, ReadSignal, Resource, SignalGet};
 
 use crate::{masto_types::timeline_item::Post, timeline::post::TimelinePost};
 
@@ -17,6 +17,7 @@ pub fn TimelineSegment(posts: Vec<Post>) -> impl IntoView {
     }
 }
 
+#[derive(Clone)]
 pub struct Segment {
     pub contents: Resource<(), Vec<Post>>,
     pub id: String,
@@ -31,5 +32,20 @@ pub fn SegmentWrap(segment: Segment) -> impl IntoView {
             Some(data) => view! { <TimelineSegment posts=data/> }.into_view()
         }}
         </div>
+    }
+}
+
+#[component]
+pub fn SegmentList(segments: ReadSignal<Vec<Segment>>) -> impl IntoView {
+    view! {
+        <For
+            each=move || segments.get()
+            key=|segment| segment.id.clone()
+            children=move |segment: Segment| {
+                view! {
+                  <SegmentWrap segment=segment/>
+                }
+              }
+        />
     }
 }
