@@ -26,12 +26,10 @@ pub struct Segment {
 #[component]
 pub fn SegmentWrap(segment: Segment) -> impl IntoView {
     view! {
-        <div class="timeline">
         {move || match segment.contents.get() {
             None => view! { <p>"Loading..."</p> }.into_view(),
             Some(data) => view! { <TimelineSegment posts=data/> }.into_view()
         }}
-        </div>
     }
 }
 

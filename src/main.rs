@@ -28,13 +28,15 @@ fn App() -> impl IntoView {
     let (segments, set_segments) = create_signal(vec![first_segment]);
 
     view! {
-        <SegmentList segments=segments/>
-        <LoadOlder 
-        feed_state=feed_pos
-        set_feed_state=set_feed_pos
-        state=state
-        segments=set_segments
-        />
+        <div class="timeline">
+            <SegmentList segments=segments/>
+            <LoadOlder 
+                feed_state=feed_pos
+                set_feed_state=set_feed_pos
+                state=state
+                segments=set_segments
+            />
+        </div>
     }
 }
 

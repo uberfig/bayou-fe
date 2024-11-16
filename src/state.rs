@@ -12,6 +12,6 @@ impl State {
         )
     }
     pub fn get_timeline(&self) -> String {
-        format!("https://{}/api/v1/timelines/public", &self.domain)
+        format!("https://{}/api/v1/timelines/public?limit={}", &self.domain, &self.limit)
     }
 }
