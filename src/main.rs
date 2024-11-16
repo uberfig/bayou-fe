@@ -1,7 +1,8 @@
 use bayou_fe::masto_types::timeline_item::Post;
 use gloo_net::http::Request;
 use leptos::{
-    component, create_resource, html::div, view, For, IntoView, SignalGet
+    component, create_resource, create_signal, html::div, view, For, IntoView, ReadSignal,
+    Resource, SignalGet, SignalSet, SignalUpdate, WriteSignal,
 };
 use leptos_lucide_icons::{Bookmark, MessageSquare, Repeat, Share2, Star};
 
@@ -53,7 +54,7 @@ fn TimelinePost(post: Post) -> impl IntoView {
 #[component]
 fn TimelineSegment(posts: Vec<Post>) -> impl IntoView {
     view! {
-        <For 
+        <For
             each=move || posts.clone()
             key=|post| post.id.clone()
             children=move |post: Post| {
@@ -65,10 +66,105 @@ fn TimelineSegment(posts: Vec<Post>) -> impl IntoView {
     }
 }
 
+pub struct Segment {
+    pub contents: Resource<(), Vec<Post>>,
+    pub id: String,
+}
+
+#[component]
+fn LoadOlder(
+    oldest: ReadSignal<Option<String>>,
+    set_oldest: WriteSignal<Option<String>>,
+    state: ReadSignal<State>,
+    segments: WriteSignal<Vec<Segment>>,
+) -> impl IntoView {
+    let (loading, set_loading) = create_signal(false);
+
+    view! {
+        {move ||
+            if !loading.get() {
+                view! {
+                    <button
+                        on:click= move |_| {
+                            set_loading.set(true);
+                            let curr_oldest: Option<String> = oldest.get();
+                            let curr_oldest = curr_oldest.unwrap_or(state.get().get_timeline());
+                            let tmp_oldest = curr_oldest.clone();
+
+                            let posts = create_resource(|| (), move |_| {
+                            let value = curr_oldest.clone();
+                            async move {
+                                let curr_oldest = value.clone();
+                                let fetched_posts: Vec<Post> =
+                                        Request::get(&curr_oldest)
+                                            .send()
+                                            .await
+                                            .unwrap()
+                                            .json()
+                                            .await
+                                            .unwrap();
+                                    set_loading.set(false);
+                                    set_oldest.update(|x| {
+                                        *x = match fetched_posts.last() {
+                                            Some(post) => Some(post.id.clone()),
+                                            None => None,
+                                        };
+                                    });
+                                    fetched_posts
+                            }
+                            });
+
+                            segments.update(|x| {
+                                x.push(Segment { contents: posts, id: tmp_oldest });
+                            });
+
+
+                        }
+                    >
+                    "Load older"
+                    </button>
+                }.into_view()
+            }
+            else {
+                view! {
+                    <p>"loading..."</p>
+                }.into_view()
+            }
+        }
+
+    }
+}
+
+#[derive(Clone)]
+pub struct State {
+    domain: String,
+    limit: usize,
+}
+
+impl State {
+    pub fn get_older(&self, post_id: &str) -> String {
+        format!(
+            "https://{}//api/v1/timelines/public?max_id={}&limit={}",
+            &self.domain, post_id, self.limit
+        )
+    }
+    pub fn get_timeline(&self) -> String {
+        format!("https://{}/api/v1/timelines/public", &self.domain)
+    }
+}
+
 #[component]
 fn App() -> impl IntoView {
+    let (segments, set_segments) = create_signal(Vec::<leptos::Resource<(), Vec<Post>>>::new());
+    let (oldest, set_oldest) = create_signal(None::<String>);
+
+    let (state, set_state) = create_signal(State {
+        domain: "mastodon.social".to_string(),
+        limit: 20,
+    });
+
     // see https://book.leptos.dev/async/10_resources.html
-    let timeline = create_resource(
+    let timeline: leptos::Resource<(), Vec<Post>> = create_resource(
         || (),
         |_| async move {
             let fetched_posts: Vec<Post> =
