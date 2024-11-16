@@ -4,7 +4,7 @@ use leptos::{
     SignalSet, SignalUpdate, WriteSignal,
 };
 
-use crate::{masto_types::timeline_item::Post, state::State};
+use crate::{masto_types::timeline_item::Post, state::{Feed, State}};
 
 use super::segments::Segment;
 
@@ -15,10 +15,10 @@ pub struct FeedPos {
 }
 
 impl FeedPos {
-    pub fn older_posts_link(&self, state: &State) -> String {
+    pub fn older_posts_link(&self, state: &State, feed: Feed) -> String {
         match &self.oldest_id {
-            Some(oldest) => state.get_older(&oldest),
-            None => state.get_timeline(),
+            Some(oldest) => state.get_older_link(&oldest, feed),
+            None => state.get_timeline_link(feed),
         }
     }
 }
@@ -57,6 +57,7 @@ pub fn LoadOlder(
     set_feed_state: WriteSignal<FeedPos>,
     state: ReadSignal<State>,
     segments: WriteSignal<Vec<Segment>>,
+    feed: Feed,
 ) -> impl IntoView {
     let (loading, set_loading) = create_signal(false);
 
@@ -68,7 +69,7 @@ pub fn LoadOlder(
                         on:click= move |_| {
                             set_loading.set(true);
                             let feed_state = feed_state.get();
-                            let segment_link: String = feed_state.older_posts_link(&state.get());
+                            let segment_link: String = feed_state.older_posts_link(&state.get(), feed);
                             let tmp_link = segment_link.clone();
 
                             let posts = create_resource(|| (), move |_| {
