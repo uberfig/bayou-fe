@@ -1,14 +1,14 @@
 use leptos::{component, view, For, IntoView, ReadSignal, Resource, SignalGet};
 
-use crate::{masto_types::timeline_item::Post, timeline::post::TimelinePost};
+use crate::{masto_types::timeline_item::Status, timeline::post::TimelinePost};
 
 #[component]
-pub fn TimelineSegment(posts: Vec<Post>) -> impl IntoView {
+pub fn TimelineSegment(posts: Vec<Status>) -> impl IntoView {
     view! {
         <For
             each=move || posts.clone()
             key=|post| post.id.clone()
-            children=move |post: Post| {
+            children=move |post: Status| {
                 view! {
                   <TimelinePost post=post/>
                 }
@@ -19,7 +19,7 @@ pub fn TimelineSegment(posts: Vec<Post>) -> impl IntoView {
 
 #[derive(Clone)]
 pub struct Segment {
-    pub contents: Resource<(), Vec<Post>>,
+    pub contents: Resource<(), Vec<Status>>,
     pub id: String,
 }
 

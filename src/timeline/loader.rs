@@ -4,7 +4,7 @@ use leptos::{
     SignalSet, SignalUpdate, WriteSignal,
 };
 
-use crate::{masto_types::timeline_item::Post, state::{Feed, State}};
+use crate::{masto_types::timeline_item::Status, state::{Feed, State}};
 
 use super::segments::Segment;
 
@@ -26,13 +26,13 @@ impl FeedPos {
 pub fn fetch_posts(
     segment_link: String,
     set_oldest: WriteSignal<FeedPos>,
-) -> Resource<(), Vec<Post>> {
+) -> Resource<(), Vec<Status>> {
     create_resource(
         || (),
         move |_| {
             let value = segment_link.clone();
             async move {
-                let fetched_posts: Vec<Post> = Request::get(&value)
+                let fetched_posts: Vec<Status> = Request::get(&value)
                     .send()
                     .await
                     .unwrap()
@@ -76,7 +76,7 @@ pub fn LoadOlder(
                             let value = segment_link.clone();
                             async move {
                                 let curr_oldest = value.clone();
-                                let fetched_posts: Vec<Post> =
+                                let fetched_posts: Vec<Status> =
                                         Request::get(&curr_oldest)
                                             .send()
                                             .await

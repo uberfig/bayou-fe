@@ -1,11 +1,25 @@
 use leptos::{component, html::div, view, IntoView};
 use leptos_lucide_icons::{Bookmark, MessageSquare, Repeat, Share2, Star};
 
-use crate::masto_types::timeline_item::Post;
+use crate::masto_types::timeline_item::Status;
 
 #[component]
-pub fn TimelinePost(post: Post) -> impl IntoView {
+pub fn TimelinePost(post: Status) -> impl IntoView {
     let content = div().inner_html(post.content);
+    let content = match post.sensitive {
+        true => {
+            match post.spoiler_text.is_empty() {
+                true => content.into_view(),
+                false => view! {
+                    <details>
+                        <summary>{ post.spoiler_text }</summary>
+                        {content}
+                    </details>
+                }.into_view(),
+            }
+        },
+        false => content.into_view(),
+    };
 
     let display_name = match &post.account.display_name.is_empty() {
         true => post.account.username,
