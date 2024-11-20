@@ -1,4 +1,4 @@
-use leptos::{component, create_signal, view, IntoView, ReadSignal, SignalGet};
+use leptos::{component, create_signal, view, IntoView, ReadSignal, SignalGet, SignalGetUntracked};
 
 use crate::{state::{Feed, State}, timeline::{loader::{fetch_posts, FeedPos, LoadOlder}, segments::{Segment, SegmentList}}};
 
@@ -9,7 +9,7 @@ pub fn RenderFeed(state: ReadSignal<State>, feed: Feed) -> impl IntoView {
         end_of_feed: false,
     });
 
-    let first_link = state.get().get_timeline_link(feed);
+    let first_link = state.get_untracked().get_timeline_link(feed);
     let first_segment = Segment {
         contents: fetch_posts(first_link.clone(), set_feed_pos),
         id: first_link,

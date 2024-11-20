@@ -5,6 +5,8 @@ use crate::masto_types::timeline_item::Status;
 
 #[component]
 pub fn TimelinePost(post: Status) -> impl IntoView {
+    let source = post.clone();
+
     let content = div().inner_html(post.content).attr("class", "post-body");
     let content = match post.sensitive {
         true => {
@@ -57,6 +59,12 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
                 <button><Bookmark /></button>
                 <button><Share2 /></button>
             </div>
+            <details>
+                <summary>{ "source" }</summary>
+                <pre>
+                {serde_json::to_string_pretty(&source)}
+                </pre>
+            </details>
         <hr />
         </div>
     }

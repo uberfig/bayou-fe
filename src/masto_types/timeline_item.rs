@@ -12,7 +12,7 @@ pub struct Status {
     /// the actual activitypub representation
     pub uri: Url,
     /// the link for the frontend for users to use
-    pub url: Url,
+    pub url: Option<Url>,
     /// The date when this status was created.
     /// 
     /// parsed from String (ISO 8601 Datetime) however 
@@ -34,26 +34,103 @@ pub struct Status {
     /// Subject or summary line, below which status content is collapsed until expanded.
     pub spoiler_text: String,
 
+    /// Media that is attached to this status.
+    /// See [`MediaAttachment`]
+    pub media_attachments: Option<Vec<MediaAttachment>>,
+
+    //https://docs-p.joinmastodon.org/entities/Status/#application
+    //pub application
+
+    /// Mentions of users within the status content.
+    pub mentions: Vec<Mention>,
+
+    /// Hashtags used within the status content.
+    pub tags: Vec<Tag>,
+
+    /// Custom emoji to be used when rendering status content.
+    pub emojis: Vec<CustomEmoji>,
+
     pub in_reply_to_id: Option<String>,
     pub in_reply_to_account_id: Option<String>,
-    
-    
     
     pub replies_count: i64,
     pub reblogs_count: i64,
     pub favourites_count: i64,
+    
+    
+    //https://docs-p.joinmastodon.org/entities/Status/#reblog
+    // pub reblog: Value,
+
+    /// The poll attached to the status.
+    pub poll: Option<Poll>,
+    
+    // pub card: Value,
+    // pub language: Value,
+
+    /// Plain-text source of a status. 
+    /// Returned instead of content when status is deleted, so the 
+    /// user may redraft from the source text without the client 
+    /// having to reverse-engineer the original text from the HTML content.
+    pub text: Option<String>,
+
+    /// Timestamp of when the status was last edited.
     #[serde(deserialize_with = "deserialize_time_optional")]
     #[serde(serialize_with = "serialize_time_optional")]
     pub edited_at: Option<i64>,
-    
-    // pub reblog: Value,
-    
-    // pub media_attachments: Vec<Value>,
-    // pub mentions: Vec<Value>,
-    // pub tags: Vec<Value>,
-    // pub emojis: Vec<Value>,
-    // pub card: Value,
-    // pub poll: Value,
+
+    // need to do the others for auth users after here
+}
+
+/// Represents a file or media attachment that can be added to a status.
+/// 
+/// https://docs-p.joinmastodon.org/entities/MediaAttachment/
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub struct MediaAttachment {
+    /// The ID of the attachment in the database.
+    pub id: String,
+    /// The type of the attachment.
+    #[serde(rename = "type")]
+    pub type_field: MediaType,
+    /// The location of the original full-size attachment.
+    pub url: Url,
+    /// The location of a scaled-down preview of the attachment.
+    pub preview_url: Url,
+    /// The location of the full-size original attachment on the remote website.
+    pub remote_url: Option<Url>,
+    // // idk how this is formatted and will need to do some work to figure it out
+    // // https://docs-p.joinmastodon.org/entities/MediaAttachment/#meta
+    // // pub meta: String ?
+    /// Alternate text that describes what is in the media attachment, 
+    /// to be used for the visually impaired or when media attachments do not load.
+    pub description: Option<String>,
+    /// A hash computed by the BlurHash algorithm, 
+    /// for generating colorful preview thumbnails when media has not been downloaded yet.
+    pub blurhash: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum MediaType {
+    /// unsupported or unrecognized file type
+    Unknown,
+    /// Static image
+    Image,
+    /// Looping, soundless animation
+    Gifv,
+    /// Video clip
+    Video,
+    /// Audio track
+    Audio,
+}
+
+/// this can optionally be used if we want to allow for other 
+/// types to come from the server and handle it gracefully 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum MaybeMediaType {
+    MediaType(MediaType),
+    Unknown(String),
 }
 
 
@@ -78,7 +155,7 @@ pub struct Account {
     pub acct: String,
     pub display_name: String,
     // pub locked: bool,
-    // pub bot: bool,
+    pub bot: bool,
     // pub discoverable: bool,
     // pub indexable: bool,
     // pub group: bool,
@@ -97,7 +174,7 @@ pub struct Account {
     pub statuses_count: i64,
     pub last_status_at: String,
     // pub hide_collections: bool,
-    // pub emojis: Vec<Value>,
+    pub emojis: Option<Vec<CustomEmoji>>,
     pub fields: Vec<Field>,
 }
 
@@ -119,4 +196,70 @@ pub struct Mention {
     pub url: Url,
     /// The webfinger acct: URI of the mentioned user. Equivalent to `username` for local users, or `username@domain` for remote users.
     pub acct: String,
+}
+
+/// https://docs-p.joinmastodon.org/entities/Status/#Tag
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Tag {
+    /// The value of the hashtag after the # sign.
+    pub name: String,
+    /// A link to the hashtag on the instance.
+    pub url: Url,
+}
+
+/// https://docs-p.joinmastodon.org/entities/CustomEmoji/
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct CustomEmoji {
+    /// The name of the custom emoji.
+    pub shortcode: String,
+    /// A link to the custom emoji.
+    pub url: Url,
+    /// A link to a static copy of the custom emoji.
+    pub static_url: Url,
+    /// Whether this Emoji should be visible in the picker or unlisted.
+    pub visible_in_picker: Option<bool>,
+    /// Used for sorting custom emoji in the picker.
+    pub category: Option<String>,
+}
+
+/// Represents a poll attached to a status.
+/// 
+/// https://docs-p.joinmastodon.org/entities/Poll/
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Poll {
+    /// The ID of the poll in the database.
+    pub id: String,
+    /// When the poll ends, or none if the poll does not end
+    #[serde(deserialize_with = "deserialize_time_optional")]
+    #[serde(serialize_with = "serialize_time_optional")]
+    pub expires_at: Option<i64>,
+    /// Is the poll currently expired?
+    pub expired: bool,
+    /// Does the poll allow multiple-choice answers?
+    pub multiple: bool,
+    /// How many votes have been received.
+    pub votes_count: u64,
+    /// multiple-choice poll only
+    /// 
+    /// How many unique accounts have voted on a multiple-choice poll.
+    /// none if if [`Poll::multiple`] is false.
+    pub voters_count: Option<u64>,
+    /// Possible answers for the poll.
+    pub options: Vec<PollOption>,
+    /// Custom emoji to be used for rendering poll options.
+    pub emojis: Vec<CustomEmoji>,
+    /// When called with a user token, has the authorized user voted?
+    pub voted: Option<bool>,
+    /// When called with a user token, which options has the authorized user chosen? Contains an array of index values for [`Poll::options`].
+    pub own_votes: Option<Vec<u64>>,
+}
+
+/// https://docs-p.joinmastodon.org/entities/Poll/#Option
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct PollOption {
+    /// The text value of the poll option.
+    pub title: String,
+    /// The total number of received votes for this option.
+    /// none if the results are not published yet
+    pub votes_count: Option<u64>,
 }
