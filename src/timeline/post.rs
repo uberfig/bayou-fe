@@ -5,7 +5,7 @@ use crate::masto_types::timeline_item::Status;
 
 #[component]
 pub fn TimelinePost(post: Status) -> impl IntoView {
-    let content = div().inner_html(post.content);
+    let content = div().inner_html(post.content).attr("class", "post-body");
     let content = match post.sensitive {
         true => {
             match post.spoiler_text.is_empty() {
