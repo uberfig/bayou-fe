@@ -1,9 +1,8 @@
 use bayou_fe::{
-    state::{Feed, State}, timeline::feed::RenderFeed}
-;
-use leptos::{
-    component, create_signal, view, IntoView
+    state::{Feed, State},
+    timeline::feed::RenderFeed,
 };
+use leptos::{component, create_signal, view, IntoView};
 
 #[component]
 fn App() -> impl IntoView {
@@ -13,7 +12,7 @@ fn App() -> impl IntoView {
     });
 
     view! {
-        <RenderFeed 
+        <RenderFeed
         state=state
         feed=Feed::Public
         />

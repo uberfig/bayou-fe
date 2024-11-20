@@ -122,3 +122,31 @@ details[open] summary {
     border-bottom: 1px solid #aaa;
     margin-bottom: 0.5em;
 }
+
+pre {
+    overflow: auto;
+    white-space: pre-wrap;
+}
+
+.attachment-img {
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+    margin: 0%;
+}
+
+.attachment-container {
+    padding: 0%;
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    max-height: min-content;
+    height: fit-content;
+    margin-top: 0.25em;
+    margin-bottom: 0.5em;
+    
+    // box-sizing: border-box;
+    // border-collapse: separate; 
+}
+
+// *, *::before, *::after { box-sizing: border-box; }

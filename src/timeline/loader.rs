@@ -4,7 +4,10 @@ use leptos::{
     SignalSet, SignalUpdate, WriteSignal,
 };
 
-use crate::{masto_types::timeline_item::Status, state::{Feed, State}};
+use crate::{
+    masto_types::timeline_item::Status,
+    state::{Feed, State},
+};
 
 use super::segments::Segment;
 

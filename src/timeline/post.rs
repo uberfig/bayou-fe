@@ -7,18 +7,44 @@ use crate::masto_types::timeline_item::Status;
 pub fn TimelinePost(post: Status) -> impl IntoView {
     let source = post.clone();
 
+    let attachments = match post.media_attachments {
+        Some(attachments) => {
+            // Some(
+            attachments.into_iter()
+            .map(|attachment| {
+                match attachment.type_field {
+                    crate::masto_types::timeline_item::MediaType::Unknown => view! {<a href={attachment.url.to_string()}>{attachment.url.to_string()}</a>}.into_view(),
+                    crate::masto_types::timeline_item::MediaType::Image => view! {
+                        <img class="attachment attachment-img" src={attachment.url.to_string()} alt={attachment.description}/>
+                    }.into_view(),
+                    crate::masto_types::timeline_item::MediaType::Image => view! {<p>{attachment.url.to_string()}</p>}.into_view(),
+                    crate::masto_types::timeline_item::MediaType::Gifv => view! {<p>{attachment.url.to_string()}</p>}.into_view(),
+                    crate::masto_types::timeline_item::MediaType::Video => view! {<p>{attachment.url.to_string()}</p>}.into_view(),
+                    crate::masto_types::timeline_item::MediaType::Audio => view! {<p>{attachment.url.to_string()}</p>}.into_view(),
+                }
+            })
+            .collect::<Vec<_>>()
+        }
+        None => Vec::new(),
+    };
+
     let content = div().inner_html(post.content).attr("class", "post-body");
+    let content = view! {
+        {content}
+        <div class="attachment-container">
+            {attachments}
+        </div>
+    };
     let content = match post.sensitive {
-        true => {
-            match post.spoiler_text.is_empty() {
-                true => content.into_view(),
-                false => view! {
-                    <details>
-                        <summary>{ post.spoiler_text }</summary>
-                        {content}
-                    </details>
-                }.into_view(),
+        true => match post.spoiler_text.is_empty() {
+            true => content.into_view(),
+            false => view! {
+                <details>
+                    <summary>{ post.spoiler_text }</summary>
+                    {content}
+                </details>
             }
+            .into_view(),
         },
         false => content.into_view(),
     };

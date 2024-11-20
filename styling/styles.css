@@ -85,4 +85,29 @@ details[open] {
 details[open] summary {
   border-bottom: 1px solid #aaa;
   margin-bottom: 0.5em;
+}
+
+pre {
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
+.attachment-img {
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+  margin: 0%;
+}
+
+.attachment-container {
+  padding: 0%;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  max-height: -moz-min-content;
+  max-height: min-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  margin-top: 0.25em;
+  margin-bottom: 0.5em;
 }/*# sourceMappingURL=styles.css.map */

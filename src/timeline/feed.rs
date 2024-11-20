@@ -1,6 +1,12 @@
 use leptos::{component, create_signal, view, IntoView, ReadSignal, SignalGet, SignalGetUntracked};
 
-use crate::{state::{Feed, State}, timeline::{loader::{fetch_posts, FeedPos, LoadOlder}, segments::{Segment, SegmentList}}};
+use crate::{
+    state::{Feed, State},
+    timeline::{
+        loader::{fetch_posts, FeedPos, LoadOlder},
+        segments::{Segment, SegmentList},
+    },
+};
 
 #[component]
 pub fn RenderFeed(state: ReadSignal<State>, feed: Feed) -> impl IntoView {
@@ -19,7 +25,7 @@ pub fn RenderFeed(state: ReadSignal<State>, feed: Feed) -> impl IntoView {
     view! {
         <div class="timeline">
             <SegmentList segments=segments/>
-            <LoadOlder 
+            <LoadOlder
                 feed_state=feed_pos
                 set_feed_state=set_feed_pos
                 state=state

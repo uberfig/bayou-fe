@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use url::Url;
 
 /// represents a post from an account
-/// 
+///
 /// https://docs-p.joinmastodon.org/entities/Status/
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Status {
@@ -14,8 +14,8 @@ pub struct Status {
     /// the link for the frontend for users to use
     pub url: Option<Url>,
     /// The date when this status was created.
-    /// 
-    /// parsed from String (ISO 8601 Datetime) however 
+    ///
+    /// parsed from String (ISO 8601 Datetime) however
     /// we parse it as rfc3339 since thats what chrono has
     #[serde(deserialize_with = "deserialize_time")]
     #[serde(serialize_with = "serialize_time")]
@@ -40,7 +40,6 @@ pub struct Status {
 
     //https://docs-p.joinmastodon.org/entities/Status/#application
     //pub application
-
     /// Mentions of users within the status content.
     pub mentions: Vec<Mention>,
 
@@ -52,24 +51,21 @@ pub struct Status {
 
     pub in_reply_to_id: Option<String>,
     pub in_reply_to_account_id: Option<String>,
-    
+
     pub replies_count: i64,
     pub reblogs_count: i64,
     pub favourites_count: i64,
-    
-    
+
     //https://docs-p.joinmastodon.org/entities/Status/#reblog
     // pub reblog: Value,
-
     /// The poll attached to the status.
     pub poll: Option<Poll>,
-    
+
     // pub card: Value,
     // pub language: Value,
-
-    /// Plain-text source of a status. 
-    /// Returned instead of content when status is deleted, so the 
-    /// user may redraft from the source text without the client 
+    /// Plain-text source of a status.
+    /// Returned instead of content when status is deleted, so the
+    /// user may redraft from the source text without the client
     /// having to reverse-engineer the original text from the HTML content.
     pub text: Option<String>,
 
@@ -77,12 +73,11 @@ pub struct Status {
     #[serde(deserialize_with = "deserialize_time_optional")]
     #[serde(serialize_with = "serialize_time_optional")]
     pub edited_at: Option<i64>,
-
     // need to do the others for auth users after here
 }
 
 /// Represents a file or media attachment that can be added to a status.
-/// 
+///
 /// https://docs-p.joinmastodon.org/entities/MediaAttachment/
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -101,10 +96,10 @@ pub struct MediaAttachment {
     // // idk how this is formatted and will need to do some work to figure it out
     // // https://docs-p.joinmastodon.org/entities/MediaAttachment/#meta
     // // pub meta: String ?
-    /// Alternate text that describes what is in the media attachment, 
+    /// Alternate text that describes what is in the media attachment,
     /// to be used for the visually impaired or when media attachments do not load.
     pub description: Option<String>,
-    /// A hash computed by the BlurHash algorithm, 
+    /// A hash computed by the BlurHash algorithm,
     /// for generating colorful preview thumbnails when media has not been downloaded yet.
     pub blurhash: String,
 }
@@ -124,15 +119,14 @@ pub enum MediaType {
     Audio,
 }
 
-/// this can optionally be used if we want to allow for other 
-/// types to come from the server and handle it gracefully 
+/// this can optionally be used if we want to allow for other
+/// types to come from the server and handle it gracefully
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum MaybeMediaType {
     MediaType(MediaType),
     Unknown(String),
 }
-
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -223,7 +217,7 @@ pub struct CustomEmoji {
 }
 
 /// Represents a poll attached to a status.
-/// 
+///
 /// https://docs-p.joinmastodon.org/entities/Poll/
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Poll {
@@ -240,7 +234,7 @@ pub struct Poll {
     /// How many votes have been received.
     pub votes_count: u64,
     /// multiple-choice poll only
-    /// 
+    ///
     /// How many unique accounts have voted on a multiple-choice poll.
     /// none if if [`Poll::multiple`] is false.
     pub voters_count: Option<u64>,
