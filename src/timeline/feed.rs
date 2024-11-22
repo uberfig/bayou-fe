@@ -1,4 +1,4 @@
-use leptos::{component, create_signal, view, IntoView, ReadSignal, SignalGet, SignalGetUntracked};
+use leptos::{component, create_signal, view, IntoView, ReadSignal, SignalGetUntracked};
 
 use crate::{
     state::{Feed, State},

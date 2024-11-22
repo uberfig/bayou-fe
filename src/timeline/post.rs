@@ -17,10 +17,14 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
                     crate::masto_types::timeline_item::MediaType::Image => view! {
                         <img class="attachment attachment-img" src={attachment.url.to_string()} alt={attachment.description}/>
                     }.into_view(),
-                    crate::masto_types::timeline_item::MediaType::Image => view! {<p>{attachment.url.to_string()}</p>}.into_view(),
-                    crate::masto_types::timeline_item::MediaType::Gifv => view! {<p>{attachment.url.to_string()}</p>}.into_view(),
+                    crate::masto_types::timeline_item::MediaType::Gifv => view! {<a href={attachment.url.to_string()}>{attachment.url.to_string()}</a>}.into_view(),
                     crate::masto_types::timeline_item::MediaType::Video => view! {<p>{attachment.url.to_string()}</p>}.into_view(),
-                    crate::masto_types::timeline_item::MediaType::Audio => view! {<p>{attachment.url.to_string()}</p>}.into_view(),
+                    crate::masto_types::timeline_item::MediaType::Audio => view! {
+                        <audio controls>
+                            <source src={attachment.url.to_string()} type="audio" />
+                            {"Your browser does not support the audio element."}
+                        </audio> 
+                    }.into_view(),
                 }
             })
             .collect::<Vec<_>>()
