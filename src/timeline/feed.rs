@@ -1,4 +1,6 @@
-use leptos::{component, create_signal, view, IntoView, ReadSignal, SignalGetUntracked};
+use leptos::{
+    component, create_signal, use_context, view, IntoView, ReadSignal, SignalGetUntracked,
+};
 
 use crate::{
     state::{Feed, State},
@@ -9,11 +11,13 @@ use crate::{
 };
 
 #[component]
-pub fn RenderFeed(state: ReadSignal<State>, feed: Feed) -> impl IntoView {
+pub fn RenderFeed(feed: Feed) -> impl IntoView {
     let (feed_pos, set_feed_pos) = create_signal(FeedPos {
         oldest_id: None,
         end_of_feed: false,
     });
+
+    let state: ReadSignal<State> = use_context().expect("missing state");
 
     let first_link = state.get_untracked().get_timeline_link(feed);
     let first_segment = Segment {
