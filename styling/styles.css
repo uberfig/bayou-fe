@@ -104,10 +104,39 @@ pre {
   width: 100%;
   border-radius: 8px;
   overflow: hidden;
-  max-height: -moz-min-content;
-  max-height: min-content;
   height: -moz-fit-content;
   height: fit-content;
+  max-height: 600px;
   margin-top: 0.25em;
   margin-bottom: 0.5em;
+}
+
+.multiple-attachment {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 2px;
+}
+
+.multiple-attachment .w75 {
+  width: 75%;
+}
+
+.multiple-attachment .w50 {
+  width: 50%;
+}
+
+.multiple-attachment .w25 {
+  width: 25%;
+}
+
+.multiple-attachment .secondary {
+  gap: 2px;
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
 }/*# sourceMappingURL=styles.css.map */
