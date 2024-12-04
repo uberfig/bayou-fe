@@ -68,23 +68,8 @@ pub fn LoadOlder(
                             let posts = LocalResource::new(move || {
                                 let value = segment_link.clone();
                                 async move {
-                                    let curr_oldest = value.clone();
-                                    let fetched_posts: Vec<Status> =
-                                            Request::get(&curr_oldest)
-                                                .send()
-                                                .await
-                                                .unwrap()
-                                                .json()
-                                                .await
-                                                .unwrap();
-                                        set_loading.set(false);
-                                        set_feed_state.update(|x| {
-                                            match fetched_posts.last() {
-                                                Some(post) => x.oldest_id = Some(post.id.clone()),
-                                                None => x.end_of_feed = true,
-                                            };
-                                        });
-                                        fetched_posts
+                                    let posts = fetch_posts(value.clone(), set_feed_state).await;
+                                    posts
                                 }
                                 });
 

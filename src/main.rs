@@ -2,7 +2,7 @@ use bayou_fe::{
     state::{Feed, State},
     timeline::feed::RenderFeed,
 };
-use leptos::mount::mount_to_body;
+use leptos::{mount::mount_to_body, prelude::Read};
 use leptos::prelude::ElementChild;
 use leptos::{
     component,
@@ -19,14 +19,23 @@ use leptos_router::{
 
 #[derive(Params, PartialEq, Clone)]
 struct ProfileParams {
-    id: Option<String>,
+    webfinger: Option<String>,
 }
 
 #[component]
 pub fn profile() -> impl IntoView {
     let params = use_params::<ProfileParams>();
+
+    let webfinger = move || {
+        params
+            .read()
+            .as_ref()
+            .ok()
+            .and_then(|params| params.webfinger.clone())
+            .unwrap_or_default()
+    };
     // let id = move || params.read().clone().;
-    todo!()
+    view! {<h1>{webfinger}</h1>}
 }
 
 #[component]
