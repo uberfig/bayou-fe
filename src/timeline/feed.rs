@@ -1,5 +1,9 @@
+use leptos::prelude::ElementChild;
 use leptos::{
-    component, create_signal, use_context, view, IntoView, ReadSignal, SignalGetUntracked,
+    component,
+    prelude::{signal, use_context, ClassAttribute, GetUntracked, ReadSignal},
+    server::LocalResource,
+    view, IntoView,
 };
 
 use crate::{
@@ -12,7 +16,7 @@ use crate::{
 
 #[component]
 pub fn RenderFeed(feed: Feed) -> impl IntoView {
-    let (feed_pos, set_feed_pos) = create_signal(FeedPos {
+    let (feed_pos, set_feed_pos) = signal(FeedPos {
         oldest_id: None,
         end_of_feed: false,
     });
@@ -20,11 +24,12 @@ pub fn RenderFeed(feed: Feed) -> impl IntoView {
     let state: ReadSignal<State> = use_context().expect("missing state");
 
     let first_link = state.get_untracked().get_timeline_link(feed);
+    let cloned = first_link.clone();
     let first_segment = Segment {
-        contents: fetch_posts(first_link.clone(), set_feed_pos),
+        contents: LocalResource::new(move || fetch_posts(cloned.clone(), set_feed_pos)),
         id: first_link,
     };
-    let (segments, set_segments) = create_signal(vec![first_segment]);
+    let (segments, set_segments) = signal(vec![first_segment]);
 
     view! {
         <div class="timeline">

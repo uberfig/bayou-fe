@@ -1,4 +1,6 @@
-use leptos::{component, view, For, IntoView, ReadSignal, Resource, SignalGet};
+use leptos::{
+    component, prelude::{For, Get, IntoAny, ReadSignal, StorageAccess, ElementChild}, server::LocalResource, view, IntoView
+};
 
 use crate::{masto_types::timeline_item::Status, timeline::post::TimelinePost};
 
@@ -19,7 +21,7 @@ pub fn TimelineSegment(posts: Vec<Status>) -> impl IntoView {
 
 #[derive(Clone)]
 pub struct Segment {
-    pub contents: Resource<(), Vec<Status>>,
+    pub contents: LocalResource<Vec<Status>>,
     pub id: String,
 }
 
@@ -27,8 +29,8 @@ pub struct Segment {
 pub fn SegmentWrap(segment: Segment) -> impl IntoView {
     view! {
         {move || match segment.contents.get() {
-            None => view! { <p>"Loading..."</p> }.into_view(),
-            Some(data) => view! { <TimelineSegment posts=data/> }.into_view()
+            None => view! { <p>"Loading..."</p> }.into_any(),
+            Some(data) => view! { <TimelineSegment posts=data.into_taken()/> }.into_any()
         }}
     }
 }
