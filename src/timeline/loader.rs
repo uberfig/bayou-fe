@@ -1,6 +1,5 @@
 use crate::{
-    masto_types::status::Status,
-    state::{Feed, State},
+    masto_api::timelines::{get_timeline_link, TimelineParams}, masto_types::status::Status, state::{Feed, State}
 };
 use gloo_net::http::Request;
 use leptos::{
@@ -21,8 +20,8 @@ pub struct FeedPos {
 impl FeedPos {
     pub fn older_posts_link(&self, state: &State, feed: Feed) -> String {
         match &self.oldest_id {
-            Some(oldest) => state.get_older_link(&oldest, feed),
-            None => state.get_timeline_link(feed),
+            Some(oldest) => get_timeline_link(state, &TimelineParams::new(state).max_id(&oldest), feed),
+            None => get_timeline_link(state, &TimelineParams::new(state), feed),
         }
     }
 }

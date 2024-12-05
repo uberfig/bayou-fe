@@ -22,7 +22,7 @@ pub fn generate_attachments(attachments: Vec<MediaAttachment>) -> AnyView {
                         <audio controls>
                             <source src={attachment.url.to_string()} type="audio" />
                             {"Your browser does not support the audio element."}
-                        </audio> 
+                        </audio>
                     }.into_any(),
                 }
             })
