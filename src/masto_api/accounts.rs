@@ -1,3 +1,4 @@
+use gloo_net::http::Request;
 use serde::{Deserialize, Serialize};
 
 use crate::{masto_types::account::Account, state::State};
@@ -21,4 +22,18 @@ impl Webfinger {
             &state.domain, acct
         )
     }
+}
+
+/// oauth: public
+///
+/// https://docs.joinmastodon.org/methods/accounts/#lookup
+pub async fn webfinger_account(state: &State, acct: String) -> Option<Account> {
+    let fetched_acct: Webfinger = Request::get(&Webfinger::webfinger_request(state, &acct))
+        .send()
+        .await
+        .unwrap()
+        .json()
+        .await
+        .unwrap();
+    fetched_acct.result
 }

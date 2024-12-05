@@ -1,4 +1,11 @@
-use crate::state::{Feed, State};
+use gloo_net::http::Request;
+use leptos::prelude::{Update, WriteSignal};
+
+use crate::{
+    masto_types::status::Status,
+    state::{Feed, State},
+    timeline::loader::FeedPos,
+};
 
 pub struct TimelineParams<'a> {
     /// Boolean. Show only local statuses? Defaults to false.
@@ -82,10 +89,7 @@ pub fn get_timeline_link(state: &State, params: &TimelineParams, feed: Feed) -> 
 ///
 /// https://docs.joinmastodon.org/methods/timelines/#public
 pub fn public_timeline(state: &State, params: &TimelineParams) -> String {
-    let mut link = format!(
-        "https://{}/api/v1/timelines/public",
-        &state.domain
-    );
+    let mut link = format!("https://{}/api/v1/timelines/public", &state.domain);
     link = apply_params(link, params);
     link
 }
@@ -111,4 +115,21 @@ fn apply_params(link: String, params: &TimelineParams) -> String {
         link = format!("{}&since_id={}", link, since_id);
     }
     link
+}
+
+pub async fn fetch_posts(segment_link: String, set_oldest: WriteSignal<FeedPos>) -> Vec<Status> {
+    let fetched_posts: Vec<Status> = Request::get(&segment_link)
+        .send()
+        .await
+        .unwrap()
+        .json()
+        .await
+        .unwrap();
+    set_oldest.update(|x| {
+        match fetched_posts.last() {
+            Some(post) => x.oldest_id = Some(post.id.clone()),
+            None => x.end_of_feed = true,
+        };
+    });
+    fetched_posts
 }

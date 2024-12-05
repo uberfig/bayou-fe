@@ -6,11 +6,11 @@ use leptos::{
     view, IntoView,
 };
 
-use crate::masto_api::timelines::{get_timeline_link, TimelineParams};
+use crate::masto_api::timelines::{fetch_posts, get_timeline_link, TimelineParams};
 use crate::{
     state::{Feed, State},
     timeline::{
-        loader::{fetch_posts, FeedPos, LoadOlder},
+        loader::{FeedPos, LoadOlder},
         segments::{Segment, SegmentList},
     },
 };

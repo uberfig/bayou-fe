@@ -1,5 +1,7 @@
 use crate::{
-    masto_api::timelines::{get_timeline_link, TimelineParams}, masto_types::status::Status, state::{Feed, State}
+    masto_api::timelines::{fetch_posts, get_timeline_link, TimelineParams},
+    masto_types::status::Status,
+    state::{Feed, State},
 };
 use gloo_net::http::Request;
 use leptos::{
@@ -20,27 +22,12 @@ pub struct FeedPos {
 impl FeedPos {
     pub fn older_posts_link(&self, state: &State, feed: Feed) -> String {
         match &self.oldest_id {
-            Some(oldest) => get_timeline_link(state, &TimelineParams::new(state).max_id(&oldest), feed),
+            Some(oldest) => {
+                get_timeline_link(state, &TimelineParams::new(state).max_id(&oldest), feed)
+            }
             None => get_timeline_link(state, &TimelineParams::new(state), feed),
         }
     }
-}
-
-pub async fn fetch_posts(segment_link: String, set_oldest: WriteSignal<FeedPos>) -> Vec<Status> {
-    let fetched_posts: Vec<Status> = Request::get(&segment_link)
-        .send()
-        .await
-        .unwrap()
-        .json()
-        .await
-        .unwrap();
-    set_oldest.update(|x| {
-        match fetched_posts.last() {
-            Some(post) => x.oldest_id = Some(post.id.clone()),
-            None => x.end_of_feed = true,
-        };
-    });
-    fetched_posts
 }
 
 #[component]
