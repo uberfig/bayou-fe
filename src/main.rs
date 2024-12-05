@@ -23,7 +23,7 @@ struct ProfileParams {
 }
 
 #[component]
-pub fn profile() -> impl IntoView {
+pub fn Profile() -> impl IntoView {
     let params = use_params::<ProfileParams>();
 
     let webfinger = move || {
@@ -32,9 +32,8 @@ pub fn profile() -> impl IntoView {
             .as_ref()
             .ok()
             .and_then(|params| params.webfinger.clone())
-            .unwrap_or_default()
+            .unwrap_or("missing".to_string())
     };
-    // let id = move || params.read().clone().;
     view! {<h1>{webfinger}</h1>}
 }
 
@@ -63,7 +62,7 @@ fn App() -> impl IntoView {
           // all our routes will appear inside <main>
           <Routes fallback=|| "Not found.">
               <Route path=path!("/") view=public/>
-              <Route path=path!("/@/:id") view=public/>
+              <Route path=path!("/@/:webfinger") view=Profile/>
               <Route path=path!("/*any") view=|| view! { <h1>"Not Found"</h1> }/>
               </Routes>
         </main>

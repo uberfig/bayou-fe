@@ -11,6 +11,7 @@ leptos = {version = "0.7.0", features = ["csr"]}
 leptos-lucide-icons = "0.1.1"
 # leptos_lucide = "0.1.1"
 leptos_router = { version = "0.7.0" }
+regex = "1.11.1"
 serde = "1.0.214"
 serde_json = "1.0.132"
 url = {version = "2.5.3", features = ["serde"]}

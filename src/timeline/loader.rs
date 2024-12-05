@@ -68,7 +68,9 @@ pub fn LoadOlder(
                             let posts = LocalResource::new(move || {
                                 let value = segment_link.clone();
                                 async move {
+                                    let set_loading = set_loading;
                                     let posts = fetch_posts(value.clone(), set_feed_state).await;
+                                    set_loading.set(false);
                                     posts
                                 }
                                 });

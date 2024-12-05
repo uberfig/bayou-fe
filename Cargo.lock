@@ -147,6 +147,7 @@ dependencies = [
  "leptos 0.7.0",
  "leptos-lucide-icons",
  "leptos_router",
+ "regex",
  "serde",
  "serde_json",
  "url",

@@ -1,4 +1,4 @@
-use super::serde_fns::*;
+use super::{account::Account, custom_emoji::CustomEmoji, poll::Poll, serde_fns::*};
 use serde::{Deserialize, Serialize};
 use url::Url;
 
@@ -76,6 +76,13 @@ pub struct Status {
     // need to do the others for auth users after here
 }
 
+impl Status {
+    pub fn parse_emoji(mut self) -> Self {
+        self.content = CustomEmoji::parse_emoji(&self.emojis, &self.content);
+        return self;
+    }
+}
+
 /// Represents a file or media attachment that can be added to a status.
 ///
 /// https://docs-p.joinmastodon.org/entities/MediaAttachment/
@@ -141,44 +148,6 @@ pub enum Visibility {
     Direct,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct Account {
-    pub id: String,
-    pub username: String,
-    /// in the format username@domain.com
-    pub acct: String,
-    pub display_name: String,
-    // pub locked: bool,
-    pub bot: bool,
-    // pub discoverable: bool,
-    // pub indexable: bool,
-    // pub group: bool,
-    pub created_at: String,
-    pub note: String,
-    /// the link for the frontend for users to use
-    pub url: Url,
-    /// the actual activitypub representation
-    pub uri: Url,
-    pub avatar: String,
-    pub avatar_static: String,
-    pub header: String,
-    pub header_static: String,
-    pub followers_count: i64,
-    pub following_count: i64,
-    pub statuses_count: i64,
-    pub last_status_at: String,
-    // pub hide_collections: bool,
-    pub emojis: Option<Vec<CustomEmoji>>,
-    pub fields: Vec<Field>,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct Field {
-    pub name: String,
-    pub value: String,
-    // pub verified_at: Value,
-}
-
 /// https://docs-p.joinmastodon.org/entities/Status/#Mention
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Mention {
@@ -201,59 +170,3 @@ pub struct Tag {
     pub url: Url,
 }
 
-/// https://docs-p.joinmastodon.org/entities/CustomEmoji/
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct CustomEmoji {
-    /// The name of the custom emoji.
-    pub shortcode: String,
-    /// A link to the custom emoji.
-    pub url: Url,
-    /// A link to a static copy of the custom emoji.
-    pub static_url: Url,
-    /// Whether this Emoji should be visible in the picker or unlisted.
-    pub visible_in_picker: Option<bool>,
-    /// Used for sorting custom emoji in the picker.
-    pub category: Option<String>,
-}
-
-/// Represents a poll attached to a status.
-///
-/// https://docs-p.joinmastodon.org/entities/Poll/
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct Poll {
-    /// The ID of the poll in the database.
-    pub id: String,
-    /// When the poll ends, or none if the poll does not end
-    #[serde(deserialize_with = "deserialize_time_optional")]
-    #[serde(serialize_with = "serialize_time_optional")]
-    pub expires_at: Option<i64>,
-    /// Is the poll currently expired?
-    pub expired: bool,
-    /// Does the poll allow multiple-choice answers?
-    pub multiple: bool,
-    /// How many votes have been received.
-    pub votes_count: u64,
-    /// multiple-choice poll only
-    ///
-    /// How many unique accounts have voted on a multiple-choice poll.
-    /// none if if [`Poll::multiple`] is false.
-    pub voters_count: Option<u64>,
-    /// Possible answers for the poll.
-    pub options: Vec<PollOption>,
-    /// Custom emoji to be used for rendering poll options.
-    pub emojis: Vec<CustomEmoji>,
-    /// When called with a user token, has the authorized user voted?
-    pub voted: Option<bool>,
-    /// When called with a user token, which options has the authorized user chosen? Contains an array of index values for [`Poll::options`].
-    pub own_votes: Option<Vec<u64>>,
-}
-
-/// https://docs-p.joinmastodon.org/entities/Poll/#Option
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct PollOption {
-    /// The text value of the poll option.
-    pub title: String,
-    /// The total number of received votes for this option.
-    /// none if the results are not published yet
-    pub votes_count: Option<u64>,
-}
