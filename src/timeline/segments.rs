@@ -1,8 +1,11 @@
 use leptos::{
-    component, prelude::{For, Get, IntoAny, ReadSignal, StorageAccess, ElementChild}, server::LocalResource, view, IntoView
+    component,
+    prelude::{ElementChild, For, Get, IntoAny, ReadSignal, StorageAccess},
+    server::LocalResource,
+    view, IntoView,
 };
 
-use crate::{masto_types::timeline_item::Status, timeline::post::TimelinePost};
+use crate::{masto_types::status::Status, timeline::post::TimelinePost};
 
 #[component]
 pub fn TimelineSegment(posts: Vec<Status>) -> impl IntoView {

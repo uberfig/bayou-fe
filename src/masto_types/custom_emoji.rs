@@ -22,10 +22,13 @@ impl CustomEmoji {
         let mut content = content.to_string();
         for emoji in emojis {
             if let Ok(regex) = Regex::new(&format!(":{}:", &emoji.shortcode)) {
-                let replacement = &format!(r#"<img src="{}" alt="{} />""#, emoji.url.as_str(), emoji.shortcode);
+                let replacement = &format!(
+                    r#"<img src="{}" alt="{} />""#,
+                    emoji.url.as_str(),
+                    emoji.shortcode
+                );
                 content = regex.replace_all(&content, replacement).to_string();
             }
-            
         }
         return content;
     }

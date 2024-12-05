@@ -1,5 +1,5 @@
 use crate::{
-    masto_types::timeline_item::Status,
+    masto_types::status::Status,
     state::{Feed, State},
 };
 use gloo_net::http::Request;

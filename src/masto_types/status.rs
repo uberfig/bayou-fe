@@ -169,4 +169,3 @@ pub struct Tag {
     /// A link to the hashtag on the instance.
     pub url: Url,
 }
-

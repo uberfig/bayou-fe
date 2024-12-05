@@ -16,6 +16,7 @@ $text_bg_selected_color: rgba(121, 121, 121, 0.5);
 $hovermenu_bg_color: rgb(44, 46, 51);
 $hovermenu_bg_hover_color: rgb(51, 53, 58);
 
+$accent_very_dark2:rgb(8, 63, 42)5;
 $accent_very_dark: #126445;
 $accent_dark: #2cc288;
 $accent_light: #48f3b1;
@@ -127,6 +128,13 @@ pre {
     overflow: auto;
     white-space: pre-wrap;
 }
+.post-body {
+    overflow: auto;
+    white-space: pre-wrap;
+}
+.invisible {
+    display: none;
+}
 
 .attachment-img {
     width: 100%;
@@ -139,6 +147,10 @@ pre {
     padding: 0%;
     width: 100%;
     border-radius: 8px;
+    border-style: solid;
+    border-color: $accent_very_dark;
+    background-color: $accent_very_dark2;
+    border-width: 2px;
     overflow: hidden;
     // max-height: min-content;
     
@@ -154,7 +166,7 @@ pre {
     display: flex;
     flex-direction: row;
     width: 100%;
-    gap: 2px;
+    gap: 4px;
 }
 // .multiple-attachment .primary {
 //     // width: 50%;
@@ -170,7 +182,7 @@ pre {
 }
 
 .multiple-attachment .secondary {
-    gap: 2px;
+    gap: 4px;
     display: flex;
     flex-direction: column;
     max-height: 100%;

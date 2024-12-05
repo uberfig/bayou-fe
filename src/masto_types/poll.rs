@@ -2,7 +2,6 @@ use serde::{Deserialize, Serialize};
 
 use super::{custom_emoji::CustomEmoji, serde_fns::*};
 
-
 /// Represents a poll attached to a status.
 ///
 /// https://docs-p.joinmastodon.org/entities/Poll/

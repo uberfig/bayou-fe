@@ -6,19 +6,19 @@ use leptos::{
 };
 // use leptos_lucide_icons::{Bookmark, MessageSquare, Repeat, Share2, Star};
 
-use crate::masto_types::timeline_item::{MediaAttachment, Status};
+use crate::masto_types::status::{MediaAttachment, Status};
 
 pub fn generate_attachments(attachments: Vec<MediaAttachment>) -> AnyView {
     let mut attachments = attachments.into_iter()
             .map(|attachment| {
                 match attachment.type_field {
-                    crate::masto_types::timeline_item::MediaType::Unknown => view! {<a href={attachment.url.to_string()}>{attachment.url.to_string()}</a>}.into_any(),
-                    crate::masto_types::timeline_item::MediaType::Image => view! {
+                    crate::masto_types::status::MediaType::Unknown => view! {<a href={attachment.url.to_string()}>{attachment.url.to_string()}</a>}.into_any(),
+                    crate::masto_types::status::MediaType::Image => view! {
                         <img class="attachment attachment-img" src={attachment.url.to_string()} alt={attachment.description}/>
                     }.into_any(),
-                    crate::masto_types::timeline_item::MediaType::Gifv => view! {<a href={attachment.url.to_string()}>{attachment.url.to_string()}</a>}.into_any(),
-                    crate::masto_types::timeline_item::MediaType::Video => view! {<p>{attachment.url.to_string()}</p>}.into_any(),
-                    crate::masto_types::timeline_item::MediaType::Audio => view! {
+                    crate::masto_types::status::MediaType::Gifv => view! {<a href={attachment.url.to_string()}>{attachment.url.to_string()}</a>}.into_any(),
+                    crate::masto_types::status::MediaType::Video => view! {<p>{attachment.url.to_string()}</p>}.into_any(),
+                    crate::masto_types::status::MediaType::Audio => view! {
                         <audio controls>
                             <source src={attachment.url.to_string()} type="audio" />
                             {"Your browser does not support the audio element."}

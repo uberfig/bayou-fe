@@ -2,13 +2,13 @@ use bayou_fe::{
     state::{Feed, State},
     timeline::feed::RenderFeed,
 };
-use leptos::{mount::mount_to_body, prelude::Read};
 use leptos::prelude::ElementChild;
 use leptos::{
     component,
     prelude::{provide_context, signal},
     view, IntoView, Params,
 };
+use leptos::{mount::mount_to_body, prelude::Read};
 use leptos_router::components::*;
 use leptos_router::params::Params;
 use leptos_router::{
