@@ -1,6 +1,6 @@
-@use 'attachments' as attachments;
-@use 'theme' as theme;
-@use 'content_warning' as cw;
+@use '_attachments' as attachments;
+@use '_theme' as theme;
+@use '_content_warning' as cw;
 
 @mixin timeline {
     @include user-topper;

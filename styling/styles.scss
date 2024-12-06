@@ -1,5 +1,5 @@
-@use 'theme' as theme;
-@use 'timeline' as timeline;
+@use '_theme' as theme;
+@use '_timeline' as timeline;
 
 html {
     background-color: theme.$dark_bg;
