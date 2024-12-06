@@ -27,8 +27,8 @@ impl Webfinger {
 /// oauth: public
 ///
 /// https://docs.joinmastodon.org/methods/accounts/#lookup
-pub async fn webfinger_account(state: &State, acct: String) -> Option<Account> {
-    let fetched_acct: Webfinger = Request::get(&Webfinger::webfinger_request(state, &acct))
+pub async fn webfinger_account(link: String) -> Option<Account> {
+    let fetched_acct: Webfinger = Request::get(&link)
         .send()
         .await
         .unwrap()

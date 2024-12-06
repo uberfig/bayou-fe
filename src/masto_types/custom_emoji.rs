@@ -23,7 +23,7 @@ impl CustomEmoji {
         for emoji in emojis {
             if let Ok(regex) = Regex::new(&format!(":{}:", &emoji.shortcode)) {
                 let replacement = &format!(
-                    r#"<img src="{}" alt="{} />""#,
+                    r#"<img src="{}" alt="{}" class="emoji" />"#,
                     emoji.url.as_str(),
                     emoji.shortcode
                 );

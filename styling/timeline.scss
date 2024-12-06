@@ -1,0 +1,32 @@
+@use 'attachments' as attachments;
+@use 'theme' as theme;
+@use 'content_warning' as cw;
+
+@mixin timeline {
+    @include user-topper;
+    @include attachments.attachments;
+    @include cw.content-warning;
+
+    pre {
+        overflow: auto;
+        white-space: pre-wrap;
+    }
+    .post-body {
+        overflow: auto;
+        white-space: pre-wrap;
+    }
+    .invisible {
+        display: none;
+    }
+}
+
+@mixin user-topper {
+    .user-link {
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .pronouns {
+        margin-left: 1em;
+    }
+}

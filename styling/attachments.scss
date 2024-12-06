@@ -1,0 +1,72 @@
+@use 'theme' as theme;
+
+@mixin attachments {
+    .attachment-img {
+        width: 100%;
+        display: block;
+        box-sizing: border-box;
+        margin: 0%;
+    }
+    
+    .attachment-container {
+        padding: 0%;
+        width: 100%;
+        border-radius: 8px;
+        border-style: solid;
+        border-color: theme.$accent_very_dark;
+        background-color: theme.$accent_very_dark2;
+        border-width: 2px;
+        overflow: hidden;
+        // max-height: min-content;
+        
+        height: fit-content;
+        max-height: 800px;
+        margin-top: 0.25em;
+        margin-bottom: 0.5em;
+        
+        // box-sizing: border-box;
+        // border-collapse: separate; 
+    }
+    .multiple-attachment {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        gap: 4px;
+    }
+    // .multiple-attachment .primary {
+    //     // width: 50%;
+    // }
+    .multiple-attachment .w75 {
+        width: 75%;
+        max-width: 75%;
+    }
+    .multiple-attachment .w50 {
+        width: 50%;
+        max-width: 50%;
+    }
+    .multiple-attachment .w25 {
+        width: 25%;
+        max-width: 25%;
+    }
+    
+    .multiple-attachment .h50 .attachment {
+        max-height: 50%;
+        height: 50%;
+    }
+    
+    .multiple-attachment .h100 .attachment {
+        max-height: 100%;
+        height: 100%;
+    }
+    
+    .attachment {
+        object-fit: cover;
+    }
+    
+    .multiple-attachment .secondary {
+        gap: 4px;
+        display: flex;
+        flex-direction: column;
+        max-height: 100%;
+    }
+}

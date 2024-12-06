@@ -30,7 +30,7 @@ pub struct Account {
     pub statuses_count: i64,
     pub last_status_at: String,
     // pub hide_collections: bool,
-    pub emojis: Option<Vec<CustomEmoji>>,
+    pub emojis: Vec<CustomEmoji>,
     pub fields: Vec<Field>,
 }
 
@@ -39,4 +39,13 @@ pub struct Field {
     pub name: String,
     pub value: String,
     // pub verified_at: Value,
+}
+
+
+impl Account {
+    pub fn parse_emoji(mut self) -> Self {
+        self.note = CustomEmoji::parse_emoji(&self.emojis, &self.note);
+        self.display_name = CustomEmoji::parse_emoji(&self.emojis, &self.display_name);
+        return self;
+    }
 }

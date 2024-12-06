@@ -1,9 +1,7 @@
 use crate::{
     masto_api::timelines::{fetch_posts, get_timeline_link, TimelineParams},
-    masto_types::status::Status,
     state::{Feed, State},
 };
-use gloo_net::http::Request;
 use leptos::{
     component,
     prelude::{signal, Get, IntoAny, OnAttribute, ReadSignal, Set, Update, WriteSignal},

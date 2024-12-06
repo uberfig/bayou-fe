@@ -1,6 +1,6 @@
 use leptos::{
     component,
-    html::{div, InnerHtmlAttribute},
+    html::{div, h1, h3, InnerHtmlAttribute},
     prelude::*,
     view, IntoView,
 };
@@ -16,10 +16,10 @@ pub fn generate_attachments(attachments: Vec<MediaAttachment>) -> AnyView {
                     crate::masto_types::status::MediaType::Image => view! {
                         <img class="attachment attachment-img" src={attachment.url.to_string()} alt={attachment.description}/>
                     }.into_any(),
-                    crate::masto_types::status::MediaType::Gifv => view! {<a href={attachment.url.to_string()}>{attachment.url.to_string()}</a>}.into_any(),
-                    crate::masto_types::status::MediaType::Video => view! {<p>{attachment.url.to_string()}</p>}.into_any(),
+                    crate::masto_types::status::MediaType::Gifv => view! {<a class="attachment attachment-gif" href={attachment.url.to_string()}>{attachment.url.to_string()}</a>}.into_any(),
+                    crate::masto_types::status::MediaType::Video => view! {<p class="attachment attachment-video" >{attachment.url.to_string()}</p>}.into_any(),
                     crate::masto_types::status::MediaType::Audio => view! {
-                        <audio controls>
+                        <audio class="attachment attachment-audio" controls>
                             <source src={attachment.url.to_string()} type="audio" />
                             {"Your browser does not support the audio element."}
                         </audio>
@@ -42,10 +42,10 @@ pub fn generate_attachments(attachments: Vec<MediaAttachment>) -> AnyView {
             view! {
                 <div class="attachment-container">
                     <div class="multiple-attachment">
-                        <div class="w50">
+                        <div class="w50 h100">
                             {first}
                         </div>
-                        <div class="w50">
+                        <div class="w50 h100">
                             {second}
                         </div>
                     </div>
@@ -58,10 +58,10 @@ pub fn generate_attachments(attachments: Vec<MediaAttachment>) -> AnyView {
             view! {
                 <div class="attachment-container">
                     <div class="multiple-attachment">
-                        <div class="primary w75">
+                        <div class="primary w75 h100">
                             {first}
                         </div>
-                        <div class="secondary w25">
+                        <div class="secondary w25 h50">
                             {attachments}
                         </div>
                     </div>
@@ -77,11 +77,11 @@ pub fn generate_attachments(attachments: Vec<MediaAttachment>) -> AnyView {
             view! {
                 <div class="attachment-container">
                     <div class="multiple-attachment">
-                        <div class="secondary w50">
+                        <div class="secondary w50 h50">
                             {first}
                             {second}
                         </div>
-                        <div class="secondary w50">
+                        <div class="secondary w50 h50">
                             {third}
                             {fourth}
                         </div>
@@ -112,6 +112,7 @@ pub fn generate_attachments(attachments: Vec<MediaAttachment>) -> AnyView {
 #[component]
 pub fn TimelinePost(post: Status) -> impl IntoView {
     let source = post.clone();
+    let post = post.parse_emoji();
 
     let attachments = match post.media_attachments {
         Some(attachments) => generate_attachments(attachments),
@@ -141,6 +142,7 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
         true => post.account.username,
         false => post.account.display_name,
     };
+    let display_name = h3().class("no-margin").inner_html(display_name);
 
     let mut pronouns = None;
     for prop in &post.account.fields {
@@ -154,11 +156,11 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
     view! {
         <div class="post">
         <hr />
-            <a href={ format!("/@{}", post.account.acct) } class="user-link inline no-decoration">
+            <a href={ format!("/@/{}", post.account.acct) } class="user-link inline no-decoration">
                     <img src={ post.account.avatar.clone() } class="timeline-pfp" />
                 <div class="no-decoration">
                     <div class="inline">
-                        <h3 class="no-margin">{ display_name }</h3>
+                        { display_name }
                         {pronouns}
                     </div>
                     <p class="no-margin">{ format!("@{}", post.account.acct) }</p>
