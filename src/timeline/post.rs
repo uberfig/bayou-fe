@@ -157,7 +157,7 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
         <div class="post">
         <hr />
             <a href={ format!("/@/{}", post.account.acct) } class="user-link inline no-decoration">
-                    <img src={ post.account.avatar.clone() } class="timeline-pfp" />
+                    <img src={ post.account.avatar.clone() } class="timeline-pfp pfp" />
                 <div class="no-decoration">
                     <div class="inline">
                         { display_name }
@@ -178,7 +178,11 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
             <details>
                 <summary>{ "source" }</summary>
                 <pre>
-                {serde_json::to_string_pretty(&source)}
+                {
+                    let source: String = serde_json::to_string_pretty(&source).unwrap();
+                    let source = source.split("\n").map(|val| view! {<span>{val.to_string()}</span>}).collect::<Vec<_>>();
+                    source
+                }
                 </pre>
             </details>
         <hr />
