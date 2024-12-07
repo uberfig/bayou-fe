@@ -1,0 +1,34 @@
+@use '_theme' as theme;
+
+@mixin profile {
+    .invisible {
+        display: none;
+    }
+    .verified {
+        background-color: theme.$accent_bg;
+        color: theme.$accent_light;
+        dd::before {
+            content: '✅ ';
+        }
+    }
+    dt {
+        font-size: 0.9em;
+    }
+    dd {
+        margin-left: 0%;
+    }
+    .field-description {
+        padding: 0.8em;
+        // border-style: solid;
+        border-color: theme.$accent_very_dark;
+        border-width: 1px;
+    }
+    dl {
+        background-color: theme.$deep_bg;
+        border-radius: 8px;
+        border-style: solid;
+        border-color: theme.$accent_very_dark;
+        border-width: 2px;
+        overflow: hidden;
+    }
+}

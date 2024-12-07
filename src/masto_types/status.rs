@@ -91,6 +91,7 @@ impl Status {
         self = self.parse_emoji();
         self = self.parse_tags();
         self = self.parse_mentons();
+        self.account = self.account.enrich_content();
         self
     }
 }

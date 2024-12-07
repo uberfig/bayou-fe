@@ -1,3 +1,4 @@
+@charset "UTF-8";
 html {
   background-color: #212225;
 }
@@ -113,6 +114,36 @@ main {
 }
 .timeline .invisible {
   display: none;
+}
+
+.profile .invisible {
+  display: none;
+}
+.profile .verified {
+  background-color: #1e2e28;
+  color: #48f3b1;
+}
+.profile .verified dd::before {
+  content: "✅ ";
+}
+.profile dt {
+  font-size: 0.9em;
+}
+.profile dd {
+  margin-left: 0%;
+}
+.profile .field-description {
+  padding: 0.8em;
+  border-color: #126445;
+  border-width: 1px;
+}
+.profile dl {
+  background-color: #212224;
+  border-radius: 8px;
+  border-style: solid;
+  border-color: #126445;
+  border-width: 2px;
+  overflow: hidden;
 }
 
 .pfp {

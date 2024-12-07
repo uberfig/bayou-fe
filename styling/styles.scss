@@ -1,5 +1,6 @@
 @use '_theme' as theme;
 @use '_timeline' as timeline;
+@use '_profile' as profile;
 
 html {
     background-color: theme.$dark_bg;
@@ -29,6 +30,10 @@ main {
     // max-width: 800px;
     // background-color: theme.$medium_dark_bg;
     // padding: 10px;
+}
+
+.profile {
+    @include profile.profile;
 }
 
 .pfp {

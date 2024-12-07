@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use url::Url;
 
 use super::custom_emoji::CustomEmoji;
+use super::serde_fns::*;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Account {
@@ -15,7 +16,9 @@ pub struct Account {
     // pub discoverable: bool,
     // pub indexable: bool,
     // pub group: bool,
-    pub created_at: String,
+    #[serde(deserialize_with = "deserialize_time")]
+    #[serde(serialize_with = "serialize_time")]
+    pub created_at: i64,
     pub note: String,
     /// the link for the frontend for users to use
     pub url: Url,
@@ -38,7 +41,9 @@ pub struct Account {
 pub struct Field {
     pub name: String,
     pub value: String,
-    // pub verified_at: Value,
+    #[serde(deserialize_with = "deserialize_time_optional")]
+    #[serde(serialize_with = "serialize_time_optional")]
+    pub verified_at: Option<i64>,
 }
 
 
@@ -47,5 +52,17 @@ impl Account {
         self.note = CustomEmoji::parse_emoji(&self.emojis, &self.note);
         self.display_name = CustomEmoji::parse_emoji(&self.emojis, &self.display_name);
         return self;
+    }
+    pub fn parse_tags(mut self) -> Self {
+        self
+    }
+    pub fn parse_mentons(mut self) -> Self {
+        self
+    }
+    pub fn enrich_content(mut self) -> Self {
+        self = self.parse_emoji();
+        self = self.parse_tags();
+        self = self.parse_mentons();
+        self
     }
 }
