@@ -3,13 +3,6 @@ html {
   background-color: #212225;
 }
 
-a {
-  color: #2cc288;
-}
-a:hover {
-  color: #48f3b1;
-}
-
 body {
   font: 100% Helvetica, sans-serif;
   color: rgb(221, 243, 229);
@@ -18,9 +11,72 @@ body {
 main {
   max-width: 700px;
   background-color: #272b30;
-  padding: 10px;
+  padding: 0%;
+}
+main details {
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  padding: 0.5em 0.5em 0;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+main summary {
+  font-weight: bold;
+  margin: -0.5em -0.5em 0;
+  padding: 0.5em;
+}
+main details[open] {
+  padding: 0.5em;
+}
+main details[open] summary {
+  border-bottom: 1px solid #aaa;
+  margin-bottom: 0.5em;
+}
+main a {
+  color: #2cc288;
+}
+main a:hover {
+  color: #48f3b1;
+}
+main pre {
+  overflow: auto;
+  white-space: pre-wrap;
+  background-color: #212224;
+  border-radius: 8px;
+  border-style: solid;
+  border-color: #126445;
+  border-width: 2px;
+  padding: 0.5em;
+  counter-reset: line;
+}
+main pre span {
+  display: block;
+  line-height: 1.5rem;
+}
+main pre span:before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  border-right: 1px solid #ddd;
+  max-width: 4em;
+  width: 3em;
+  padding: 0 0.5em;
+  margin-right: 0.5em;
+  color: #888;
+}
+main .profile-header {
+  width: 100%;
+  max-width: 100%;
+  max-height: 350px;
+  overflow: hidden;
+  margin-bottom: -4em;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
+.timeline {
+  padding: 10px;
+}
 .timeline .user-link {
   gap: 15px;
   align-items: center;
@@ -85,29 +141,6 @@ main {
   flex-direction: column;
   max-height: 100%;
 }
-.timeline details {
-  border: 1px solid #aaa;
-  border-radius: 4px;
-  padding: 0.5em 0.5em 0;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-}
-.timeline summary {
-  font-weight: bold;
-  margin: -0.5em -0.5em 0;
-  padding: 0.5em;
-}
-.timeline details[open] {
-  padding: 0.5em;
-}
-.timeline details[open] summary {
-  border-bottom: 1px solid #aaa;
-  margin-bottom: 0.5em;
-}
-.timeline pre {
-  overflow: auto;
-  white-space: pre-wrap;
-}
 .timeline .post-body {
   overflow: auto;
   white-space: pre-wrap;
@@ -115,7 +148,13 @@ main {
 .timeline .invisible {
   display: none;
 }
+.timeline .timeline-pfp {
+  width: 3em;
+}
 
+.profile {
+  padding: 10px;
+}
 .profile .invisible {
   display: none;
 }
@@ -145,18 +184,15 @@ main {
   border-width: 2px;
   overflow: hidden;
 }
+.profile .profile-pfp {
+  width: 8em;
+  outline: 6px solid #272b30;
+  background-color: #272b30;
+}
 
 .pfp {
   border-radius: 8px;
   overflow: hidden;
-}
-
-.timeline-pfp {
-  width: 3em;
-}
-
-.profile-pfp {
-  width: 8em;
 }
 
 .inline {

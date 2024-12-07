@@ -5,18 +5,18 @@
 @mixin timeline {
     @include user-topper;
     @include attachments.attachments;
-    @include cw.content-warning;
 
-    pre {
-        overflow: auto;
-        white-space: pre-wrap;
-    }
     .post-body {
         overflow: auto;
         white-space: pre-wrap;
     }
+
     .invisible {
         display: none;
+    }
+    
+    .timeline-pfp {
+        width: 3em;
     }
 }
 
@@ -25,7 +25,7 @@
         gap: 15px;
         align-items: center;
     }
-    
+
     .pronouns {
         margin-left: 1em;
     }

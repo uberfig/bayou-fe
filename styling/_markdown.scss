@@ -1,0 +1,42 @@
+@use '_theme' as theme;
+@use '_content_warning' as cw;
+
+@mixin markdown {
+    @include cw.content-warning;
+    a {
+        color: theme.$accent_dark;
+    
+        &:hover {
+            color: theme.$accent_light;
+        }
+    }
+    pre {
+        overflow: auto;
+        white-space: pre-wrap;
+        background-color: theme.$deep_bg;
+        border-radius: 8px;
+        border-style: solid;
+        border-color: theme.$accent_very_dark;
+        border-width: 2px;
+        padding: 0.5em;
+
+        counter-reset: line;
+    }
+
+    pre span {
+        display: block;
+        line-height: 1.5rem;
+    }
+
+    pre span:before {
+        counter-increment: line;
+        content: counter(line);
+        display: inline-block;
+        border-right: 1px solid #ddd;
+        max-width: 4em;
+        width: 3em;
+        padding: 0 .5em;
+        margin-right: .5em;
+        color: #888
+    }
+}
