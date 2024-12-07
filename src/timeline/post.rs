@@ -112,7 +112,7 @@ pub fn generate_attachments(attachments: Vec<MediaAttachment>) -> AnyView {
 #[component]
 pub fn TimelinePost(post: Status) -> impl IntoView {
     let source = post.clone();
-    let post = post.parse_emoji();
+    let post = post.enrich_content();
 
     let attachments = match post.media_attachments {
         Some(attachments) => generate_attachments(attachments),

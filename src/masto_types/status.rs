@@ -81,6 +81,18 @@ impl Status {
         self.content = CustomEmoji::parse_emoji(&self.emojis, &self.content);
         return self;
     }
+    pub fn parse_tags(mut self) -> Self {
+        self
+    }
+    pub fn parse_mentons(mut self) -> Self {
+        self
+    }
+    pub fn enrich_content(mut self) -> Self {
+        self = self.parse_emoji();
+        self = self.parse_tags();
+        self = self.parse_mentons();
+        self
+    }
 }
 
 /// Represents a file or media attachment that can be added to a status.
