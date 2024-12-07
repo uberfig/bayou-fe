@@ -1,5 +1,8 @@
+use std::collections::HashMap;
+
 use super::{account::Account, custom_emoji::CustomEmoji, poll::Poll, serde_fns::*};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use url::Url;
 
 /// represents a post from an account
@@ -57,7 +60,7 @@ pub struct Status {
     pub favourites_count: i64,
 
     //https://docs-p.joinmastodon.org/entities/Status/#reblog
-    // pub reblog: Value,
+    pub reblog: Option<Box<Status>>,
     /// The poll attached to the status.
     pub poll: Option<Poll>,
 
@@ -74,6 +77,10 @@ pub struct Status {
     #[serde(serialize_with = "serialize_time_optional")]
     pub edited_at: Option<i64>,
     // need to do the others for auth users after here
+
+
+    #[serde(flatten)]
+    pub extra: HashMap<String, Value>,
 }
 
 impl Status {

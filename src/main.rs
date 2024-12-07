@@ -1,7 +1,5 @@
 use bayou_fe::{
-    state::{Feed, State},
-    timeline::feed::RenderFeed,
-    user_profile::profile::Profile,
+    masto_api::timelines::PUBLIC_TIMELINE, state::{Feed, State}, timeline::feed::RenderFeed, user_profile::profile::Profile
 };
 use leptos::mount::mount_to_body;
 use leptos::prelude::ElementChild;
@@ -27,7 +25,7 @@ fn App() -> impl IntoView {
     let public = || {
         view! {
             <RenderFeed
-                feed=Feed::Public
+                feed=PUBLIC_TIMELINE.to_string()
             />
         }
     };

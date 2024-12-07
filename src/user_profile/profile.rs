@@ -2,7 +2,7 @@ use chrono::{DateTime, Datelike, Month};
 use leptos::{component, html::{dd, div, h1, h3}, prelude::*, view, IntoView, Params};
 use leptos_router::{hooks::use_params, params::Params};
 
-use crate::{masto_api::accounts::{webfinger_account, Webfinger}, masto_types::account::{Account, Field}, state::State};
+use crate::{masto_api::{accounts::{webfinger_account, Webfinger}, timelines::account_timeline}, masto_types::account::{Account, Field}, state::State, timeline::{feed::RenderFeed, source::RenderSrc}};
 
 #[derive(Params, PartialEq, Clone)]
 struct ProfileParams {
@@ -89,16 +89,10 @@ pub fn Account(account: Account) -> impl IntoView {
                 {description}
                 {fields}
             </div>
-            <details>
-                <summary>{ "source" }</summary>
-                <pre>
-                {
-                    let source: String = serde_json::to_string_pretty(&source).unwrap();
-                    let source = source.split("\n").map(|val| view! {<span>{val.to_string()}</span>}).collect::<Vec<_>>();
-                    source
-                }
-                </pre>
-            </details>
+            <RenderSrc src=serde_json::to_string_pretty(&source).unwrap() />
         </div>
+        <RenderFeed
+                feed=account_timeline(&account.id)
+            />
     }
 }

@@ -7,6 +7,18 @@ use crate::{
     timeline::loader::FeedPos,
 };
 
+/// OAuth: Public. Requires app token + read:statuses if the instance has disabled public preview.
+///
+/// use max_id to get posts older than a post, use min_id to get newer.
+/// returns an array of [`crate::masto_types::status::Status`]
+///
+/// https://docs.joinmastodon.org/methods/timelines/#public
+pub const PUBLIC_TIMELINE: &str = "/api/v1/timelines/public";
+
+pub fn account_timeline(id: &str) -> String {
+    format!("/api/v1/accounts/{}/statuses", id)
+}
+
 pub struct TimelineParams<'a> {
     /// Boolean. Show only local statuses? Defaults to false.
     pub local: Option<bool>,
@@ -75,21 +87,8 @@ impl<'a> TimelineParams<'a> {
     }
 }
 
-pub fn get_timeline_link(state: &State, params: &TimelineParams, feed: Feed) -> String {
-    match feed {
-        Feed::Public => public_timeline(state, params),
-        Feed::Home => todo!(),
-    }
-}
-
-/// OAuth: Public. Requires app token + read:statuses if the instance has disabled public preview.
-///
-/// use max_id to get posts older than a post, use min_id to get newer.
-/// returns an array of [`crate::masto_types::status::Status`]
-///
-/// https://docs.joinmastodon.org/methods/timelines/#public
-pub fn public_timeline(state: &State, params: &TimelineParams) -> String {
-    let mut link = format!("https://{}/api/v1/timelines/public", &state.domain);
+pub fn get_timeline_link(state: &State, params: &TimelineParams, feed: &str) -> String {
+    let mut link = format!("https://{}{}", &state.domain, feed);
     link = apply_params(link, params);
     link
 }

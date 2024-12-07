@@ -1,12 +1,12 @@
 use leptos::{
     component,
-    html::{div, h1, h3, InnerHtmlAttribute},
+    html::{div, h3, InnerHtmlAttribute},
     prelude::*,
     view, IntoView,
 };
 // use leptos_lucide_icons::{Bookmark, MessageSquare, Repeat, Share2, Star};
 
-use crate::masto_types::status::{MediaAttachment, Status};
+use crate::{masto_types::status::{MediaAttachment, Status}, timeline::source::RenderSrc};
 
 pub fn generate_attachments(attachments: Vec<MediaAttachment>) -> AnyView {
     let mut attachments = attachments.into_iter()
@@ -175,16 +175,7 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
             //     <button><Bookmark /></button>
             //     <button><Share2 /></button>
             // </div>
-            <details>
-                <summary>{ "source" }</summary>
-                <pre>
-                {
-                    let source: String = serde_json::to_string_pretty(&source).unwrap();
-                    let source = source.split("\n").map(|val| view! {<span>{val.to_string()}</span>}).collect::<Vec<_>>();
-                    source
-                }
-                </pre>
-            </details>
+            <RenderSrc src=serde_json::to_string_pretty(&source).unwrap() />
         <hr />
         </div>
     }
