@@ -44,6 +44,7 @@ pub fn AcountWrap(account: LocalResource<Option<Account>>) -> impl IntoView {
 
 #[component]
 pub fn Account(account: Account) -> impl IntoView {
+    let source = account.clone();
     let account = account.enrich_content();
     let display_name = match &account.display_name.is_empty() {
         true => account.username,
@@ -76,7 +77,9 @@ pub fn Account(account: Account) -> impl IntoView {
     };
 
     view! {
+        <img src={ account.header.clone() } class="profile-header" />
         <div class="profile">
+            
             <img src={ account.avatar.clone() } class="pfp profile-pfp" />
             <div class="no-decoration">
                 <div class="inline">
@@ -86,6 +89,16 @@ pub fn Account(account: Account) -> impl IntoView {
                 {description}
                 {fields}
             </div>
+            <details>
+                <summary>{ "source" }</summary>
+                <pre>
+                {
+                    let source: String = serde_json::to_string_pretty(&source).unwrap();
+                    let source = source.split("\n").map(|val| view! {<span>{val.to_string()}</span>}).collect::<Vec<_>>();
+                    source
+                }
+                </pre>
+            </details>
         </div>
     }
 }
