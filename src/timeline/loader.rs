@@ -1,6 +1,6 @@
 use crate::{
-    masto_api::timelines::{fetch_posts, get_timeline_link, TimelineParams},
-    state::{Feed, State},
+    masto_api::timelines::{fetch_posts, TimelineParams},
+    state::State,
 };
 use leptos::{
     component,
@@ -21,9 +21,9 @@ impl FeedPos {
     pub fn older_posts_link(&self, state: &State, feed: &str) -> String {
         match &self.oldest_id {
             Some(oldest) => {
-                get_timeline_link(state, &TimelineParams::new(state).max_id(&oldest), feed)
+                TimelineParams::new(state).max_id(oldest.to_string()).get_timeline_link(state, feed)
             }
-            None => get_timeline_link(state, &TimelineParams::new(state), feed),
+            None => TimelineParams::new(state).get_timeline_link(state, feed),
         }
     }
 }

@@ -1,5 +1,5 @@
-use chrono::{DateTime, Datelike, Month};
-use leptos::{component, html::{dd, div, h1, h3}, prelude::*, view, IntoView, Params};
+use chrono::{Datelike, Month};
+use leptos::{component, html::{dd, div, h3}, prelude::*, view, IntoView, Params};
 use leptos_router::{hooks::use_params, params::Params};
 
 use crate::{masto_api::{accounts::{webfinger_account, Webfinger}, timelines::account_timeline}, masto_types::account::{Account, Field}, state::State, timeline::{feed::RenderFeed, source::RenderSrc}};

@@ -3,7 +3,7 @@ use leptos::prelude::{Update, WriteSignal};
 
 use crate::{
     masto_types::status::Status,
-    state::{Feed, State},
+    state::State,
     timeline::loader::FeedPos,
 };
 
@@ -19,7 +19,7 @@ pub fn account_timeline(id: &str) -> String {
     format!("/api/v1/accounts/{}/statuses", id)
 }
 
-pub struct TimelineParams<'a> {
+pub struct TimelineParams {
     /// Boolean. Show only local statuses? Defaults to false.
     pub local: Option<bool>,
     /// Boolean. Show only remote statuses? Defaults to false.
@@ -27,15 +27,36 @@ pub struct TimelineParams<'a> {
     /// Boolean. Show only statuses with media attached? Defaults to false.
     pub only_media: Option<bool>,
     /// String. All results returned will be lesser than this ID. In effect, sets an upper bound on results.
-    pub max_id: Option<&'a str>,
+    pub max_id: Option<String>,
     /// String. Returns results immediately newer than this ID. In effect, sets a cursor at this ID and paginates forward.
-    pub min_id: Option<&'a str>,
+    pub min_id: Option<String>,
     /// String. All results returned will be greater than this ID. In effect, sets a lower bound on results.
-    pub since_id: Option<&'a str>,
+    pub since_id: Option<String>,
     /// Integer. Maximum number of results to return. Defaults to 20 statuses. Max 40 statuses.
     pub limit: usize,
+    /// account timeline only 
+    /// 
+    /// Filter out statuses in reply to a different account.
+    pub exclude_replies: Option<bool>,
+    /// account timeline only 
+    /// 
+    /// Filter for pinned statuses only. Defaults to false. 
+    /// Pinned statuses do not receive special priority in the order of the returned results.
+    /// 
+    /// https://docs.joinmastodon.org/methods/accounts/#query-parameters-1
+    pub pinned: Option<bool>,
+    /// account timeline only 
+    /// 
+    /// Filter out boosts from the response.
+    /// 
+    /// https://docs.joinmastodon.org/methods/accounts/#query-parameters-1
+    pub exclude_reblogs: Option<bool>,
+    /// Filter for statuses using a specific hashtag.
+    /// 
+    /// https://docs.joinmastodon.org/methods/accounts/#query-parameters-1
+    pub tagged: Option<String>,
 }
-impl Default for TimelineParams<'_> {
+impl Default for TimelineParams {
     fn default() -> Self {
         Self {
             local: None,
@@ -45,11 +66,15 @@ impl Default for TimelineParams<'_> {
             min_id: None,
             since_id: None,
             limit: 20,
+            exclude_replies: None,
+            pinned: None,
+            exclude_reblogs: None,
+            tagged: None,
         }
     }
 }
 
-impl TimelineParams<'_> {
+impl TimelineParams {
     pub fn new(state: &State) -> Self {
         Self::default().limit(state.limit)
     }
@@ -69,51 +94,62 @@ impl TimelineParams<'_> {
         self.limit = limit;
         self
     }
-}
-
-impl<'a> TimelineParams<'a> {
     /// gets posts older than the given id
-    pub fn max_id(mut self, id: &'a str) -> Self {
+    pub fn max_id(mut self, id: String) -> Self {
         self.max_id = Some(id);
         self
     }
-    pub fn min_id(mut self, id: &'a str) -> Self {
+    pub fn min_id(mut self, id: String) -> Self {
         self.min_id = Some(id);
         self
     }
-    pub fn since_id(mut self, id: &'a str) -> Self {
+    pub fn since_id(mut self, id: String) -> Self {
         self.since_id = Some(id);
         self
     }
 }
 
-pub fn get_timeline_link(state: &State, params: &TimelineParams, feed: &str) -> String {
-    let mut link = format!("https://{}{}", &state.domain, feed);
-    link = apply_params(link, params);
-    link
-}
+impl TimelineParams {
+    pub fn get_timeline_link(&self, state: &State, feed: &str) -> String {
+        let mut link = format!("https://{}{}", &state.domain, feed);
+        link = self.apply_params(link);
+        link
+    }
+    fn apply_params(&self, link: String) -> String {
+        let mut link = format!("{}?limit={}", link, self.limit);
+        if let Some(max_id) = &self.max_id {
+            link = format!("{}&max_id={}", link, max_id);
+        }
+        if let Some(min_id) = &self.min_id {
+            link = format!("{}&min_id={}", link, min_id);
+        }
+        if let Some(local) = self.local {
+            link = format!("{}&local={}", link, local);
+        }
+        if let Some(remote) = self.remote {
+            link = format!("{}&remote={}", link, remote);
+        }
+        if let Some(only_media) = self.only_media {
+            link = format!("{}&only_media={}", link, only_media);
+        }
+        if let Some(since_id) = &self.since_id {
+            link = format!("{}&since_id={}", link, since_id);
+        }
 
-fn apply_params(link: String, params: &TimelineParams) -> String {
-    let mut link = format!("{}?limit={}", link, params.limit);
-    if let Some(max_id) = params.max_id {
-        link = format!("{}&max_id={}", link, max_id);
+        if let Some(exclude_replies) = &self.exclude_replies {
+            link = format!("{}&exclude_replies={}", link, exclude_replies);
+        }
+        if let Some(pinned) = &self.pinned {
+            link = format!("{}&pinned={}", link, pinned);
+        }
+        if let Some(exclude_reblogs) = &self.exclude_reblogs {
+            link = format!("{}&exclude_reblogs={}", link, exclude_reblogs);
+        }
+        if let Some(tagged) = &self.tagged {
+            link = format!("{}&tagged={}", link, tagged);
+        }
+        link
     }
-    if let Some(min_id) = params.min_id {
-        link = format!("{}&min_id={}", link, min_id);
-    }
-    if let Some(local) = params.local {
-        link = format!("{}&local={}", link, local);
-    }
-    if let Some(remote) = params.remote {
-        link = format!("{}&remote={}", link, remote);
-    }
-    if let Some(only_media) = params.only_media {
-        link = format!("{}&only_media={}", link, only_media);
-    }
-    if let Some(since_id) = params.since_id {
-        link = format!("{}&since_id={}", link, since_id);
-    }
-    link
 }
 
 pub async fn fetch_posts(segment_link: String, set_oldest: WriteSignal<FeedPos>) -> Vec<Status> {
