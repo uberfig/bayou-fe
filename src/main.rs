@@ -1,8 +1,9 @@
+use bayou_fe::masto_api::timelines::TimelineParams;
 use bayou_fe::{
     masto_api::timelines::PUBLIC_TIMELINE, state::State, timeline::feed::RenderFeed, user_profile::profile::Profile
 };
 use leptos::mount::mount_to_body;
-use leptos::prelude::ElementChild;
+use leptos::prelude::{ElementChild, Get, GetUntracked};
 use leptos::{
     component,
     prelude::{provide_context, signal},
@@ -22,10 +23,11 @@ fn App() -> impl IntoView {
     });
     provide_context(state);
 
-    let public = || {
+    let public = move || {
         view! {
             <RenderFeed
                 feed=PUBLIC_TIMELINE.to_string()
+                params=TimelineParams::new(&state.get_untracked())
             />
         }
     };

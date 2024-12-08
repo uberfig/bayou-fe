@@ -1,6 +1,6 @@
 use leptos::{
     component,
-    html::{div, h3, InnerHtmlAttribute},
+    html::{div, h3, p, InnerHtmlAttribute},
     prelude::*,
     view, IntoView,
 };
@@ -17,7 +17,11 @@ pub fn generate_attachments(attachments: Vec<MediaAttachment>) -> AnyView {
                     crate::masto_types::status::MediaType::Image => view! {
                         <img class="attachment attachment-img" src={attachment.url.to_string()} alt={attachment.description}/>
                     }.into_any(),
-                    crate::masto_types::status::MediaType::Gifv => view! {<a class="attachment attachment-gif" href={attachment.url.to_string()}>{attachment.url.to_string()}</a>}.into_any(),
+                    crate::masto_types::status::MediaType::Gifv => view! {
+                        <video class="attachment attachment-gif" autoplay muted loop aria-label={attachment.description}>
+                            <source src={attachment.url.to_string()} type="video/mp4" />
+                        </video>
+                    }.into_any(),
                     crate::masto_types::status::MediaType::Video => view! {<p class="attachment attachment-video" >{attachment.url.to_string()}</p>}.into_any(),
                     crate::masto_types::status::MediaType::Audio => view! {
                         <audio class="attachment attachment-audio" controls>
@@ -149,9 +153,9 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
     let mut pronouns = None;
     for prop in &post.account.fields {
         if prop.name.eq_ignore_ascii_case("Pronouns") {
-            pronouns = Some(view! {
-                <p class=("pronouns", true) class=("no-margin", true)>{ prop.value.clone() }</p>
-            })
+            pronouns = Some(
+                p().class("pronouns no-margin").inner_html(prop.value.clone())
+            )
         }
     }
 

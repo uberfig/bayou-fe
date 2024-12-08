@@ -107,6 +107,22 @@ impl TimelineParams {
         self.since_id = Some(id);
         self
     }
+    pub fn exclude_replies(mut self) -> Self {
+        self.exclude_replies = Some(true);
+        self
+    }
+    pub fn pinned(mut self) -> Self {
+        self.pinned = Some(true);
+        self
+    }
+    pub fn exclude_reblogs(mut self) -> Self {
+        self.exclude_reblogs = Some(true);
+        self
+    }
+    pub fn tagged(mut self, tag: String) -> Self {
+        self.tagged = Some(tag);
+        self
+    }
 }
 
 impl TimelineParams {

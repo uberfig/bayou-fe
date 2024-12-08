@@ -89,11 +89,22 @@ main .profile-header {
 .timeline .user-link {
   gap: 15px;
   align-items: center;
+  text-wrap: nowrap;
+}
+.timeline h3 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 40rem;
 }
 .timeline .pronouns {
   margin-left: 1em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 20rem;
 }
-.timeline .attachment-img {
+.timeline .attachment {
+  -o-object-fit: cover;
+     object-fit: cover;
   width: 100%;
   display: block;
   box-sizing: border-box;
@@ -139,10 +150,6 @@ main .profile-header {
 .timeline .multiple-attachment .h100 .attachment {
   max-height: 100%;
   height: 100%;
-}
-.timeline .attachment {
-  -o-object-fit: cover;
-     object-fit: cover;
 }
 .timeline .multiple-attachment .secondary {
   gap: 4px;

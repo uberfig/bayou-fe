@@ -44,9 +44,20 @@
     .user-link {
         gap: 15px;
         align-items: center;
+        text-wrap: nowrap;
+    }
+
+    h3 {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 40rem;
     }
 
     .pronouns {
         margin-left: 1em;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 20rem;
     }
 }

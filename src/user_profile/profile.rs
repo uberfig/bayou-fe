@@ -2,7 +2,7 @@ use chrono::{Datelike, Month};
 use leptos::{component, html::{dd, div, h3}, prelude::*, view, IntoView, Params};
 use leptos_router::{hooks::use_params, params::Params};
 
-use crate::{masto_api::{accounts::{webfinger_account, Webfinger}, timelines::account_timeline}, masto_types::account::{Account, Field}, state::State, timeline::{feed::RenderFeed, source::RenderSrc}};
+use crate::{masto_api::{accounts::{webfinger_account, Webfinger}, timelines::{account_timeline, TimelineParams}}, masto_types::account::{Account, Field}, state::State, timeline::{feed::RenderFeed, source::RenderSrc}};
 
 #[derive(Params, PartialEq, Clone)]
 struct ProfileParams {
@@ -76,6 +76,8 @@ pub fn Account(account: Account) -> impl IntoView {
         true => None,
     };
 
+    let state: ReadSignal<State> = use_context().expect("missing state");
+
     view! {
         <img src={ account.header.clone() } class="profile-header" />
         <div class="profile">
@@ -91,8 +93,9 @@ pub fn Account(account: Account) -> impl IntoView {
             </div>
             <RenderSrc src=serde_json::to_string_pretty(&source).unwrap() />
         </div>
-        <RenderFeed
-                feed=account_timeline(&account.id)
-            />
+        <RenderFeed 
+            feed=account_timeline(&account.id)
+            params=TimelineParams::new(&state.get_untracked()).exclude_replies()
+        />
     }
 }

@@ -16,7 +16,7 @@ use crate::{
 };
 
 #[component]
-pub fn RenderFeed(feed: String) -> impl IntoView {
+pub fn RenderFeed(feed: String, params: TimelineParams) -> impl IntoView {
     let (feed_pos, set_feed_pos) = signal(FeedPos {
         oldest_id: None,
         end_of_feed: false,
@@ -25,7 +25,7 @@ pub fn RenderFeed(feed: String) -> impl IntoView {
     let state: ReadSignal<State> = use_context().expect("missing state");
 
     let curr_state = state.get_untracked();
-    let first_link = TimelineParams::new(&curr_state).get_timeline_link(&curr_state, &feed);
+    let first_link = params.get_timeline_link(&curr_state, &feed);
     let cloned = first_link.clone();
     let first_segment = Segment {
         contents: LocalResource::new(move || fetch_posts(cloned.clone(), set_feed_pos)),
