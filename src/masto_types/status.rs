@@ -99,6 +99,9 @@ impl Status {
         self = self.parse_tags();
         self = self.parse_mentons();
         self.account = self.account.enrich_content();
+        if let Some(reblog) = self.reblog {
+            self.reblog = Some(Box::new(reblog.enrich_content()));
+        }
         self
     }
 }

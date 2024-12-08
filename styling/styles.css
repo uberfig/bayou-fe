@@ -64,6 +64,15 @@ main pre span:before {
   margin-right: 0.5em;
   color: #888;
 }
+main blockquote {
+  margin-left: 1em;
+}
+main blockquote * {
+  margin-left: 0%;
+  margin-right: 0%;
+  border-left: 4px solid #2cc288;
+  padding: 0.5em;
+}
 main .profile-header {
   width: 100%;
   max-width: 100%;
@@ -151,9 +160,29 @@ main .profile-header {
 .timeline .timeline-pfp {
   width: 3em;
 }
+.timeline .reblog-pfp {
+  width: 1.8em;
+  border-radius: 100%;
+  margin-bottom: -0.2em;
+}
+.timeline .reblog {
+  margin-bottom: 0.2em;
+}
+.timeline .boost-text {
+  margin-left: 0.5em;
+}
+.timeline .post-body {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+.timeline .post-body p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
 
 .profile {
   padding: 10px;
+  padding-bottom: 0%;
 }
 .profile .invisible {
   display: none;
@@ -183,6 +212,7 @@ main .profile-header {
   border-color: #126445;
   border-width: 2px;
   overflow: hidden;
+  margin: 0%;
 }
 .profile .profile-pfp {
   width: 8em;
@@ -205,6 +235,9 @@ main .profile-header {
 .no-decoration {
   text-decoration: none;
   color: rgb(221, 243, 229);
+}
+.no-decoration * {
+  text-decoration: none;
 }
 
 .no-margin {
@@ -236,4 +269,8 @@ main .profile-header {
 
 *, *::before, *::after {
   box-sizing: border-box;
+}
+
+.item-src {
+  display: none;
 }/*# sourceMappingURL=styles.css.map */

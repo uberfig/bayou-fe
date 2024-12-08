@@ -65,4 +65,11 @@ impl Account {
         self = self.parse_mentons();
         self
     }
+    pub fn rendered_name(&self) -> String {
+        let display_name = match self.display_name.is_empty() {
+            true => self.username.clone(),
+            false => self.display_name.clone(),
+        };
+        display_name
+    }
 }

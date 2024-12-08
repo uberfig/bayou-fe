@@ -39,4 +39,15 @@
         margin-right: .5em;
         color: #888
     }
+    blockquote {
+        margin-left: 1em;
+
+        * {
+            margin-left: 0%;
+            margin-right: 0%;
+
+            border-left: 4px solid theme.$accent_dark;
+            padding: 0.5em;
+        }
+    }
 }

@@ -31,6 +31,7 @@ main {
 .profile {
     @include profile.profile;
     padding: 10px;
+    padding-bottom: 0%;
 }
 
 .pfp {
@@ -49,6 +50,9 @@ main {
 .no-decoration {
     text-decoration: none;
     color: theme.$fontColor;
+    * {
+        text-decoration: none;
+    }
 }
 
 .no-margin {
@@ -82,3 +86,7 @@ main {
 }
 
 *, *::before, *::after { box-sizing: border-box; }
+
+.item-src {
+    display: none;
+}

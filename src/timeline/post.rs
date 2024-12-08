@@ -4,6 +4,7 @@ use leptos::{
     prelude::*,
     view, IntoView,
 };
+use leptos_router::components::A;
 // use leptos_lucide_icons::{Bookmark, MessageSquare, Repeat, Share2, Star};
 
 use crate::{masto_types::status::{MediaAttachment, Status}, timeline::source::RenderSrc};
@@ -114,6 +115,11 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
     let source = post.clone();
     let post = post.enrich_content();
 
+    let (post, reblogged_by) = match post.reblog {
+        Some(inner_post) => (*inner_post, Some(post.account)),
+        None => (post, None),
+    };
+
     let attachments = match post.media_attachments {
         Some(attachments) => generate_attachments(attachments),
         None => view! {}.into_any(),
@@ -138,11 +144,7 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
         false => content.into_any(),
     };
 
-    let display_name = match &post.account.display_name.is_empty() {
-        true => post.account.username,
-        false => post.account.display_name,
-    };
-    let display_name = h3().class("no-margin").inner_html(display_name);
+    let display_name = h3().class("no-margin").inner_html(post.account.rendered_name());
 
     let mut pronouns = None;
     for prop in &post.account.fields {
@@ -153,19 +155,43 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
         }
     }
 
+    let reblogged = match reblogged_by {
+        Some(account) => {
+            Some(view! {
+                <div class="no-decoration reblog">
+                    <A href={ format!("/@/{}", account.acct) }>
+                        <div class="inline">
+                        <img src={ account.avatar.clone() } class="reblog-pfp pfp" />
+                        <div class="no-decoration inline">
+                            { h3().class("boost-text").inner_html(account.rendered_name()) }
+                            <h3 class="boost-text">{"boosted"}</h3>
+                        </div>
+                        </div>
+                    </A>
+                </div>
+            })
+        },
+        None => None,
+    };
+
     view! {
         <div class="post">
         <hr />
-            <a href={ format!("/@/{}", post.account.acct) } class="user-link inline no-decoration">
-                    <img src={ post.account.avatar.clone() } class="timeline-pfp pfp" />
-                <div class="no-decoration">
-                    <div class="inline">
-                        { display_name }
-                        {pronouns}
+            {reblogged}
+            <div class="user-link no-decoration">
+                <A href={ format!("/@/{}", post.account.acct) }>
+                    <div class="user-link inline no-decoration">
+                        <img src={ post.account.avatar.clone() } class="timeline-pfp pfp" />
+                        <div class="no-decoration">
+                            <div class="inline">
+                                { display_name }
+                                {pronouns}
+                            </div>
+                            <p class="no-margin">{ format!("@{}", post.account.acct) }</p>
+                        </div>
                     </div>
-                    <p class="no-margin">{ format!("@{}", post.account.acct) }</p>
-                </div>
-            </a>
+                </A>
+            </div>
             {content}
 
             // <div class="status-actions">
