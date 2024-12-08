@@ -144,7 +144,7 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
         false => content.into_any(),
     };
 
-    let display_name = h3().class("no-margin").inner_html(post.account.rendered_name());
+    let display_name = h3().class("no-margin-recursive").inner_html(post.account.rendered_name());
 
     let mut pronouns = None;
     for prop in &post.account.fields {
@@ -187,7 +187,7 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
                                 { display_name }
                                 {pronouns}
                             </div>
-                            <p class="no-margin">{ format!("@{}", post.account.acct) }</p>
+                            <p class="no-margin-recursive">{ format!("@{}", post.account.acct) }</p>
                         </div>
                     </div>
                 </A>

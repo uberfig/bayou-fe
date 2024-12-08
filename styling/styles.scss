@@ -58,6 +58,12 @@ main {
 .no-margin {
     margin: 0%;
 }
+.no-margin-recursive {
+    margin: 0%;
+    * {
+        margin: 0%;
+    }
+}
 
 .button {
     padding: 0;

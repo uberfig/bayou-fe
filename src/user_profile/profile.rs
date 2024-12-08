@@ -23,10 +23,10 @@ pub fn Profile() -> impl IntoView {
     };
 
     let state: ReadSignal<State> = use_context().expect("missing state");
-    let link = Webfinger::webfinger_request(&state.get(), &webfinger());
-    let account = LocalResource::new(move || webfinger_account(link.clone()));
+    let link = move || Webfinger::webfinger_request(&state.get(), &webfinger());
+    let (account, _set_account) = signal(LocalResource::new(move || webfinger_account(link())));
 
-    view! { <AcountWrap account=account/> }
+    view! { <AcountWrap account=account.get()/> }
 }
 
 #[component]
