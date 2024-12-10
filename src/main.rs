@@ -1,6 +1,7 @@
 use bayou_fe::masto_api::timelines::TimelineParams;
 use bayou_fe::{
-    masto_api::timelines::PUBLIC_TIMELINE, state::State, timeline::feed::RenderFeed, user_profile::profile::Profile
+    masto_api::timelines::PUBLIC_TIMELINE, state::State, timeline::feed::RenderFeed,
+    user_profile::profile::Profile,
 };
 use leptos::mount::mount_to_body;
 use leptos::prelude::{ElementChild, Get, GetUntracked};

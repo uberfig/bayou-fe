@@ -77,8 +77,6 @@ pub struct Status {
     #[serde(serialize_with = "serialize_time_optional")]
     pub edited_at: Option<i64>,
     // need to do the others for auth users after here
-
-
     #[serde(flatten)]
     pub extra: HashMap<String, Value>,
 }

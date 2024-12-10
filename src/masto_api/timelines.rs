@@ -1,11 +1,7 @@
 use gloo_net::http::Request;
 use leptos::prelude::{Update, WriteSignal};
 
-use crate::{
-    masto_types::status::Status,
-    state::State,
-    timeline::loader::FeedPos,
-};
+use crate::{masto_types::status::Status, state::State, timeline::loader::FeedPos};
 
 /// OAuth: Public. Requires app token + read:statuses if the instance has disabled public preview.
 ///
@@ -34,25 +30,25 @@ pub struct TimelineParams {
     pub since_id: Option<String>,
     /// Integer. Maximum number of results to return. Defaults to 20 statuses. Max 40 statuses.
     pub limit: usize,
-    /// account timeline only 
-    /// 
+    /// account timeline only
+    ///
     /// Filter out statuses in reply to a different account.
     pub exclude_replies: Option<bool>,
-    /// account timeline only 
-    /// 
-    /// Filter for pinned statuses only. Defaults to false. 
+    /// account timeline only
+    ///
+    /// Filter for pinned statuses only. Defaults to false.
     /// Pinned statuses do not receive special priority in the order of the returned results.
-    /// 
+    ///
     /// https://docs.joinmastodon.org/methods/accounts/#query-parameters-1
     pub pinned: Option<bool>,
-    /// account timeline only 
-    /// 
+    /// account timeline only
+    ///
     /// Filter out boosts from the response.
-    /// 
+    ///
     /// https://docs.joinmastodon.org/methods/accounts/#query-parameters-1
     pub exclude_reblogs: Option<bool>,
     /// Filter for statuses using a specific hashtag.
-    /// 
+    ///
     /// https://docs.joinmastodon.org/methods/accounts/#query-parameters-1
     pub tagged: Option<String>,
 }

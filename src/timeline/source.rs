@@ -1,4 +1,4 @@
-use leptos::{component, view, IntoView, prelude::*};
+use leptos::{component, prelude::*, view, IntoView};
 
 #[component]
 pub fn RenderSrc(src: String) -> impl IntoView {

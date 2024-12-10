@@ -9,6 +9,7 @@ gloo-console = "0.3.0"
 gloo-net = "0.6.0"
 leptos = {version = "0.7.0", features = ["csr"]}
 leptos-lucide-icons = "0.1.1"
+leptos-use = {version = "0.14.0", features = ["use_scroll"]}
 # leptos_lucide = "0.1.1"
 leptos_router = { version = "0.7.0" }
 regex = "1.11.1"

@@ -7,7 +7,10 @@ use leptos::{
 use leptos_router::components::A;
 // use leptos_lucide_icons::{Bookmark, MessageSquare, Repeat, Share2, Star};
 
-use crate::{masto_types::status::{MediaAttachment, Status}, timeline::source::RenderSrc};
+use crate::{
+    masto_types::status::{MediaAttachment, Status},
+    timeline::source::RenderSrc,
+};
 
 pub fn generate_attachments(attachments: Vec<MediaAttachment>) -> AnyView {
     let mut attachments = attachments.into_iter()
@@ -148,33 +151,34 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
         false => content.into_any(),
     };
 
-    let display_name = h3().class("no-margin-recursive").inner_html(post.account.rendered_name());
+    let display_name = h3()
+        .class("no-margin-recursive")
+        .inner_html(post.account.rendered_name());
 
     let mut pronouns = None;
     for prop in &post.account.fields {
         if prop.name.eq_ignore_ascii_case("Pronouns") {
             pronouns = Some(
-                p().class("pronouns no-margin").inner_html(prop.value.clone())
+                p().class("pronouns no-margin")
+                    .inner_html(prop.value.clone()),
             )
         }
     }
 
     let reblogged = match reblogged_by {
-        Some(account) => {
-            Some(view! {
-                <div class="no-decoration reblog">
-                    <A href={ format!("/@/{}", account.acct) }>
-                        <div class="inline">
-                        <img src={ account.avatar.clone() } class="reblog-pfp pfp" />
-                        <div class="no-decoration inline">
-                            { h3().class("boost-text").inner_html(account.rendered_name()) }
-                            <h3 class="boost-text">{"boosted"}</h3>
-                        </div>
-                        </div>
-                    </A>
-                </div>
-            })
-        },
+        Some(account) => Some(view! {
+            <div class="no-decoration reblog">
+                <A href={ format!("/@/{}", account.acct) }>
+                    <div class="inline">
+                    <img src={ account.avatar.clone() } class="reblog-pfp pfp" />
+                    <div class="no-decoration inline">
+                        { h3().class("boost-text").inner_html(account.rendered_name()) }
+                        <h3 class="boost-text">{"boosted"}</h3>
+                    </div>
+                    </div>
+                </A>
+            </div>
+        }),
         None => None,
     };
 

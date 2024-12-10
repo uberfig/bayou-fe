@@ -46,7 +46,6 @@ pub struct Field {
     pub verified_at: Option<i64>,
 }
 
-
 impl Account {
     pub fn parse_emoji(mut self) -> Self {
         self.note = CustomEmoji::parse_emoji(&self.emojis, &self.note);
