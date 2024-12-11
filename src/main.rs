@@ -42,7 +42,7 @@ fn App() -> impl IntoView {
             // all our routes will appear inside <main>
             <Routes fallback=|| "Not found.">
                 <Route path=path!("/") view=public/>
-                <Route path=path!("/@/:webfinger") view=Profile />
+                <Route path=path!("/:webfinger") view=Profile />
                 <Route path=path!("/*any") view=|| view! { <h1>"Not Found"</h1> }/>
                 </Routes>
             </main>

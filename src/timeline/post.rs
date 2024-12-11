@@ -168,7 +168,7 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
     let reblogged = match reblogged_by {
         Some(account) => Some(view! {
             <div class="no-decoration reblog">
-                <A href={ format!("/@/{}", account.acct) }>
+                <A href={ format!("/@{}", account.acct) }>
                     <div class="inline">
                     <img src={ account.avatar.clone() } class="reblog-pfp pfp" />
                     <div class="no-decoration inline">
@@ -187,7 +187,7 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
         <hr />
             {reblogged}
             <div class="user-link no-decoration">
-                <A href={ format!("/@/{}", post.account.acct) }>
+                <A href={ format!("/@{}", post.account.acct) }>
                     <div class="user-link inline no-decoration">
                         <img src={ post.account.avatar.clone() } class="timeline-pfp pfp" />
                         <div class="no-decoration user-link-text">

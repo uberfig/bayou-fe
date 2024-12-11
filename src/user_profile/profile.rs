@@ -33,6 +33,9 @@ pub fn Profile() -> impl IntoView {
             .ok()
             .and_then(|params| params.webfinger.clone())
             .unwrap_or("missing param".to_string())
+            .strip_prefix("@")
+            .unwrap_or("empty query")
+            .to_string()
     };
 
     let state: ReadSignal<State> = use_context().expect("missing state");

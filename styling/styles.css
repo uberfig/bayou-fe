@@ -91,22 +91,25 @@ main .profile-header {
   gap: 15px;
   align-items: center;
   text-wrap: nowrap;
+  width: -moz-max-content;
+  width: max-content;
+  max-width: 100%;
 }
 .timeline .user-link-text {
-  max-width: 75%;
+  max-width: 40rem;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .timeline h3 {
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 70%;
+  max-width: 20rem;
 }
 .timeline .pronouns {
   margin-left: 1em;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 30%;
+  max-width: 20rem;
 }
 .timeline .attachment {
   -o-object-fit: cover;
@@ -180,6 +183,8 @@ main .profile-header {
 }
 .timeline .reblog {
   margin-bottom: 0.2em;
+  width: -moz-max-content;
+  width: max-content;
 }
 .timeline .boost-text {
   margin-left: 0.5em;
