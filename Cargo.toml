@@ -5,11 +5,12 @@ edition = "2021"
 
 [dependencies]
 chrono = "0.4.38"
+console_error_panic_hook = "0.1.7"
 gloo-console = "0.3.0"
 gloo-net = "0.6.0"
 leptos = {version = "0.7.0", features = ["csr"]}
 leptos-lucide-icons = "0.1.1"
-leptos-use = {version = "0.14.0", features = ["use_scroll"]}
+leptos-use = {version = "0.14.0", features = ["use_scroll", "use_document", "use_event_listener", "use_web_lock"]}
 # leptos_lucide = "0.1.1"
 leptos_router = { version = "0.7.0" }
 regex = "1.11.1"

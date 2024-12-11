@@ -43,7 +43,9 @@ pub fn Profile() -> impl IntoView {
 }
 
 #[component]
-pub fn AcountWrap(account: LocalResource<Option<Account>>) -> impl IntoView {
+pub fn AcountWrap(
+    account: LocalResource<Option<Account>>,
+) -> impl IntoView {
     view! {
         {move || match account.get() {
             None => view! { <p>"Loading..."</p> }.into_any(),

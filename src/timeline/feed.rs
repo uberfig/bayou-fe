@@ -1,4 +1,4 @@
-use leptos::prelude::ElementChild;
+use leptos::prelude::*;
 use leptos::{
     component,
     prelude::{signal, use_context, ClassAttribute, GetUntracked, ReadSignal},
@@ -16,7 +16,10 @@ use crate::{
 };
 
 #[component]
-pub fn RenderFeed(feed: String, params: TimelineParams) -> impl IntoView {
+pub fn RenderFeed(
+    feed: String,
+    params: TimelineParams,
+) -> impl IntoView {
     let (feed_pos, set_feed_pos) = signal(FeedPos {
         oldest_id: None,
         end_of_feed: false,

@@ -16,6 +16,7 @@ main {
     max-width: 700px;
     background-color: theme.$medium_dark_bg;
     padding: 0%;
+    margin: 8px;
     @include markdown.markdown;
     @include profile.profile-header;
 }
@@ -83,12 +84,14 @@ main {
     // gap: 2px;
 }
 
+$emoji_size: 1.5rem;
 .emoji {
-    margin-bottom: -0.2em;
-    height: 1.2em;
-    width: 1.2em;
-    max-height: 1.2em;
-    max-width: 1.2em;
+    margin-bottom: -0.3rem;
+    height: $emoji_size;
+    width: $emoji_size;
+    max-height: $emoji_size;
+    max-width: $emoji_size;
+    object-fit: contain;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -96,3 +99,20 @@ main {
 .item-src {
     display: none;
 }
+body {
+    margin: 0%;
+    // overflow-x: scroll;
+    // max-height: 100vh;
+    // overflow-x: scroll;
+    // overflow-y: scroll;
+    // max-height: 100vh;
+}
+.body-container {
+    
+    margin: 0%;
+}
+// main {
+//     display: flex;
+//     overflow-x: scroll;
+//     max-height: 100vh;
+// }

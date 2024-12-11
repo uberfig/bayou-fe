@@ -4,7 +4,7 @@ use bayou_fe::{
     user_profile::profile::Profile,
 };
 use leptos::mount::mount_to_body;
-use leptos::prelude::{ElementChild, Get, GetUntracked};
+use leptos::prelude::*;
 use leptos::{
     component,
     prelude::{provide_context, signal},
@@ -34,22 +34,23 @@ fn App() -> impl IntoView {
     };
 
     view! {
-      <Router>
-        <nav>
-          /* ... */
-        </nav>
-        <main>
-          // all our routes will appear inside <main>
-          <Routes fallback=|| "Not found.">
-              <Route path=path!("/") view=public/>
-              <Route path=path!("/@/:webfinger") view=Profile/>
-              <Route path=path!("/*any") view=|| view! { <h1>"Not Found"</h1> }/>
-              </Routes>
-        </main>
-      </Router>
+        <Router>
+            <nav>
+            /* ... */
+            </nav>
+            <main>
+            // all our routes will appear inside <main>
+            <Routes fallback=|| "Not found.">
+                <Route path=path!("/") view=public/>
+                <Route path=path!("/@/:webfinger") view=Profile />
+                <Route path=path!("/*any") view=|| view! { <h1>"Not Found"</h1> }/>
+                </Routes>
+            </main>
+        </Router>
     }
 }
 
 fn main() {
+    console_error_panic_hook::set_once();
     mount_to_body(App);
 }

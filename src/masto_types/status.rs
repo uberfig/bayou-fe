@@ -129,7 +129,7 @@ pub struct MediaAttachment {
     pub description: Option<String>,
     /// A hash computed by the BlurHash algorithm,
     /// for generating colorful preview thumbnails when media has not been downloaded yet.
-    pub blurhash: String,
+    pub blurhash: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

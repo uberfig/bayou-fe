@@ -3,11 +3,11 @@ use crate::{
     state::State,
 };
 use leptos::{
-    component,
-    prelude::{signal, Get, IntoAny, OnAttribute, ReadSignal, Set, Update, WriteSignal},
-    view, IntoView,
+    component, ev::scroll, logging::log, prelude::{signal, Get, IntoAny, OnAttribute, ReadSignal, Set, Update, WriteSignal}, view, IntoView
 };
 use leptos::{prelude::ElementChild, server::LocalResource};
+use leptos_use::{use_document, use_event_listener};
+use web_sys::window;
 
 use super::segments::Segment;
 
@@ -69,24 +69,48 @@ pub fn LoadOlder(
 ) -> impl IntoView {
     let (loading, set_loading) = signal(false);
 
-    view! {
-        {move ||
-            if !loading.get() {
-                let feed = feed.clone();
-                view! {
-                    <button
-                        on:click= move |_| load_new(set_loading,feed_state,set_feed_state,state,feed.clone(),segments)
-                    >
-                    "Load older"
-                    </button>
-                }.into_any()
-            }
-            else {
-                view! {
-                    <p>"loading..."</p>
-                }.into_any()
+    let loading_disp = || view! {
+        <p>"loading..."</p>
+    }
+    .into_any();
+
+    let cloned = feed.clone();
+    let _ = use_event_listener(window(), scroll, move |evt| {
+        log!("{:?}", evt);
+        let height = use_document().body().unwrap().offset_height();
+        let window_height = window().unwrap().inner_height().unwrap().as_f64().unwrap();
+        let scrollpos = window().unwrap().scroll_y().unwrap();
+        let total_scrollpos = (scrollpos + window_height) as i32;
+        log!("height {}", height);
+        log!("total_scrollpos {}", total_scrollpos);
+        const THRESHOLD: i32 = 1000;
+        if height - total_scrollpos < THRESHOLD {
+            log!("within threshold");
+            let loading = loading.get();
+            if !loading {
+                load_new(set_loading,feed_state,set_feed_state,state,cloned.clone(),segments);
             }
         }
+    });
 
+    let loader = move || {
+        let loading = loading.get();
+        if !loading {
+            let feed = feed.clone();
+            view! {
+                <button
+                    on:click= move |_| load_new(set_loading,feed_state,set_feed_state,state,feed.clone(),segments)
+                >
+                "Load older"
+                </button>
+            }.into_any()
+        } else {
+            loading_disp()
+        }
+        
+    };
+
+    view! {
+        {loader}
     }
 }

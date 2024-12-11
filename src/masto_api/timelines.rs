@@ -1,5 +1,5 @@
 use gloo_net::http::Request;
-use leptos::prelude::{Update, WriteSignal};
+use leptos::{logging::log, prelude::{Update, WriteSignal}};
 
 use crate::{masto_types::status::Status, state::State, timeline::loader::FeedPos};
 
@@ -165,13 +165,14 @@ impl TimelineParams {
 }
 
 pub async fn fetch_posts(segment_link: String, set_oldest: WriteSignal<FeedPos>) -> Vec<Status> {
+    log!("segment_link: {}", &segment_link);
     let fetched_posts: Vec<Status> = Request::get(&segment_link)
         .send()
         .await
-        .unwrap()
+        .expect("invalid response")
         .json()
         .await
-        .unwrap();
+        .expect("deserialization error");
     set_oldest.update(|x| {
         match fetched_posts.last() {
             Some(post) => x.oldest_id = Some(post.id.clone()),
