@@ -190,7 +190,7 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
                 <A href={ format!("/@/{}", post.account.acct) }>
                     <div class="user-link inline no-decoration">
                         <img src={ post.account.avatar.clone() } class="timeline-pfp pfp" />
-                        <div class="no-decoration">
+                        <div class="no-decoration user-link-text">
                             <div class="inline">
                                 { display_name }
                                 {pronouns}

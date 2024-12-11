@@ -47,10 +47,16 @@
         text-wrap: nowrap;
     }
 
+    .user-link-text {
+        max-width: 75%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     h3 {
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 40rem;
+        max-width: 70%;
     }
 
     .pronouns {
@@ -58,6 +64,6 @@
 
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 20rem;
+        max-width: 30%;
     }
 }

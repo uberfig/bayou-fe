@@ -9,7 +9,7 @@ body {
 }
 
 main {
-  max-width: 700px;
+  max-width: 650px;
   background-color: #272b30;
   padding: 0%;
   margin: 8px;
@@ -92,16 +92,21 @@ main .profile-header {
   align-items: center;
   text-wrap: nowrap;
 }
+.timeline .user-link-text {
+  max-width: 75%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .timeline h3 {
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 40rem;
+  max-width: 70%;
 }
 .timeline .pronouns {
   margin-left: 1em;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 20rem;
+  max-width: 30%;
 }
 .timeline .attachment {
   -o-object-fit: cover;
@@ -122,7 +127,7 @@ main .profile-header {
   overflow: hidden;
   height: -moz-fit-content;
   height: fit-content;
-  max-height: 800px;
+  max-height: 950px;
   margin-top: 0.25em;
   margin-bottom: 0.5em;
 }

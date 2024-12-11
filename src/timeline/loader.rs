@@ -75,17 +75,13 @@ pub fn LoadOlder(
     .into_any();
 
     let cloned = feed.clone();
-    let _ = use_event_listener(window(), scroll, move |evt| {
-        log!("{:?}", evt);
+    let _ = use_event_listener(window(), scroll, move |_evt| {
         let height = use_document().body().unwrap().offset_height();
         let window_height = window().unwrap().inner_height().unwrap().as_f64().unwrap();
         let scrollpos = window().unwrap().scroll_y().unwrap();
         let total_scrollpos = (scrollpos + window_height) as i32;
-        log!("height {}", height);
-        log!("total_scrollpos {}", total_scrollpos);
         const THRESHOLD: i32 = 1000;
         if height - total_scrollpos < THRESHOLD {
-            log!("within threshold");
             let loading = loading.get();
             if !loading {
                 load_new(set_loading,feed_state,set_feed_state,state,cloned.clone(),segments);
