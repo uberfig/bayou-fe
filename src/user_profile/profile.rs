@@ -8,13 +8,10 @@ use leptos::{
 use leptos_router::{hooks::use_params, params::Params};
 
 use crate::{
-    masto_api::{
+    components::time::time_pretty, masto_api::{
         accounts::{webfinger_account, Webfinger},
         timelines::{account_timeline, TimelineParams},
-    },
-    masto_types::account::{Account, Field},
-    state::State,
-    timeline::{feed::RenderFeed, source::RenderSrc},
+    }, masto_types::account::{Account, Field}, state::State, timeline::{feed::RenderFeed, source::RenderSrc}
 };
 
 #[derive(Params, PartialEq, Clone)]
@@ -71,16 +68,7 @@ pub fn Account(account: Account) -> impl IntoView {
     let display_name = h3().inner_html(display_name);
     let description = div().inner_html(account.note);
     let mut fields = account.fields;
-    let time =
-        chrono::DateTime::from_timestamp_millis(account.created_at).expect("invalid timestamp");
-    let time_pretty = format!(
-        "{} {}, {}",
-        time.day(),
-        Month::try_from(u8::try_from(time.month()).unwrap())
-            .unwrap()
-            .name(),
-        time.year()
-    );
+    let time_pretty = time_pretty(account.created_at);
     fields.insert(
         0,
         Field {
