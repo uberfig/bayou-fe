@@ -25,7 +25,14 @@ pub fn generate_attachments(attachments: Vec<MediaAttachment>) -> AnyView {
                             <source src={attachment.url.to_string()} type="video/mp4" />
                         </video>
                     }.into_any(),
-                    crate::masto_types::status::MediaType::Video => view! {<p class="attachment attachment-video" >{attachment.url.to_string()}</p>}.into_any(),
+                    crate::masto_types::status::MediaType::Video => //view! {<p class="attachment attachment-video" >{attachment.url.to_string()}</p>}.into_any(),
+                    view! {
+                        <video class="attachment attachment-video" controls aria-label={attachment.description}>
+                            <source src={attachment.url.to_string()} 
+                                // type="video/mp4" 
+                            />
+                        </video>
+                    }.into_any(),
                     crate::masto_types::status::MediaType::Audio => view! {
                         <audio class="attachment attachment-audio" controls>
                             <source src={attachment.url.to_string()} type="audio" />
