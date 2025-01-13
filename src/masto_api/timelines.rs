@@ -15,6 +15,22 @@ pub fn account_timeline(id: &str) -> String {
     format!("/api/v1/accounts/{}/statuses", id)
 }
 
+#[derive(Debug, Clone, Copy)]
+pub enum ProfileFeeds {
+    Posts,
+    PostsWReplies,
+    Media,
+}
+impl ProfileFeeds {
+    pub fn set_params(&self, mut params: TimelineParams) -> TimelineParams {
+        match self {
+            ProfileFeeds::Posts => params.exclude_replies(),
+            ProfileFeeds::PostsWReplies => params,
+            ProfileFeeds::Media => params.exclude_reblogs().media_only(),
+        }
+    }
+}
+
 pub struct TimelineParams {
     /// Boolean. Show only local statuses? Defaults to false.
     pub local: Option<bool>,

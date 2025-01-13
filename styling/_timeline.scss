@@ -64,10 +64,15 @@
     }
 
     .pronouns {
-        margin-left: 1em;
-
         overflow: hidden;
         text-overflow: ellipsis;
         max-width: 20rem;
+    }
+    .flex-row {
+        display: flex;
+        flex-direction: row;
+    }
+    .gap-1em {
+        gap: 1em;
     }
 }

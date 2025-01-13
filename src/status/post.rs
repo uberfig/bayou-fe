@@ -82,10 +82,10 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
             {reblogged}
             <div class="user-link no-decoration">
                 <A href={ format!("/@{}", post.account.acct) }>
-                    <div class="user-link inline no-decoration">
+                    <div class="user-link flex-row gap-1em no-decoration">
                         <img src={ post.account.avatar.clone() } class="timeline-pfp pfp" />
                         <div class="no-decoration user-link-text">
-                            <div class="inline">
+                            <div class="flex-row gap-1em">
                                 { display_name }
                                 {pronouns}
                             </div>

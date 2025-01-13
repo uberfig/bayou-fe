@@ -106,10 +106,16 @@ main .profile-header {
   max-width: 20rem;
 }
 .timeline .pronouns {
-  margin-left: 1em;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 20rem;
+}
+.timeline .flex-row {
+  display: flex;
+  flex-direction: row;
+}
+.timeline .gap-1em {
+  gap: 1em;
 }
 .timeline .attachment {
   -o-object-fit: cover;
@@ -243,7 +249,7 @@ main .profile-header {
   font-size: 0.9em;
 }
 .profile dd {
-  margin-left: 0%;
+  margin-inline-start: 0%;
 }
 .profile .field-description {
   padding: 0.8em;

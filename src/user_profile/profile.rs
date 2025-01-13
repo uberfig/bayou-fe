@@ -1,16 +1,12 @@
-use chrono::{Datelike, Month};
 use leptos::{
-    component,
-    html::{dd, div, h3},
-    prelude::*,
-    view, IntoView, Params,
+    component, html::{dd, div, h3}, logging::log, prelude::*, view, IntoView, Params
 };
 use leptos_router::{hooks::use_params, params::Params};
 
 use crate::{
     components::time::time_pretty, masto_api::{
         accounts::{webfinger_account, Webfinger},
-        timelines::{account_timeline, TimelineParams},
+        timelines::{account_timeline, TimelineParams, ProfileFeeds},
     }, masto_types::account::{Account, Field}, state::State, timeline::{feed::RenderFeed, source::RenderSrc}
 };
 
@@ -57,6 +53,8 @@ pub fn AcountWrap(
     }
 }
 
+
+
 #[component]
 pub fn Account(account: Account) -> impl IntoView {
     let source = account.clone();
@@ -100,6 +98,8 @@ pub fn Account(account: Account) -> impl IntoView {
 
     let state: ReadSignal<State> = use_context().expect("missing state");
 
+    let (feed, set_feed) = signal(ProfileFeeds::Posts);
+
     view! {
         <img src={ account.header.clone() } class="profile-header" />
         <div class="profile">
@@ -114,10 +114,30 @@ pub fn Account(account: Account) -> impl IntoView {
                 {fields}
             </div>
             <RenderSrc src=serde_json::to_string_pretty(&source).unwrap() />
+            <div>
+                <button on:click=move |_| {
+                    log!("click");
+                    *set_feed.write() = ProfileFeeds::Posts
+                }>
+                    "Posts"
+                </button>
+                <button on:click=move |_| *set_feed.write() = ProfileFeeds::PostsWReplies>
+                    "Posts and Replies"
+                </button>
+                <button on:click=move |_| *set_feed.write() = ProfileFeeds::Media>
+                    "Media"
+                </button>
+            </div>
         </div>
-        <RenderFeed
-            feed=account_timeline(&account.id)
-            params=TimelineParams::new(&state.get_untracked()).exclude_replies()
-        />
+        {move || {
+            let params = feed.get().set_params(TimelineParams::new(&state.get_untracked()));
+            view! {
+                <RenderFeed
+                    feed=account_timeline(&account.id)
+                    params=params
+                />
+            }
+        }}
+        
     }
 }
