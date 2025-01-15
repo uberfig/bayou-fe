@@ -133,11 +133,26 @@ pub fn TimelinePost(
                         },
                         None => view! {}.into_any(),
                     };
-                    let replies = reply_chain
-                        .into_iter()
-                        .rev()
-                        .map(|reply| view! {<InnerPost post=reply with_link=true />})
-                        .collect::<Vec<_>>();
+                    let amount = reply_chain.len();
+                    let mut replies: Vec<_> = Vec::with_capacity(amount);
+                    let mut reply_chain = reply_chain.into_iter().peekable();
+                    while let Some(reply) = reply_chain.next() {
+                        let above = reply_chain.peek();
+                        if let Some(above) = above {
+                            if above.account.id.eq(&reply.account.id) {
+                                replies.push(view! {
+                                    <div class="no-topper">
+                                        <hr />
+                                        <InnerPost post=reply with_link=true />
+                                    </div>
+                                }.into_any());
+                                continue;
+                            }
+                        } 
+                        replies.push(view! {<InnerPost post=reply with_link=true />}.into_any());
+                    }
+                    replies.reverse();
+                    
                     view! {
                         <div class="reply-chain">
                             {more_reply}

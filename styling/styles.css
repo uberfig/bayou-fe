@@ -92,6 +92,9 @@ main .profile-header {
   margin-left: 1em;
   padding-left: 1.5em;
 }
+.timeline .reply-chain .no-topper header {
+  display: none;
+}
 .timeline .user-link {
   gap: 15px;
   align-items: center;
