@@ -24,6 +24,8 @@ fn App() -> impl IntoView {
         domain: "mastodon.social".to_string(),
         limit: 20,
         show_src: true,
+        use_timeline_reply_chains: true,
+        reply_chain_depth: 4,
     });
     provide_context(state);
 

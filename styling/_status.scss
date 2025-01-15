@@ -1,0 +1,9 @@
+@use '_theme' as theme;
+
+@mixin status {
+    .reply-chain {
+        border-left: 2px solid #ddd;
+        margin-left: 1em;
+        padding-left: 1.5em;
+    }   
+}

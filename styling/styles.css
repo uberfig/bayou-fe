@@ -9,7 +9,7 @@ body {
 }
 
 main {
-  max-width: 650px;
+  max-width: 700px;
   background-color: #272b30;
   padding: 0%;
   margin: 8px;
@@ -86,6 +86,11 @@ main .profile-header {
 
 .timeline {
   padding: 10px;
+}
+.timeline .reply-chain {
+  border-left: 2px solid #ddd;
+  margin-left: 1em;
+  padding-left: 1.5em;
 }
 .timeline .user-link {
   gap: 15px;
@@ -224,8 +229,8 @@ main .profile-header {
   width: max-content;
 }
 .timeline .post-body {
-  margin-top: 1em;
-  margin-bottom: 1em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 .timeline .post-body p {
   margin-top: 0.5em;
@@ -332,6 +337,10 @@ main .profile-header {
 
 *, *::before, *::after {
   box-sizing: border-box;
+}
+
+.item-src {
+  display: none;
 }
 
 body {

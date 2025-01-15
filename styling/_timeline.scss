@@ -1,8 +1,10 @@
 @use '_attachments' as attachments;
 @use '_theme' as theme;
 @use '_content_warning' as cw;
+@use '_status' as status;
 
 @mixin timeline {
+    @include status.status;
     @include user-topper;
     @include attachments.attachments;
 
@@ -33,8 +35,8 @@
     //     margin-left: 0.5em;
     // }
     .post-body {
-        margin-top: 1em;
-        margin-bottom: 1em;
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
         p {
             margin-top: 0.5em;
             margin-bottom: 0.5em;

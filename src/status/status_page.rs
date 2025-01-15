@@ -67,5 +67,5 @@ pub fn StatusWrap(status: LocalResource<Option<Status>>) -> impl IntoView {
 
 #[component]
 pub fn Status(status: Status) -> impl IntoView {
-    view! {<TimelinePost post=status with_link=false reply_chain=None />}
+    view! {<TimelinePost post=status with_link=false reply_chain=None render_chain=true/>}
 }

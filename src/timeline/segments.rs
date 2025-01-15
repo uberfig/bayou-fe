@@ -8,14 +8,15 @@ use leptos::{
 use crate::{masto_types::status::Status, status::post::TimelinePost};
 
 #[component]
-pub fn TimelineSegment(posts: Vec<Status>) -> impl IntoView {
+pub fn TimelineSegment(posts: Vec<(Status, Option<Vec<Status>>)>) -> impl IntoView {
     view! {
         <For
             each=move || posts.clone()
-            key=|post| post.id.clone()
-            children=move |post: Status| {
+            key=|post| post.0.id.clone()
+            children=move |post: (Status, Option<Vec<Status>>)| {
+                let (post, chain) = post;
                 view! {
-                  <TimelinePost post=post with_link=true reply_chain=None/>
+                  <TimelinePost post=post with_link=true reply_chain=chain render_chain=true/>
                   <hr />
                 }
               }
@@ -25,7 +26,7 @@ pub fn TimelineSegment(posts: Vec<Status>) -> impl IntoView {
 
 #[derive(Clone)]
 pub struct Segment {
-    pub contents: LocalResource<Vec<Status>>,
+    pub contents: LocalResource<Vec<(Status, Option<Vec<Status>>)>>,
     pub id: String,
 }
 

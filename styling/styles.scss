@@ -13,7 +13,7 @@ body {
 }
 
 main {
-    max-width: 650px;
+    max-width: 700px;
     background-color: theme.$medium_dark_bg;
     padding: 0%;
     margin: 8px;
@@ -97,23 +97,13 @@ $emoji_size: 1.5rem;
 
 *, *::before, *::after { box-sizing: border-box; }
 
-// .item-src {
-//     display: none;
-// }
+.item-src {
+    display: none;
+}
 body {
     margin: 0%;
-    // overflow-x: scroll;
-    // max-height: 100vh;
-    // overflow-x: scroll;
-    // overflow-y: scroll;
-    // max-height: 100vh;
 }
 .body-container {
     
     margin: 0%;
 }
-// main {
-//     display: flex;
-//     overflow-x: scroll;
-//     max-height: 100vh;
-// }

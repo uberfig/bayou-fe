@@ -1,10 +1,13 @@
 use gloo_net::http::Request;
 use leptos::{
     logging::log,
-    prelude::{Update, WriteSignal},
+    prelude::{GetUntracked, ReadSignal, Update, WriteSignal},
 };
 
-use crate::{masto_types::status::Status, state::State, timeline::loader::FeedPos};
+use crate::{
+    masto_api::statuses::{request_status, status_request_link}, masto_types::status::Status, state::State,
+    timeline::loader::FeedPos,
+};
 
 /// OAuth: Public. Requires app token + read:statuses if the instance has disabled public preview.
 ///
@@ -183,7 +186,7 @@ impl TimelineParams {
     }
 }
 
-pub async fn fetch_posts(segment_link: String, set_oldest: WriteSignal<FeedPos>) -> Vec<Status> {
+async fn fetch_posts(segment_link: String, set_oldest: WriteSignal<FeedPos>) -> Vec<Status> {
     log!("segment_link: {}", &segment_link);
     let fetched_posts: Vec<Status> = Request::get(&segment_link)
         .send()
@@ -199,4 +202,48 @@ pub async fn fetch_posts(segment_link: String, set_oldest: WriteSignal<FeedPos>)
         };
     });
     fetched_posts
+}
+
+pub async fn fetch_posts_with_chain(
+    segment_link: String,
+    set_oldest: WriteSignal<FeedPos>,
+    max_depth: u32,
+    state: ReadSignal<State>,
+) -> Vec<(Status, Option<Vec<Status>>)> {
+    let fetched_posts: Vec<Status> = fetch_posts(segment_link, set_oldest).await;
+    let mut with_replies = Vec::with_capacity(fetched_posts.len());
+    for post in fetched_posts {
+        let replies = match post.in_reply_to_id.is_some() {
+            true => {
+                let mut reply_chain: Vec<Status> = Vec::new();
+                let mut to_fetch = post.in_reply_to_id.clone();
+                'inner: for _ in 0..max_depth {
+                    match to_fetch {
+                        Some(fetch_id) => {
+                            log!("{}", &fetch_id);
+                            let link = status_request_link(&state.get_untracked(), &fetch_id);
+                            log!("{}", &link);
+                            let status = request_status(link).await;
+                            match status {
+                                Some(status) => {
+                                    to_fetch = status.in_reply_to_id.clone();
+                                    reply_chain.push(status);
+                                }
+                                None => {
+                                    log!("failed to fetch status");
+                                    break 'inner;
+                                },
+                            }
+                        }
+                        None => break 'inner,
+                    }
+                }
+                Some(reply_chain)
+            }
+            false => None,
+        };
+        with_replies.push((post, replies));
+    }
+
+    with_replies
 }

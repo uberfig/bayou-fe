@@ -120,9 +120,9 @@ pub fn Account(account: Account) -> impl IntoView {
             {move || {
                 let render = state.get().show_src;
                 view! {
-                    <RenderSrc 
+                    <RenderSrc
                         render=render
-                        src=serde_json::to_string_pretty(&source).unwrap() 
+                        src=serde_json::to_string_pretty(&source).unwrap()
                     />
                 }
             }}

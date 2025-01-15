@@ -1,12 +1,14 @@
 use crate::{
-    masto_api::timelines::{fetch_posts, TimelineParams},
+    masto_api::timelines::{fetch_posts_with_chain, TimelineParams},
     state::State,
 };
 use leptos::{
     component,
     ev::scroll,
     logging::log,
-    prelude::{signal, Get, IntoAny, OnAttribute, ReadSignal, Set, Update, WriteSignal},
+    prelude::{
+        signal, use_context, Get, IntoAny, OnAttribute, ReadSignal, Set, Update, WriteSignal,
+    },
     view, IntoView,
 };
 use leptos::{prelude::ElementChild, server::LocalResource};
@@ -49,7 +51,13 @@ fn load_new(
         let value = segment_link.clone();
         async move {
             let set_loading = set_loading;
-            let posts = fetch_posts(value.clone(), set_feed_state).await;
+            let posts = fetch_posts_with_chain(
+                value.clone(),
+                set_feed_state,
+                state.get().reply_chain_depth,
+                state,
+            )
+            .await;
             set_loading.set(false);
             posts
         }
