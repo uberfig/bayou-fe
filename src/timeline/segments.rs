@@ -15,7 +15,8 @@ pub fn TimelineSegment(posts: Vec<Status>) -> impl IntoView {
             key=|post| post.id.clone()
             children=move |post: Status| {
                 view! {
-                  <TimelinePost post=post/>
+                  <TimelinePost post=post with_link=true reply_chain=None/>
+                  <hr />
                 }
               }
         />

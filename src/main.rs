@@ -23,6 +23,7 @@ fn App() -> impl IntoView {
     let (state, _set_state) = signal(State {
         domain: "mastodon.social".to_string(),
         limit: 20,
+        show_src: true,
     });
     provide_context(state);
 

@@ -117,7 +117,15 @@ pub fn Account(account: Account) -> impl IntoView {
                 {description}
                 {fields}
             </div>
-            <RenderSrc src=serde_json::to_string_pretty(&source).unwrap() />
+            {move || {
+                let render = state.get().show_src;
+                view! {
+                    <RenderSrc 
+                        render=render
+                        src=serde_json::to_string_pretty(&source).unwrap() 
+                    />
+                }
+            }}
             <div>
                 <button on:click=move |_| {
                     log!("click");
@@ -133,6 +141,7 @@ pub fn Account(account: Account) -> impl IntoView {
                 </button>
             </div>
         </div>
+        <hr />
         {move || {
             let params = feed.get().set_params(TimelineParams::new(&state.get_untracked()));
             view! {

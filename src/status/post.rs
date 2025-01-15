@@ -8,14 +8,14 @@ use leptos_router::components::A;
 // use leptos_lucide_icons::{Bookmark, MessageSquare, Repeat, Share2, Star};
 
 use crate::{
-    masto_types::status::Status, status::attachment_gallery::Attachments,
-    timeline::source::RenderSrc,
+    masto_types::status::Status, state::State, status::attachment_gallery::Attachments, timeline::source::RenderSrc
 };
 
 #[component]
-pub fn TimelinePost(post: Status) -> impl IntoView {
+pub fn TimelinePost(post: Status, with_link: bool, reply_chain: Option<Vec<Status>>) -> impl IntoView {
     let source = post.clone();
     let post = post.enrich_content();
+    let state: ReadSignal<State> = use_context().expect("missing state");
 
     let (post, reblogged_by) = match post.reblog {
         Some(inner_post) => (*inner_post, Some(post.account)),
@@ -78,10 +78,9 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
     };
 
     view! {
-        <div class="post">
-        <hr />
+        <article class="post">
             {reblogged}
-            <div class="user-link no-decoration">
+            <header class="user-link no-decoration">
                 <A href={ format!("/@{}", post.account.acct) }>
                     <div class="user-link flex-row gap-1em no-decoration">
                         <img src={ post.account.avatar.clone() } class="timeline-pfp pfp" />
@@ -94,7 +93,7 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
                         </div>
                     </div>
                 </A>
-            </div>
+            </header>
             {content}
 
             // <div class="status-actions">
@@ -104,8 +103,17 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
             //     <button><Bookmark /></button>
             //     <button><Share2 /></button>
             // </div>
-            <RenderSrc src=serde_json::to_string_pretty(&source).unwrap() />
-        <hr />
-        </div>
+            {move || {
+                let render = state.get().show_src;
+                view! {
+                    <RenderSrc 
+                        render=render
+                        src=serde_json::to_string_pretty(&source).unwrap() 
+                    />
+                }
+            }}
+            
+            
+        </article>
     }
 }
