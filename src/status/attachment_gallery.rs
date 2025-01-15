@@ -97,11 +97,11 @@ pub fn generate_attachments(attachments: Vec<MediaAttachment>) -> AnyView {
             view! {
                 <div class="attachment-container">
                     <div class="multiple-attachment column">
-                        <div class="multiple-attachment row w50 h50">
+                        <div class="multiple-attachment row w100 h50">
                             {first}
                             {second}
                         </div>
-                        <div class="multiple-attachment row w50 h50">
+                        <div class="multiple-attachment row w100 h50">
                             {third}
                             {fourth}
                         </div>
