@@ -1,4 +1,5 @@
 use bayou_fe::masto_api::timelines::TimelineParams;
+use bayou_fe::not_found::NotFound;
 use bayou_fe::status::status_page::StatusPage;
 use bayou_fe::{
     masto_api::timelines::PUBLIC_TIMELINE, state::State, timeline::feed::RenderFeed,
@@ -41,11 +42,11 @@ fn App() -> impl IntoView {
             </nav>
             <main>
             // all our routes will appear inside <main>
-            <Routes fallback=|| "Not found.">
+            <Routes fallback=|| view! { <NotFound /> }>
                 <Route path=path!("/") view=public/>
                 <Route path=path!("/:webfinger") view=Profile />
-                <Route path=path!("/:webfinger/:id") view=StatusPage />
-                <Route path=path!("/*any") view=|| view! { <h1>"Not Found"</h1> }/>
+                <Route path=path!("/notes/:id") view=StatusPage />
+                <Route path=path!("/*any") view=|| view! { <NotFound /> }/>
                 </Routes>
             </main>
         </Router>

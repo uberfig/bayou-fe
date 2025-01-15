@@ -1,8 +1,7 @@
 use chrono::{DateTime, Datelike, Month, Utc};
 
 pub fn time_pretty(millis: i64) -> String {
-    let time =
-        chrono::DateTime::from_timestamp_millis(millis).expect("invalid timestamp");
+    let time = chrono::DateTime::from_timestamp_millis(millis).expect("invalid timestamp");
     pretty(time)
 }
 
@@ -18,15 +17,14 @@ fn pretty(time: DateTime<Utc>) -> String {
 }
 
 pub fn timeline_time(millis: i64) -> String {
-    let time =
-        chrono::DateTime::from_timestamp_millis(millis).expect("invalid timestamp");
+    let time = chrono::DateTime::from_timestamp_millis(millis).expect("invalid timestamp");
     let now = Utc::now();
     let duration = now.signed_duration_since(time);
     if duration.num_milliseconds() < 0 {
         return pretty(time);
     }
     let hours = duration.num_hours();
-    if hours > 3*24 {
+    if hours > 3 * 24 {
         return pretty(time);
     }
     if hours > 24 {

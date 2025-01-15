@@ -23,14 +23,15 @@
         border-radius: 100%;
         // margin-right: 0.5em;
         margin-bottom: -0.2em;
+        align-self: center;
     }
     .reblog {
         margin-bottom: 0.2em;
         width: max-content;
     }
-    .boost-text {
-        margin-left: 0.5em;
-    }
+    // .boost-text {
+    //     margin-left: 0.5em;
+    // }
     .post-body {
         margin-top: 1em;
         margin-bottom: 1em;
@@ -71,6 +72,9 @@
     .flex-row {
         display: flex;
         flex-direction: row;
+    }
+    .flex-row img {
+        align-self: center;
     }
     .gap-1em {
         gap: 1em;

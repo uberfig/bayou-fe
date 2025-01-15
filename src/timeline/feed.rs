@@ -16,10 +16,7 @@ use crate::{
 };
 
 #[component]
-pub fn RenderFeed(
-    feed: String,
-    params: TimelineParams,
-) -> impl IntoView {
+pub fn RenderFeed(feed: String, params: TimelineParams) -> impl IntoView {
     let (feed_pos, set_feed_pos) = signal(FeedPos {
         oldest_id: None,
         end_of_feed: false,

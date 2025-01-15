@@ -1,5 +1,8 @@
 use gloo_net::http::Request;
-use leptos::{logging::log, prelude::{Update, WriteSignal}};
+use leptos::{
+    logging::log,
+    prelude::{Update, WriteSignal},
+};
 
 use crate::{masto_types::status::Status, state::State, timeline::loader::FeedPos};
 

@@ -3,7 +3,11 @@ use crate::{
     state::State,
 };
 use leptos::{
-    component, ev::scroll, logging::log, prelude::{signal, Get, IntoAny, OnAttribute, ReadSignal, Set, Update, WriteSignal}, view, IntoView
+    component,
+    ev::scroll,
+    logging::log,
+    prelude::{signal, Get, IntoAny, OnAttribute, ReadSignal, Set, Update, WriteSignal},
+    view, IntoView,
 };
 use leptos::{prelude::ElementChild, server::LocalResource};
 use leptos_use::{use_document, use_event_listener};
@@ -69,10 +73,12 @@ pub fn LoadOlder(
 ) -> impl IntoView {
     let (loading, set_loading) = signal(false);
 
-    let loading_disp = || view! {
-        <p>"loading..."</p>
-    }
-    .into_any();
+    let loading_disp = || {
+        view! {
+            <p>"loading..."</p>
+        }
+        .into_any()
+    };
 
     let cloned = feed.clone();
     let _ = use_event_listener(window(), scroll, move |_evt| {
@@ -84,7 +90,14 @@ pub fn LoadOlder(
         if height - total_scrollpos < THRESHOLD {
             let loading = loading.get();
             if !loading {
-                load_new(set_loading,feed_state,set_feed_state,state,cloned.clone(),segments);
+                load_new(
+                    set_loading,
+                    feed_state,
+                    set_feed_state,
+                    state,
+                    cloned.clone(),
+                    segments,
+                );
             }
         }
     });
@@ -103,7 +116,6 @@ pub fn LoadOlder(
         } else {
             loading_disp()
         }
-        
     };
 
     view! {

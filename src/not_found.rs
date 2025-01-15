@@ -1,5 +1,5 @@
-use leptos::{component, view, IntoView};
 use leptos::prelude::*;
+use leptos::{component, view, IntoView};
 
 #[component]
 pub fn NotFound() -> impl IntoView {

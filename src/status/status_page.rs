@@ -7,37 +7,26 @@ use leptos::{
 use leptos_router::{hooks::use_params, params::Params};
 
 use crate::{
-    masto_api::
-        statuses::{request_status, status_request_link}
-    , masto_types::status::Status, not_found::NotFound, state::State, status::post::TimelinePost
+    masto_api::statuses::{request_status, status_request_link},
+    masto_types::status::Status,
+    not_found::NotFound,
+    state::State,
+    status::post::TimelinePost,
 };
 
 #[derive(Params, PartialEq, Clone)]
 struct StatusParams {
-    webfinger: Option<String>,
     id: Option<String>,
 }
 
 struct ValidStatusParams {
-    _webfinger: String,
     id: String,
 }
 
 impl StatusParams {
     fn validate(self) -> Option<ValidStatusParams> {
-        match self.webfinger {
-            Some(webfinger) => {
-                match self.id {
-                    Some(id) => {
-                        let Some(webfinger) = webfinger.strip_prefix("@") else {
-                            return None;
-                        };
-                        let _webfinger = webfinger.to_string();
-                        Some(ValidStatusParams { _webfinger, id })
-                    },
-                    None => None,
-                }
-            },
+        match self.id {
+            Some(id) => Some(ValidStatusParams { id }),
             None => None,
         }
     }
@@ -64,9 +53,7 @@ pub fn StatusPage() -> impl IntoView {
 }
 
 #[component]
-pub fn StatusWrap(
-    status: LocalResource<Option<Status>>,
-) -> impl IntoView {
+pub fn StatusWrap(status: LocalResource<Option<Status>>) -> impl IntoView {
     view! {
         {move || match status.get() {
             None => view! { <p>"Loading..."</p> }.into_any(),

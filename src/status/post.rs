@@ -8,7 +8,8 @@ use leptos_router::components::A;
 // use leptos_lucide_icons::{Bookmark, MessageSquare, Repeat, Share2, Star};
 
 use crate::{
-    masto_types::status::Status, status::attachment_gallery::Attachments, timeline::source::RenderSrc
+    masto_types::status::Status, status::attachment_gallery::Attachments,
+    timeline::source::RenderSrc,
 };
 
 #[component]
@@ -63,12 +64,12 @@ pub fn TimelinePost(post: Status) -> impl IntoView {
         Some(account) => Some(view! {
             <div class="no-decoration reblog">
                 <A href={ format!("/@{}", account.acct) }>
-                    <div class="inline">
-                    <img src={ account.avatar.clone() } class="reblog-pfp pfp" />
-                    <div class="no-decoration inline">
-                        { h3().class("boost-text").inner_html(account.rendered_name()) }
-                        <h3 class="boost-text">{"boosted"}</h3>
-                    </div>
+                    <div class="flex-row gap-1em">
+                        <img src={ account.avatar.clone() } class="pfp reblog-pfp" />
+                        <div class="no-decoration flex-row gap-1em">
+                            { h3().class("boost-text").inner_html(account.rendered_name()) }
+                            <h3 class="boost-text">{"boosted"}</h3>
+                        </div>
                     </div>
                 </A>
             </div>

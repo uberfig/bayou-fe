@@ -1,13 +1,21 @@
 use leptos::{
-    component, html::{dd, div, h3}, logging::log, prelude::*, view, IntoView, Params
+    component,
+    html::{dd, div, h3},
+    logging::log,
+    prelude::*,
+    view, IntoView, Params,
 };
 use leptos_router::{hooks::use_params, params::Params};
 
 use crate::{
-    components::time::time_pretty, masto_api::{
+    components::time::time_pretty,
+    masto_api::{
         accounts::{webfinger_account, Webfinger},
-        timelines::{account_timeline, TimelineParams, ProfileFeeds},
-    }, masto_types::account::{Account, Field}, state::State, timeline::{feed::RenderFeed, source::RenderSrc}
+        timelines::{account_timeline, ProfileFeeds, TimelineParams},
+    },
+    masto_types::account::{Account, Field},
+    state::State,
+    timeline::{feed::RenderFeed, source::RenderSrc},
 };
 
 #[derive(Params, PartialEq, Clone)]
@@ -39,9 +47,7 @@ pub fn Profile() -> impl IntoView {
 }
 
 #[component]
-pub fn AcountWrap(
-    account: LocalResource<Option<Account>>,
-) -> impl IntoView {
+pub fn AcountWrap(account: LocalResource<Option<Account>>) -> impl IntoView {
     view! {
         {move || match account.get() {
             None => view! { <p>"Loading..."</p> }.into_any(),
@@ -52,8 +58,6 @@ pub fn AcountWrap(
         }}
     }
 }
-
-
 
 #[component]
 pub fn Account(account: Account) -> impl IntoView {
@@ -138,6 +142,6 @@ pub fn Account(account: Account) -> impl IntoView {
                 />
             }
         }}
-        
+
     }
 }

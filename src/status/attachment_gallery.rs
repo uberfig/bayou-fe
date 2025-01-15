@@ -1,9 +1,5 @@
-use leptos::{
-    component,
-    prelude::*,
-    view, IntoView,
-};
 use crate::masto_types::status::MediaAttachment;
+use leptos::{component, prelude::*, view, IntoView};
 
 #[component]
 pub fn Attachments(attachments: Vec<MediaAttachment>) -> impl IntoView {
@@ -70,11 +66,15 @@ pub fn generate_attachments(attachments: Vec<MediaAttachment>) -> AnyView {
         }
         3 => {
             let first = attachments.remove(0);
-            let attachments: Vec<AnyView> = attachments.into_iter().map(|x| {
-                view! {
-                    <div class="w50 attachment">{x}</div>
-                }.into_any()
-            }).collect::<Vec<_>>();
+            let attachments: Vec<AnyView> = attachments
+                .into_iter()
+                .map(|x| {
+                    view! {
+                        <div class="w50 attachment">{x}</div>
+                    }
+                    .into_any()
+                })
+                .collect::<Vec<_>>();
             view! {
                 <div class="attachment-container multiple-attachment column">
                     // <div class="">
