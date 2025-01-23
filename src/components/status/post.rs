@@ -5,12 +5,9 @@ use leptos::{
     view, IntoView,
 };
 use leptos_router::components::A;
-// use leptos_lucide_icons::{Bookmark, MessageSquare, Repeat, Share2, Star};
 
-use crate::{
-    masto_types::status::Status, state::State, status::attachment_gallery::Attachments,
-    timeline::source::RenderSrc,
-};
+use crate::{api::masto_types::status::Status, components::{status::attachment_gallery::Attachments, timeline::source::RenderSrc}, state::State};
+// use leptos_lucide_icons::{Bookmark, MessageSquare, Repeat, Share2, Star};
 
 #[component]
 pub fn InnerPost(post: Status, with_link: bool) -> impl IntoView {

@@ -1,5 +1,6 @@
-use crate::{masto_types::status::Status, state::State};
 use gloo_net::http::Request;
+
+use crate::{api::masto_types::status::Status, state::State};
 
 ///  Public for public statuses, user token + read:statuses for private statuses
 ///

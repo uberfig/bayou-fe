@@ -1,13 +1,12 @@
 use crate::{
-    masto_api::timelines::{fetch_posts_with_chain, TimelineParams},
+    api::masto_api::timelines::{fetch_posts_with_chain, TimelineParams},
     state::State,
 };
 use leptos::{
     component,
     ev::scroll,
-    logging::log,
     prelude::{
-        signal, use_context, Get, IntoAny, OnAttribute, ReadSignal, Set, Update, WriteSignal,
+        signal, Get, IntoAny, OnAttribute, ReadSignal, Set, Update, WriteSignal,
     },
     view, IntoView,
 };

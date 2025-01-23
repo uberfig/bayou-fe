@@ -1,7 +1,7 @@
 use gloo_net::http::Request;
 use serde::{Deserialize, Serialize};
 
-use crate::{masto_types::account::Account, state::State};
+use crate::{api::masto_types::account::Account, state::State};
 
 /// the account being looked up may not exist.
 ///

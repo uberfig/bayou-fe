@@ -5,7 +5,7 @@ use leptos::{
     view, IntoView,
 };
 
-use crate::{masto_types::status::Status, status::post::TimelinePost};
+use crate::{api::masto_types::status::Status, components::status::post::TimelinePost};
 
 #[component]
 pub fn TimelineSegment(posts: Vec<(Status, Option<Vec<Status>>)>) -> impl IntoView {

@@ -8,14 +8,7 @@ use leptos::{
 use leptos_router::{hooks::use_params, params::Params};
 
 use crate::{
-    components::time::time_pretty,
-    masto_api::{
-        accounts::{webfinger_account, Webfinger},
-        timelines::{account_timeline, ProfileFeeds, TimelineParams},
-    },
-    masto_types::account::{Account, Field},
-    state::State,
-    timeline::{feed::RenderFeed, source::RenderSrc},
+    api::{masto_api::{accounts::{webfinger_account, Webfinger}, timelines::{account_timeline, ProfileFeeds, TimelineParams}}, masto_types::account::{Account, Field}}, components::{time::time_pretty, timeline::{feed::RenderFeed, source::RenderSrc}}, state::State
 };
 
 #[derive(Params, PartialEq, Clone)]

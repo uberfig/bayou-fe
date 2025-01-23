@@ -1,10 +1,9 @@
-use bayou_fe::masto_api::timelines::TimelineParams;
+use bayou_fe::api::masto_api::timelines::{TimelineParams, PUBLIC_TIMELINE};
+use bayou_fe::components::status::status_page::StatusPage;
+use bayou_fe::components::timeline::feed::RenderFeed;
+use bayou_fe::components::user_profile::profile::Profile;
 use bayou_fe::not_found::NotFound;
-use bayou_fe::status::status_page::StatusPage;
-use bayou_fe::{
-    masto_api::timelines::PUBLIC_TIMELINE, state::State, timeline::feed::RenderFeed,
-    user_profile::profile::Profile,
-};
+use bayou_fe::state::State;
 use leptos::mount::mount_to_body;
 use leptos::prelude::*;
 use leptos::{

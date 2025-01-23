@@ -4,10 +4,7 @@ use leptos::{
     prelude::{GetUntracked, ReadSignal, Update, WriteSignal},
 };
 
-use crate::{
-    masto_api::statuses::{request_status, status_request_link}, masto_types::status::Status, state::State,
-    timeline::loader::FeedPos,
-};
+use crate::{api::{masto_api::statuses::{request_status, status_request_link}, masto_types::status::Status}, components::timeline::loader::FeedPos, state::State};
 
 /// OAuth: Public. Requires app token + read:statuses if the instance has disabled public preview.
 ///
@@ -28,7 +25,7 @@ pub enum ProfileFeeds {
     Media,
 }
 impl ProfileFeeds {
-    pub fn set_params(&self, mut params: TimelineParams) -> TimelineParams {
+    pub fn set_params(&self, params: TimelineParams) -> TimelineParams {
         match self {
             ProfileFeeds::Posts => params.exclude_replies(),
             ProfileFeeds::PostsWReplies => params,

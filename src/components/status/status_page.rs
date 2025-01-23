@@ -1,17 +1,13 @@
 use leptos::{
     component,
-    html::{dd, div, h3},
     prelude::*,
     view, IntoView, Params,
 };
 use leptos_router::{hooks::use_params, params::Params};
 
 use crate::{
-    masto_api::statuses::{request_status, status_request_link},
-    masto_types::status::Status,
-    not_found::NotFound,
-    state::State,
-    status::post::TimelinePost,
+    api::masto_api::statuses::{request_status, status_request_link}, components::status::post::TimelinePost, not_found::NotFound, state::State,
+    api::masto_types::status::Status
 };
 
 #[derive(Params, PartialEq, Clone)]
