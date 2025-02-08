@@ -4,7 +4,14 @@ use leptos::{
     prelude::{GetUntracked, ReadSignal, Update, WriteSignal},
 };
 
-use crate::{api::{masto_api::statuses::{request_status, status_request_link}, masto_types::status::Status}, components::timeline::loader::FeedPos, state::State};
+use crate::{
+    api::{
+        masto_api::statuses::{request_status, status_request_link},
+        masto_types::status::Status,
+    },
+    components::timeline::loader::FeedPos,
+    state::State,
+};
 
 /// OAuth: Public. Requires app token + read:statuses if the instance has disabled public preview.
 ///
@@ -183,9 +190,9 @@ impl TimelineParams {
     }
 }
 
-async fn fetch_posts(segment_link: String, set_oldest: WriteSignal<FeedPos>) -> Vec<Status> {
+async fn fetch_posts(segment_link: String, set_oldest: WriteSignal<FeedPos>, prune_chain: bool,) -> Vec<Status> {
     log!("segment_link: {}", &segment_link);
-    let fetched_posts: Vec<Status> = Request::get(&segment_link)
+    let mut fetched_posts: Vec<Status> = Request::get(&segment_link)
         .send()
         .await
         .expect("invalid response")
@@ -198,6 +205,21 @@ async fn fetch_posts(segment_link: String, set_oldest: WriteSignal<FeedPos>) -> 
             None => x.end_of_feed = true,
         };
     });
+
+    for i in (0..fetched_posts.len()).rev() {
+        if i == 0 {
+            continue;
+        }
+        let newer_reply_to = if let Some(newer) = fetched_posts.get(i-1) {
+            newer.in_reply_to_id.clone()
+        } else { None };
+        if let Some(newer_reply_to) = newer_reply_to {
+            if fetched_posts[i].id.eq(&newer_reply_to) {
+                fetched_posts.remove(i);
+            }
+        }
+    }
+
     fetched_posts
 }
 
@@ -206,8 +228,9 @@ pub async fn fetch_posts_with_chain(
     set_oldest: WriteSignal<FeedPos>,
     max_depth: u32,
     state: ReadSignal<State>,
+    prune_chain: bool,
 ) -> Vec<(Status, Option<Vec<Status>>)> {
-    let fetched_posts: Vec<Status> = fetch_posts(segment_link, set_oldest).await;
+    let fetched_posts: Vec<Status> = fetch_posts(segment_link, set_oldest, prune_chain).await;
     let mut with_replies = Vec::with_capacity(fetched_posts.len());
     for post in fetched_posts {
         let replies = match post.in_reply_to_id.is_some() {
@@ -229,7 +252,7 @@ pub async fn fetch_posts_with_chain(
                                 None => {
                                     log!("failed to fetch status");
                                     break 'inner;
-                                },
+                                }
                             }
                         }
                         None => break 'inner,

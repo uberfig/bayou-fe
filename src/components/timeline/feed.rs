@@ -8,11 +8,11 @@ use leptos::{
 
 use crate::api::masto_api::timelines::{fetch_posts_with_chain, TimelineParams};
 use crate::{
-    state::State,
     components::timeline::{
         loader::{FeedPos, LoadOlder},
         segments::{Segment, SegmentList},
     },
+    state::State,
 };
 
 #[component]
@@ -29,7 +29,13 @@ pub fn RenderFeed(feed: String, params: TimelineParams) -> impl IntoView {
     let cloned = first_link.clone();
     let first_segment = Segment {
         contents: LocalResource::new(move || {
-            fetch_posts_with_chain(cloned.clone(), set_feed_pos, state.get().reply_chain_depth, state)
+            fetch_posts_with_chain(
+                cloned.clone(),
+                set_feed_pos,
+                state.get().reply_chain_depth,
+                state,
+                true,
+            )
         }),
         id: first_link,
     };

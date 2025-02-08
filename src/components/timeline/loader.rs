@@ -5,9 +5,7 @@ use crate::{
 use leptos::{
     component,
     ev::scroll,
-    prelude::{
-        signal, Get, IntoAny, OnAttribute, ReadSignal, Set, Update, WriteSignal,
-    },
+    prelude::{signal, Get, IntoAny, OnAttribute, ReadSignal, Set, Update, WriteSignal},
     view, IntoView,
 };
 use leptos::{prelude::ElementChild, server::LocalResource};
@@ -55,6 +53,7 @@ fn load_new(
                 set_feed_state,
                 state.get().reply_chain_depth,
                 state,
+                true
             )
             .await;
             set_loading.set(false);

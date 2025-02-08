@@ -111,25 +111,23 @@ pub fn generate_attachments(attachments: Vec<MediaAttachment>) -> AnyView {
             }
             .into_any()
         }
-        _ => {
-            view! {
-                <div class="attachment-container">
-                    <div class="multiple-attachment column">
-                        <div class="multiple-attachment row w100 h50">
+        _ => view! {
+            <div class="attachment-container">
+                <div class="multiple-attachment column">
+                    <div class="multiple-attachment row w100 h50">
+                        {attachments.remove(0)}
+                        {attachments.remove(0)}
+                    </div>
+                    <div class="multiple-attachment row w100 h50">
+                        {attachments.remove(0)}
+                        {attachments.remove(0)}
+                        <div class="more-attachments" data-amount={attachments.len()}>
                             {attachments.remove(0)}
-                            {attachments.remove(0)}
-                        </div>
-                        <div class="multiple-attachment row w100 h50">
-                            {attachments.remove(0)}
-                            {attachments.remove(0)}
-                            <div class="more-attachments" data-amount={attachments.len()}>
-                                {attachments.remove(0)}
-                            </div>
                         </div>
                     </div>
                 </div>
-            }
-            .into_any()
+            </div>
         }
+        .into_any(),
     }
 }

@@ -33,6 +33,32 @@ pub struct Scopes {
     /// see [`Scopes::admin_read`]
     pub admin_write: bool,
 }
+impl Scopes {
+    pub fn set_read(mut self, to: bool) -> Self {
+        self.read = to;
+        self
+    }
+    pub fn set_write(mut self, to: bool) -> Self {
+        self.write = to;
+        self
+    }
+    pub fn set_push(mut self, to: bool) -> Self {
+        self.push = to;
+        self
+    }
+    pub fn set_profile(mut self, to: bool) -> Self {
+        self.profile = to;
+        self
+    }
+    pub fn set_admin_read(mut self, to: bool) -> Self {
+        self.admin_read = to;
+        self
+    }
+    pub fn set_admin_write(mut self, to: bool) -> Self {
+        self.admin_write = to;
+        self
+    }
+}
 
 impl Serialize for Scopes {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>

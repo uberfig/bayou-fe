@@ -6,7 +6,11 @@ use leptos::{
 };
 use leptos_router::components::A;
 
-use crate::{api::masto_types::status::Status, components::{status::attachment_gallery::Attachments, timeline::source::RenderSrc}, state::State};
+use crate::{
+    api::masto_types::status::Status,
+    components::{status::attachment_gallery::Attachments, timeline::source::RenderSrc},
+    state::State,
+};
 // use leptos_lucide_icons::{Bookmark, MessageSquare, Repeat, Share2, Star};
 
 #[component]
@@ -96,7 +100,6 @@ pub fn TimelinePost(
     reply_chain: Option<Vec<Status>>,
     render_chain: bool,
 ) -> impl IntoView {
-
     let (post, reblogged_by) = match post.reblog {
         Some(inner_post) => (*inner_post, Some(post.account)),
         None => (post, None),
@@ -120,50 +123,54 @@ pub fn TimelinePost(
     };
 
     let topper = match post.in_reply_to_id.clone() {
-        Some(id) => {
-            match reply_chain {
-                Some(reply_chain) => {
-                    let more_reply = match reply_chain.last() {
-                        Some(more) => match &more.in_reply_to_id {
-                            Some(reply) => view! {<a href=format!("/notes/{}", reply)>{"in reply"}</a>}.into_any(),
-                            None => view! {}.into_any(),
-                        },
+        Some(id) => match reply_chain {
+            Some(reply_chain) => {
+                let more_reply = match reply_chain.last() {
+                    Some(more) => match &more.in_reply_to_id {
+                        Some(reply) => {
+                            view! {<a href=format!("/notes/{}", reply)>{"in reply"}</a>}.into_any()
+                        }
                         None => view! {}.into_any(),
-                    };
-                    let amount = reply_chain.len();
-                    let mut replies: Vec<_> = Vec::with_capacity(amount);
-                    let mut reply_chain = reply_chain.into_iter().peekable();
-                    while let Some(reply) = reply_chain.next() {
-                        let above = reply_chain.peek();
-                        if let Some(above) = above {
-                            if above.account.id.eq(&reply.account.id) {
-                                replies.push(view! {
+                    },
+                    None => view! {}.into_any(),
+                };
+                let amount = reply_chain.len();
+                let mut replies: Vec<_> = Vec::with_capacity(amount);
+                let mut reply_chain = reply_chain.into_iter().peekable();
+                while let Some(reply) = reply_chain.next() {
+                    let above = reply_chain.peek();
+                    if let Some(above) = above {
+                        if above.account.id.eq(&reply.account.id) {
+                            replies.push(
+                                view! {
                                     <div class="no-topper">
                                         <hr />
                                         <InnerPost post=reply with_link=true />
                                     </div>
-                                }.into_any());
-                                continue;
-                            }
-                        } 
-                        replies.push(view! {<InnerPost post=reply with_link=true />}.into_any());
+                                }
+                                .into_any(),
+                            );
+                            continue;
+                        }
                     }
-                    replies.reverse();
-                    
-                    view! {
-                        <div class="reply-chain">
-                            {more_reply}
-                            {replies}
-                            {reblogged}
-                        </div>
-                    }
-                    .into_any()
+                    replies.push(view! {<InnerPost post=reply with_link=true />}.into_any());
                 }
-                None => view! {
-                    <a href=format!("/notes/{}", id)>{"in reply"}</a>
-                    {reblogged}
-                }.into_any(),
+                replies.reverse();
+
+                view! {
+                    <div class="reply-chain">
+                        {more_reply}
+                        {replies}
+                        {reblogged}
+                    </div>
+                }
+                .into_any()
             }
+            None => view! {
+                <a href=format!("/notes/{}", id)>{"in reply"}</a>
+                {reblogged}
+            }
+            .into_any(),
         },
         None => reblogged.into_any(),
     };

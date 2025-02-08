@@ -1,4 +1,6 @@
 use bayou_fe::api::masto_api::timelines::{TimelineParams, PUBLIC_TIMELINE};
+use bayou_fe::api::oauth::application::RegisterApplication;
+use bayou_fe::api::oauth::scopes::Scopes;
 use bayou_fe::components::status::status_page::StatusPage;
 use bayou_fe::components::timeline::feed::RenderFeed;
 use bayou_fe::components::user_profile::profile::Profile;
@@ -36,6 +38,13 @@ fn App() -> impl IntoView {
             />
         }
     };
+    let register = RegisterApplication {
+        client_name: "Bayou".to_string(),
+        redirect_uris: vec!["http://127.0.0.1:8080/callback".to_string(), "http://127.0.0.1:8080/register".to_string()],
+        scopes: Scopes::default().set_read(true).set_write(true).set_push(true),
+        website: "joinbayou.org/app".to_string(),
+    };
+    
 
     view! {
         <Router>
