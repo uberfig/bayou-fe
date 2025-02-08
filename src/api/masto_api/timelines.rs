@@ -206,16 +206,18 @@ async fn fetch_posts(segment_link: String, set_oldest: WriteSignal<FeedPos>, pru
         };
     });
 
-    for i in (0..fetched_posts.len()).rev() {
-        if i == 0 {
-            continue;
-        }
-        let newer_reply_to = if let Some(newer) = fetched_posts.get(i-1) {
-            newer.in_reply_to_id.clone()
-        } else { None };
-        if let Some(newer_reply_to) = newer_reply_to {
-            if fetched_posts[i].id.eq(&newer_reply_to) {
-                fetched_posts.remove(i);
+    if prune_chain {
+        for i in (0..fetched_posts.len()).rev() {
+            if i == 0 {
+                continue;
+            }
+            let newer_reply_to = if let Some(newer) = fetched_posts.get(i-1) {
+                newer.in_reply_to_id.clone()
+            } else { None };
+            if let Some(newer_reply_to) = newer_reply_to {
+                if fetched_posts[i].id.eq(&newer_reply_to) {
+                    fetched_posts.remove(i);
+                }
             }
         }
     }
