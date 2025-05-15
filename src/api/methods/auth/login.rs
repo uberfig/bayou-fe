@@ -1,6 +1,9 @@
 use gloo_net::http::Request;
 
-use crate::{api::types::{auth_token::DBAuthToken, login_err::LoginErr, login_request::LoginRequest}, state::State};
+use crate::{
+    api::types::{auth_token::DBAuthToken, login_err::LoginErr, login_request::LoginRequest},
+    state::State,
+};
 
 const PATH: &'static str = "/api/bayou_v1/login";
 

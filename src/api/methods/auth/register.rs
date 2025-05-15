@@ -1,6 +1,9 @@
 use gloo_net::http::Request;
 
-use crate::{api::types::devices::{device_info::DeviceInfo, registered_device::RegisteredDevice}, state::State};
+use crate::{
+    api::types::devices::{device_info::DeviceInfo, registered_device::RegisteredDevice},
+    state::State,
+};
 
 const PATH: &'static str = "/api/bayou_v1/register";
 

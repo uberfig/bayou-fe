@@ -1,6 +1,6 @@
+use super::device_info::DeviceInfo;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-use super::device_info::DeviceInfo;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct RegisteredDevice {

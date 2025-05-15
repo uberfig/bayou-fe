@@ -1,6 +1,20 @@
-use bayou_fe::{api::{methods::auth::{login::login, register::register_device}, types::{auth_token::{AuthToken, DBAuthToken}, devices::{device_info::DeviceInfo, registered_device::RegisteredDevice}, login_err::LoginErr, login_request::LoginRequest}}, state::{PersistantState, State}};
+use bayou_fe::{
+    api::{
+        methods::auth::{login::login, register::register_device},
+        types::{
+            auth_token::{AuthToken, DBAuthToken},
+            devices::{device_info::DeviceInfo, registered_device::RegisteredDevice},
+            login_err::LoginErr,
+            login_request::LoginRequest,
+        },
+    },
+    state::{PersistantState, State},
+};
 use leptos::{prelude::*, server::codee::string::JsonSerdeCodec};
-use leptos_router::{components::{Redirect, Route, Router, Routes}, path};
+use leptos_router::{
+    components::{Redirect, Route, Router, Routes},
+    path,
+};
 use leptos_use::storage::use_local_storage;
 
 const AUTH_TOKEN: &str = "auth-token";
@@ -25,7 +39,7 @@ pub fn Registering() -> impl IntoView {
 }
 
 #[component]
-pub fn LoginProtect<View: IntoView+Clone>(view: View) -> impl IntoView {
+pub fn LoginProtect<View: IntoView + Clone>(view: View) -> impl IntoView {
     let (logged_in, _, _) = use_local_storage::<Option<AuthToken>, JsonSerdeCodec>(AUTH_TOKEN);
     if logged_in.get_untracked().is_none() {
         return view! {<Redirect path="/login"/>}.into_any();
@@ -51,7 +65,8 @@ pub fn AppRoutes() -> impl IntoView {
 
 #[component]
 pub fn App() -> impl IntoView {
-    let (reg_device, set_reg_device, _) = use_local_storage::<Option<RegisteredDevice>, JsonSerdeCodec>(DEVICE_TOKEN);
+    let (reg_device, set_reg_device, _) =
+        use_local_storage::<Option<RegisteredDevice>, JsonSerdeCodec>(DEVICE_TOKEN);
     let state = State {
         prefix: "http://127.0.0.1:8020".to_string(),
     };
@@ -92,7 +107,13 @@ pub fn App() -> impl IntoView {
       </Router>
     }
 }
-async fn login_tasks(request: LoginRequest, state: State, loading: RwSignal<bool>, set_reg: WriteSignal<Option<RegisteredDevice>>, set_logged_in: WriteSignal<Option<AuthToken>>) -> Result<DBAuthToken, LoginErr>{
+async fn login_tasks(
+    request: LoginRequest,
+    state: State,
+    loading: RwSignal<bool>,
+    set_reg: WriteSignal<Option<RegisteredDevice>>,
+    set_logged_in: WriteSignal<Option<AuthToken>>,
+) -> Result<DBAuthToken, LoginErr> {
     let result = login(&state, &request).await;
     if matches!(result, Err(LoginErr::InvalidDevice)) {
         set_reg.set(None);
@@ -111,21 +132,17 @@ fn Login() -> impl IntoView {
     let may_only_contain = RwSignal::new(false);
 
     let loading = RwSignal::new(false);
-    let login_result: RwSignal<Option<LocalResource<Result<DBAuthToken, LoginErr>>>> = RwSignal::new(None);
+    let login_result: RwSignal<Option<LocalResource<Result<DBAuthToken, LoginErr>>>> =
+        RwSignal::new(None);
 
-    let (logged_in, set_logged_in, _) = use_local_storage::<Option<AuthToken>, JsonSerdeCodec>(AUTH_TOKEN);
-    let (reg_device, set_reg_device, _) = use_local_storage::<Option<RegisteredDevice>, JsonSerdeCodec>(DEVICE_TOKEN);
-    let state = use_context::<ReadSignal<State>>()
-        .expect("state should be provided");
+    let (logged_in, set_logged_in, _) =
+        use_local_storage::<Option<AuthToken>, JsonSerdeCodec>(AUTH_TOKEN);
+    let (reg_device, set_reg_device, _) =
+        use_local_storage::<Option<RegisteredDevice>, JsonSerdeCodec>(DEVICE_TOKEN);
+    let state = use_context::<ReadSignal<State>>().expect("state should be provided");
 
-    
     view! {
-        <form
-            // on:submit=move |_| {
-            //     may_only_contain.set(true);
-            //     // ev.prevent_default();
-            // }
-        >
+        <form>
             <label>
                 "username:"
                 <input type="username"
@@ -160,8 +177,8 @@ fn Login() -> impl IntoView {
                             .expect("should not be able to view login with a device that has not been registered")
                             .device_id;
                         let request = LoginRequest {
-                            username: name.get_untracked(), 
-                            password: password.get_untracked(), 
+                            username: name.get_untracked(),
+                            password: password.get_untracked(),
                             device_id,
                         };
                         login_tasks(request.to_owned(), state.get_untracked(), loading, set_reg_device, set_logged_in)
@@ -202,7 +219,7 @@ fn Login() -> impl IntoView {
                 }}
             </p>
         </Show>
-        
+
         <Show when=move || logged_in.get().is_some()>
             <button
                 on:click=move |_| {
