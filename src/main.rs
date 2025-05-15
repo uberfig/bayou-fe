@@ -126,7 +126,7 @@ async fn login_tasks(
 }
 #[component]
 fn Login() -> impl IntoView {
-    let (name, set_name) = signal("".to_string());
+    let username = RwSignal::new("".to_string());
     let password = RwSignal::new("".to_string());
     let uname_pass_incorrect = RwSignal::new(false);
     let may_only_contain = RwSignal::new(false);
@@ -150,14 +150,14 @@ fn Login() -> impl IntoView {
                         let val: String = ev.target().value();
                         if !val.chars().all(|x| char::is_alphanumeric(x) || x.eq(&'_')) {
                             may_only_contain.set(true);
-                            ev.target().set_value(&name.get());
+                            ev.target().set_value(&username.get());
                             return;
                         }
                         may_only_contain.set(false);
-                        set_name.set(ev.target().value().to_lowercase());
-                        ev.target().set_value(&name.get());
+                        username.set(ev.target().value().to_lowercase());
+                        ev.target().set_value(&username.get());
                     }
-                    prop:value=name
+                    prop:value=username
                     disabled=move || loading.get()
                 />
             </label>
@@ -177,7 +177,7 @@ fn Login() -> impl IntoView {
                             .expect("should not be able to view login with a device that has not been registered")
                             .device_id;
                         let request = LoginRequest {
-                            username: name.get_untracked(),
+                            username: username.get_untracked(),
                             password: password.get_untracked(),
                             device_id,
                         };
