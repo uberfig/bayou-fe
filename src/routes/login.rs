@@ -52,37 +52,46 @@ pub fn Login() -> impl IntoView {
 
     view! {
         <form>
-            <UsernameEntry
-                username=username
-                may_only_contain=may_only_contain
-                disabled=loading
-            />
-            <label>
-                "password:"
-                <input type="password"
+            <p>
+                <label for="username">"username:"</label>
+                <UsernameEntry
+                    username=username
+                    may_only_contain=may_only_contain
+                    disabled=loading
+                />
+            </p>
+            <p>
+            <label for="password">"password:"</label>
+                <input type="password" id="password"
                     bind:value=password
                     disabled=move || loading.get()
+                    required
                 />
-            </label>
-            <input type="submit" value="Login"
-                on:click=move |ev| {
-                    ev.prevent_default();
-                    loading.set(true);
-                    login_result.set(Some(LocalResource::new(move || {
-                        let device_id = reg_device.get_untracked()
-                            .expect("should not be able to view login with a device that has not been registered")
-                            .device_id;
-                        let request = LoginRequest {
-                            username: username.get_untracked(),
-                            password: password.get_untracked(),
-                            device_id,
-                        };
-                        login_tasks(request.to_owned(), state.get_untracked(), loading, set_reg_device, set_logged_in)
-                    })));
+            
+            </p>
+            <p>
+                <button type="submit"
+                    on:click=move |ev| {
+                        ev.prevent_default();
+                        loading.set(true);
+                        login_result.set(Some(LocalResource::new(move || {
+                            let device_id = reg_device.get_untracked()
+                                .expect("should not be able to view login with a device that has not been registered")
+                                .device_id;
+                            let request = LoginRequest {
+                                username: username.get_untracked(),
+                                password: password.get_untracked(),
+                                device_id,
+                            };
+                            login_tasks(request.to_owned(), state.get_untracked(), loading, set_reg_device, set_logged_in)
+                        })));
 
-                }
-                disabled=move || loading.get()
-            />
+                    }
+                    disabled=move || loading.get()
+                >
+                "Login"
+                </button>
+            </p>
         </form>
         <Show when=move || uname_pass_incorrect.get()>
             <p>"username or password is incorrect"</p>

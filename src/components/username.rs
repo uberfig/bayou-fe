@@ -7,9 +7,8 @@ pub fn UsernameEntry(
     disabled: RwSignal<bool>,
 ) -> impl IntoView {
     view! {
-        <label>
-            "username:"
-            <input type="username"
+        
+            <input type="username" id="username" required
                 on:input:target=move |ev| {
                     let val: String = ev.target().value();
                     if !val.chars().all(|x| char::is_alphanumeric(x) || x.eq(&'_')) {
@@ -24,6 +23,5 @@ pub fn UsernameEntry(
                 prop:value=username
                 disabled=move || disabled.get()
             />
-        </label>
     }
 }
