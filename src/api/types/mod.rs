@@ -8,3 +8,5 @@ pub mod login_err;
 pub mod login_request;
 pub mod message_loader;
 pub mod text_format;
+pub mod signup_user;
+pub mod signup_result;

@@ -3,51 +3,36 @@ use leptos_use::storage::use_local_storage;
 
 use crate::{
     api::{
-        methods::auth::login::login,
+        methods::auth::signup::signup,
         types::{
-            auth_token::{AuthToken, DBAuthToken},
-            devices::registered_device::RegisteredDevice,
-            login_err::LoginErr,
-            login_request::LoginRequest,
+            signup_result::SignupResult, signup_user::SignupUser
         },
     },
     components::username::UsernameEntry,
-    state::{State, AUTH_TOKEN, DEVICE_TOKEN},
+    state::State,
 };
 
-async fn login_tasks(
-    request: LoginRequest,
+async fn signup_tasks(
+    request: SignupUser,
     state: State,
     loading: RwSignal<bool>,
-    set_reg: WriteSignal<Option<RegisteredDevice>>,
-    set_logged_in: WriteSignal<Option<AuthToken>>,
-) -> Result<DBAuthToken, LoginErr> {
-    let result = login(&state, &request).await;
-    if matches!(result, Err(LoginErr::InvalidDevice)) {
-        set_reg.set(None);
-    }
+) -> Result<(), SignupResult> {
+    let result = signup(&state, &request).await;
     loading.set(false);
-    if let Ok(token) = result.clone() {
-        set_logged_in.set(Some(token.required_token));
-    }
     result
 }
 
 #[component]
-pub fn Login() -> impl IntoView {
+pub fn Signup() -> impl IntoView {
     let username = RwSignal::new("".to_string());
     let password = RwSignal::new("".to_string());
     let uname_pass_incorrect = RwSignal::new(false);
     let may_only_contain = RwSignal::new(false);
 
     let loading = RwSignal::new(false);
-    let login_result: RwSignal<Option<LocalResource<Result<DBAuthToken, LoginErr>>>> =
+    let signup_result: RwSignal<Option<LocalResource<Result<(), SignupResult>>>> =
         RwSignal::new(None);
 
-    let (logged_in, set_logged_in, _) =
-        use_local_storage::<Option<AuthToken>, JsonSerdeCodec>(AUTH_TOKEN);
-    let (reg_device, set_reg_device, _) =
-        use_local_storage::<Option<RegisteredDevice>, JsonSerdeCodec>(DEVICE_TOKEN);
     let state = use_context::<ReadSignal<State>>().expect("state should be provided");
 
     view! {
@@ -74,16 +59,15 @@ pub fn Login() -> impl IntoView {
                     on:click=move |ev| {
                         ev.prevent_default();
                         loading.set(true);
-                        login_result.set(Some(LocalResource::new(move || {
-                            let device_id = reg_device.get_untracked()
-                                .expect("should not be able to view login with a device that has not been registered")
-                                .device_id;
-                            let request = LoginRequest {
+                        signup_result.set(Some(LocalResource::new(move || {
+                            let request = SignupUser {
                                 username: username.get_untracked(),
                                 password: password.get_untracked(),
-                                device_id,
+                                email: None,
+                                token: None,
+                                application_message: None,
                             };
-                            login_tasks(request, state.get_untracked(), loading, set_reg_device, set_logged_in)
+                            signup_tasks(request, state.get_untracked(), loading)
                         })));
 
                     }
@@ -103,36 +87,18 @@ pub fn Login() -> impl IntoView {
             <p>"loading..."</p>
         </Show>
 
-        <Show when=move || {
-            if let Some(val) = login_result.get() {
-                if let Some(val) = val.get() {
-                    return val.is_err();
-                }
-            }
-            false
-        }>
+        <Show when=move || signup_result.get().is_some()>
             <p>
                 {move || {
-                    if let Some(val) = login_result.get() {
+                    if let Some(val) = signup_result.get() {
                         if let Some(val) = val.get() {
-                            if let Err(reason) = val {
-                                return reason.to_string();
-                            }
+                            let msg = val.err().unwrap_or(SignupResult::Success);
+                            return msg.to_string();
                         }
                     }
                     "an unexpected error has occured".to_string()
                 }}
             </p>
-        </Show>
-
-        <Show when=move || logged_in.get().is_some()>
-            <button
-                on:click=move |_| {
-                    set_logged_in.set(None);
-                }
-            >
-                "logout"
-            </button>
         </Show>
     }
 }

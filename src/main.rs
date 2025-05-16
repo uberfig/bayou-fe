@@ -6,7 +6,7 @@ use bayou_fe::{
             devices::{device_info::DeviceInfo, registered_device::RegisteredDevice},
         },
     },
-    routes::login::Login,
+    routes::{login::Login, signup::Signup},
     state::{State, AUTH_TOKEN, DEVICE_TOKEN},
 };
 use leptos::{prelude::*, server::codee::string::JsonSerdeCodec};
@@ -49,7 +49,7 @@ pub fn AppRoutes() -> impl IntoView {
         <Routes fallback=|| "Not found.">
             <Route path=path!("/") view=|| view! {<LoginProtect view=NotFinished />}/>
             <Route path=path!("/login") view=Login/>
-            <Route path=path!("/signup") view=NotFinished/>
+            <Route path=path!("/signup") view=Signup/>
             <Route path=path!("/rooms/@me") view=|| view! {<LoginProtect view=NotFinished />}/>
             // direct messages
             <Route path=path!("/rooms/@me/:room_id") view=|| view! {<LoginProtect view=NotFinished />}/>
