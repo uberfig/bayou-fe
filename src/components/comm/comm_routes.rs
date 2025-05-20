@@ -1,5 +1,5 @@
 use crate::components::{
-    comm::comm_rooms::CommunityRoomsBar, communities::CommunitiesBar, login_protect::LoginProtect,
+    comm::comm_rooms_bar::CommunityRoomsBar, communities::CommunitiesBar, login_protect::LoginProtect,
 };
 use leptos::prelude::*;
 use leptos_router::{
