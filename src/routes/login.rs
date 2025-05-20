@@ -51,6 +51,7 @@ pub fn Login() -> impl IntoView {
     let state = use_context::<ReadSignal<State>>().expect("state should be provided");
 
     view! {
+        <main>
         <form>
             <p>
                 <label for="username">"username:"</label>
@@ -134,5 +135,6 @@ pub fn Login() -> impl IntoView {
                 "logout"
             </button>
         </Show>
+        </main>
     }
 }

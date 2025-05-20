@@ -10,3 +10,5 @@ pub mod message_loader;
 pub mod text_format;
 pub mod signup_user;
 pub mod signup_result;
+pub mod api_community;
+pub mod room;

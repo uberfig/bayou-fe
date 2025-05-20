@@ -1,29 +1,16 @@
 use bayou_fe::{
     api::{
         methods::auth::register::register_device,
-        types::{
-            auth_token::AuthToken,
-            devices::{device_info::DeviceInfo, registered_device::RegisteredDevice},
-        },
-    },
-    routes::{login::Login, signup::Signup},
-    state::{State, AUTH_TOKEN, DEVICE_TOKEN},
+        types::
+            devices::{device_info::DeviceInfo, registered_device::RegisteredDevice}
+        ,
+    }, components::{communities::CommunitiesBar, login_protect::LoginProtect, unimplimented::NotFinished}, routes::{login::Login, signup::Signup}, state::{State, DEVICE_TOKEN}
 };
 use leptos::{prelude::*, server::codee::string::JsonSerdeCodec};
 use leptos_router::{
-    components::{Redirect, Route, Router, Routes},
-    path,
+    components::{Outlet, ParentRoute, Redirect, Route, Router, Routes}, path, MatchNestedRoutes
 };
 use leptos_use::storage::use_local_storage;
-
-#[component]
-pub fn NotFinished() -> impl IntoView {
-    view! {
-        <p>
-        "sorry this route is in progress"
-        </p>
-    }
-}
 
 #[component]
 pub fn Registering() -> impl IntoView {
@@ -35,27 +22,45 @@ pub fn Registering() -> impl IntoView {
 }
 
 #[component]
-pub fn LoginProtect<View: IntoView + Clone>(view: View) -> impl IntoView {
-    let (logged_in, _, _) = use_local_storage::<Option<AuthToken>, JsonSerdeCodec>(AUTH_TOKEN);
-    if logged_in.get_untracked().is_none() {
-        return view! {<Redirect path="/login"/>}.into_any();
+pub fn MainContainer() -> impl IntoView {
+    view! {
+        <nav>
+            <CommunitiesBar />
+        </nav>
+        <main>
+            <p>"above me are the joined communities and below the current room content"</p>
+            <Outlet/>
+        </main>
     }
-    view.into_any()
+}
+
+#[component(transparent)]
+fn RoomRoutes() -> impl MatchNestedRoutes + Clone {
+    view! {
+      <ParentRoute path=path!("/rooms") view=MainContainer >
+        <Route path=path!("") view=|| view! { <LoginProtect view=|| view! {<Redirect path="/rooms/@me"/>} /> } />
+        <Route path=path!("/@me") view=|| view! {<LoginProtect view=|| view! { <p>"should display the dms on this page but none open, maybe have a pic of a logo/mascot here on pc"</p> } />}/>
+        // direct messages
+        <Route path=path!("/@me/:room_id") view=|| view! {<LoginProtect view=NotFinished />}/>
+        <Route path=path!("/:community_id") view=|| view! {<LoginProtect view=NotFinished />}/>
+        // room in a community
+        <Route path=path!("/:community_id/:room_id") view=|| view! {<LoginProtect view=NotFinished />}/>
+      </ParentRoute>
+    }
+    .into_inner()
 }
 
 #[component]
 pub fn AppRoutes() -> impl IntoView {
     view! {
-        <Routes fallback=|| "Not found.">
-            <Route path=path!("/") view=|| view! {<LoginProtect view=NotFinished />}/>
-            <Route path=path!("/login") view=Login/>
-            <Route path=path!("/signup") view=Signup/>
-            <Route path=path!("/rooms/@me") view=|| view! {<LoginProtect view=NotFinished />}/>
-            // direct messages
-            <Route path=path!("/rooms/@me/:room_id") view=|| view! {<LoginProtect view=NotFinished />}/>
-            // room in a community
-            <Route path=path!("/rooms/:community_id/:room_id") view=|| view! {<LoginProtect view=NotFinished />}/>
-        </Routes>
+        <Router>
+            <Routes fallback=|| "Not found.">
+                <Route path=path!("/") view=|| view! {<LoginProtect view=|| view! {<Redirect path="/rooms/@me"/>} />}/>
+                <Route path=path!("/login") view=Login/>
+                <Route path=path!("/signup") view=Signup/>
+                <RoomRoutes />
+            </Routes>
+        </Router>
     }
 }
 
@@ -93,14 +98,7 @@ pub fn App() -> impl IntoView {
     };
 
     view! {
-      <Router>
-        <nav>
-          /* ... */
-        </nav>
-        <main>
-            {load_selector}
-        </main>
-      </Router>
+        {load_selector}
     }
 }
 
