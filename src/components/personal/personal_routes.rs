@@ -1,9 +1,11 @@
+use crate::components::{
+    communities::CommunitiesBar, login_protect::LoginProtect, unimplimented::NotFinished,
+};
 use leptos::prelude::*;
 use leptos_router::{
     components::{Outlet, ParentRoute, Route},
     path, MatchNestedRoutes,
 };
-use crate::components::{communities::CommunitiesBar, login_protect::LoginProtect, unimplimented::NotFinished};
 
 #[component]
 pub fn PersonalContainer() -> impl IntoView {
