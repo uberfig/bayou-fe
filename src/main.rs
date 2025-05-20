@@ -4,8 +4,7 @@ use bayou_fe::{
         types::devices::{device_info::DeviceInfo, registered_device::RegisteredDevice},
     },
     components::{
-        communities::CommunitiesBar, login_protect::LoginProtect, registering::Registering,
-        unimplimented::NotFinished,
+        comm::{comm_rooms::CommunityRoomsBar, comm_routes::CommRoutes}, communities::CommunitiesBar, login_protect::LoginProtect, personal::personal_routes::PersonalRoutes, registering::Registering, unimplimented::NotFinished
     },
     routes::{login::Login, signup::Signup},
     state::{State, DEVICE_TOKEN},
@@ -17,30 +16,13 @@ use leptos_router::{
 };
 use leptos_use::storage::use_local_storage;
 
-#[component]
-pub fn MainContainer() -> impl IntoView {
-    view! {
-        <nav>
-            <CommunitiesBar />
-        </nav>
-        <main>
-            <p>"above me are the joined communities and below the current room content"</p>
-            <Outlet/>
-        </main>
-    }
-}
-
 #[component(transparent)]
 fn RoomRoutes() -> impl MatchNestedRoutes + Clone {
     view! {
-      <ParentRoute path=path!("/rooms") view=MainContainer >
+      <ParentRoute path=path!("/rooms") view=Outlet >
         <Route path=path!("") view=|| view! { <LoginProtect view=|| view! {<Redirect path="/rooms/@me"/>} /> } />
-        <Route path=path!("/@me") view=|| view! {<LoginProtect view=|| view! { <p>"should display the dms on this page but none open, maybe have a pic of a logo/mascot here on pc"</p> } />}/>
-        // direct messages
-        <Route path=path!("/@me/:room_id") view=|| view! {<LoginProtect view=NotFinished />}/>
-        <Route path=path!("/:community_id") view=|| view! {<LoginProtect view=NotFinished />}/>
-        // room in a community
-        <Route path=path!("/:community_id/:room_id") view=|| view! {<LoginProtect view=NotFinished />}/>
+        <PersonalRoutes />
+        <CommRoutes />
       </ParentRoute>
     }
     .into_inner()
