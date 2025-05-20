@@ -3,9 +3,7 @@ use leptos::prelude::*;
 use crate::{
     api::{
         methods::auth::signup::signup,
-        types::{
-            signup_result::SignupResult, signup_user::SignupUser
-        },
+        types::{signup_result::SignupResult, signup_user::SignupUser},
     },
     components::username::UsernameEntry,
     state::State,
@@ -52,7 +50,7 @@ pub fn Signup() -> impl IntoView {
                         disabled=move || loading.get()
                         required
                     />
-                
+
                 </p>
                 <p>
                     <button type="submit"

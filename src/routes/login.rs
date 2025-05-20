@@ -68,7 +68,7 @@ pub fn Login() -> impl IntoView {
                     disabled=move || loading.get()
                     required
                 />
-            
+
             </p>
             <p>
                 <button type="submit"

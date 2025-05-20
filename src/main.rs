@@ -1,25 +1,21 @@
 use bayou_fe::{
     api::{
         methods::auth::register::register_device,
-        types::
-            devices::{device_info::DeviceInfo, registered_device::RegisteredDevice}
-        ,
-    }, components::{communities::CommunitiesBar, login_protect::LoginProtect, unimplimented::NotFinished}, routes::{login::Login, signup::Signup}, state::{State, DEVICE_TOKEN}
+        types::devices::{device_info::DeviceInfo, registered_device::RegisteredDevice},
+    },
+    components::{
+        communities::CommunitiesBar, login_protect::LoginProtect, registering::Registering,
+        unimplimented::NotFinished,
+    },
+    routes::{login::Login, signup::Signup},
+    state::{State, DEVICE_TOKEN},
 };
 use leptos::{prelude::*, server::codee::string::JsonSerdeCodec};
 use leptos_router::{
-    components::{Outlet, ParentRoute, Redirect, Route, Router, Routes}, path, MatchNestedRoutes
+    components::{Outlet, ParentRoute, Redirect, Route, Router, Routes},
+    path, MatchNestedRoutes,
 };
 use leptos_use::storage::use_local_storage;
-
-#[component]
-pub fn Registering() -> impl IntoView {
-    view! {
-        <p>
-        "registering device..."
-        </p>
-    }
-}
 
 #[component]
 pub fn MainContainer() -> impl IntoView {

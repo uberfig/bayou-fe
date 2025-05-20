@@ -7,7 +7,7 @@ pub fn UsernameEntry(
     disabled: RwSignal<bool>,
 ) -> impl IntoView {
     view! {
-        
+
             <input type="username" id="username" required
                 on:input:target=move |ev| {
                     let val: String = ev.target().value();

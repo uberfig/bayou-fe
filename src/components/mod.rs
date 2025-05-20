@@ -1,5 +1,6 @@
-pub mod username;
-pub mod communities;
 pub mod comm_rooms;
-pub mod unimplimented;
+pub mod communities;
 pub mod login_protect;
+pub mod registering;
+pub mod unimplimented;
+pub mod username;

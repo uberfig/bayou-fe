@@ -11,7 +11,10 @@ const PATH: &'static str = "/api/bayou_v1/community/joined";
 pub async fn joined_communites(state: State, token: AuthToken) -> Result<Vec<ApiCommunity>, ()> {
     let result = Request::get(&format!("{}{PATH}", state.get_prefix()))
         .header("content-type", "application/json")
-        .header("authorization", &serde_json::to_string(&token).expect("failed to serialize"))
+        .header(
+            "authorization",
+            &serde_json::to_string(&token).expect("failed to serialize"),
+        )
         .send()
         .await;
     let result = result.unwrap();

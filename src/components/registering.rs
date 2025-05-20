@@ -1,10 +1,10 @@
 use leptos::prelude::*;
 
 #[component]
-pub fn NotFinished() -> impl IntoView {
+pub fn Registering() -> impl IntoView {
     view! {
         <p>
-        "sorry this route is in progress"
+        "registering device..."
         </p>
     }
 }

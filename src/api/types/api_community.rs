@@ -24,9 +24,18 @@ impl ApiCommunity {
         let first = iter.next().unwrap_or("err");
         if let Some(second) = iter.next() {
             if let Some(third) = iter.next() {
-                return format!("{}{}{}", first.chars().next().unwrap(), second.chars().next().unwrap(), third.chars().next().unwrap());
+                return format!(
+                    "{}{}{}",
+                    first.chars().next().unwrap(),
+                    second.chars().next().unwrap(),
+                    third.chars().next().unwrap()
+                );
             }
-            return format!("{}{}", first.chars().next().unwrap(), second.chars().next().unwrap());
+            return format!(
+                "{}{}",
+                first.chars().next().unwrap(),
+                second.chars().next().unwrap()
+            );
         }
         truncate(first, 3).to_string()
     }
