@@ -4,12 +4,10 @@ use bayou_fe::{
         types::devices::{device_info::DeviceInfo, registered_device::RegisteredDevice},
     },
     components::{
-        comm::{comm_rooms_bar::CommunityRoomsBar, comm_routes::CommRoutes},
-        communities::CommunitiesBar,
+        comm::comm_routes::CommRoutes,
         login_protect::LoginProtect,
         personal::personal_routes::PersonalRoutes,
         registering::Registering,
-        unimplimented::NotFinished,
     },
     routes::{login::Login, signup::Signup},
     state::{State, DEVICE_TOKEN},

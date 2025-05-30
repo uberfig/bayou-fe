@@ -5,3 +5,4 @@ pub mod personal;
 pub mod registering;
 pub mod unimplimented;
 pub mod username;
+pub mod room;
