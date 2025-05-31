@@ -141,13 +141,19 @@ pub fn ChatLog(room: Uuid) -> impl IntoView {
             if let Some(message) = message {
                 match message {
                     SocketMsg::NewMessage(message) => {
-                        log.update(|log| {
-                            if let Some(Segment::Live(last)) = log.last_mut() {
-                                last.push(message.to_owned());
-                            } else {
-                                log.push(Segment::Live(vec![message.to_owned()]));
-                            }
-                        });
+                        match message.room == room {
+                            true => {
+                                // we may also want to include a check for if the window is focused
+                                log.update(|log| {
+                                    if let Some(Segment::Live(last)) = log.last_mut() {
+                                        last.push(message.to_owned());
+                                    } else {
+                                        log.push(Segment::Live(vec![message.to_owned()]));
+                                    }
+                                });
+                            },
+                            false => todo!(), // we will want to send a notification to the user
+                        }
                     }
                     SocketMsg::SystemMessage(_) => todo!(),
                 }
