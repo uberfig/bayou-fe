@@ -16,7 +16,8 @@ pub fn Message(message: ApiMessage, render_user: bool) -> impl IntoView {
     let topper = match message.is_reply {
         true => view! {
             <p>"in reply"</p>
-        }.into_any(),
+        }
+        .into_any(),
         false => view! {}.into_any(),
     };
     view! {

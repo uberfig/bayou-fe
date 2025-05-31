@@ -12,15 +12,15 @@ pub enum Segment {
 pub fn MessageSegment(messages: Vec<ApiMessage>) -> impl IntoView {
     // reversed so its newest to oldest, next should be the older message
     let mut iter = messages.into_iter().rev().peekable();
-    
+
     let mut render = Vec::new();
     while let Some(message) = iter.next() {
         let show_user = 'show: {
             if let Some(prior) = iter.peek() {
                 if prior.user.id == message.user.id {
                     break 'show false;
-                } 
-            } 
+                }
+            }
             true
         };
         render.push(view! {
@@ -35,14 +35,12 @@ pub fn MessageSegment(messages: Vec<ApiMessage>) -> impl IntoView {
 
 #[component]
 pub fn SegmentWrap(segment: Segment) -> impl IntoView {
-    let to_render = move || {
-        match segment.to_owned() {
-            Segment::Loaded(loader) => match loader.get() {
-                Some(messages) => view! {<MessageSegment messages=messages/>}.into_any(),
-                None => view! { <p>"Loading..."</p> }.into_any(),
-            },
-            Segment::Live(messages) => view! {<MessageSegment messages=messages/>}.into_any(),
-        }
+    let to_render = move || match segment.to_owned() {
+        Segment::Loaded(loader) => match loader.get() {
+            Some(messages) => view! {<MessageSegment messages=messages/>}.into_any(),
+            None => view! { <p>"Loading..."</p> }.into_any(),
+        },
+        Segment::Live(messages) => view! {<MessageSegment messages=messages/>}.into_any(),
     };
     view! {{to_render}}
 }
@@ -50,7 +48,8 @@ pub fn SegmentWrap(segment: Segment) -> impl IntoView {
 #[component]
 pub fn SegmentList(segments: RwSignal<Vec<Segment>>) -> impl IntoView {
     let list = move || {
-        segments.get()
+        segments
+            .get()
             .into_iter()
             .map(|segment| view! {<SegmentWrap segment=segment/>})
             .collect::<Vec<_>>()
