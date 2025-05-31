@@ -9,6 +9,10 @@ pub fn Message(message: ApiMessage, render_user: bool) -> impl IntoView {
         <img src="https://picsum.photos/64" />
         <h2>{display_name}</h2>
     };
+    let user = match render_user {
+        true => user.into_any(),
+        false => view! {}.into_any(),
+    };
     let topper = match message.is_reply {
         true => view! {
             <p>"in reply"</p>
@@ -16,6 +20,10 @@ pub fn Message(message: ApiMessage, render_user: bool) -> impl IntoView {
         false => view! {}.into_any(),
     };
     view! {
-
+        <div>
+            {topper}
+            {user}
+            <p>{message.content}</p>
+        </div>
     }
 }

@@ -1,8 +1,11 @@
+use codee::binary::MsgpackSerdeCodec;
 use leptos::{prelude::*, server::codee::string::JsonSerdeCodec};
-use leptos_use::storage::use_local_storage;
+use leptos_use::{core::ConnectionReadyState, storage::use_local_storage, use_websocket, use_websocket_with_options, ReconnectLimit, UseWebSocketOptions, UseWebSocketReturn};
 use uuid::Uuid;
+use leptos_router::{hooks::use_params, params::Params};
 
-use crate::{api::{methods::room::messages::{get_messages, MessageSelector}, types::{api_message::ApiMessage, auth_token::AuthToken}}, components::room::segment::{Segment, SegmentList}, state::{State, AUTH_TOKEN}};
+
+use crate::{api::{methods::room::messages::{get_messages, MessageSelector}, types::{api_message::ApiMessage, auth_token::AuthToken, socket_msg::SocketMsg}}, components::room::segment::{Segment, SegmentList}, state::{State, AUTH_TOKEN}};
 
 #[component]
 pub fn Loader(room: Uuid, loading: RwSignal<bool>, oldest: RwSignal<Option<Uuid>>, log: RwSignal<Vec<Segment>>) -> impl IntoView {
@@ -94,9 +97,77 @@ pub fn ChatLog(room: Uuid) -> impl IntoView {
         let last = messages.last().map(|x| x.id);
         oldest.set(last);
     };
+    // log in form oldest segment to newest segment
     let log: RwSignal<Vec<Segment>> = RwSignal::new(vec![
-        load(state.get_untracked(), logged_in.get_untracked().expect("not logged in"), room, MessageSelector::Latest, completed),
+        // load(state.get_untracked(), logged_in.get_untracked().expect("not logged in"), room, MessageSelector::Latest, completed),
         Segment::Live(Vec::new())
     ]);
+
+    let UseWebSocketReturn {
+        ready_state,
+        message,
+        send,
+        open,
+        close,
+        ..
+    } = use_websocket_with_options::<AuthToken, SocketMsg, JsonSerdeCodec, _, _>(
+        "ws://127.0.0.1:8020/api/bayou_v1/ws",
+        UseWebSocketOptions::default()
+            .immediate(true)
+            .reconnect_limit(ReconnectLimit::Infinite)
+            
+            // .on_open()
+    );
+    
+    Effect::new(move |_| {
+        if ConnectionReadyState::Open == ready_state.get() {
+            send(&logged_in.get_untracked().expect("not logged in"));
+        }
+    });
+    // open();
+    // send(&logged_in.get_untracked().expect("not logged in"));
+    Effect::new(move |_| {
+        message.with(move |message| {
+            if let Some(message) = message {
+                match message {
+                    SocketMsg::NewMessage(message) =>{
+                        
+                        log.update(|log| {
+                            if let Some(Segment::Live(last)) = log.last_mut() {
+                                last.push(message.to_owned());
+                            } else {
+                                log.push(Segment::Live(vec![message.to_owned()]));
+                            }
+                        });
+                    },
+                    SocketMsg::SystemMessage(_) => todo!(),
+                }
+            }
+        })
+    });
+
     view! {<SegmentList segments=log />}
+}
+
+#[derive(Params, PartialEq)]
+struct RoomId {
+    room_id: Option<Uuid>,
+}
+
+#[component]
+pub fn ChatLogWrap() -> impl IntoView {
+    let params = use_params::<RoomId>();
+    let id = move || {
+        params
+            .read()
+            .as_ref()
+            .ok()
+            .and_then(|params| params.room_id)
+            .unwrap_or_default()
+    };
+    let rendered = move || {
+        let id = id();
+        view! {<ChatLog room=id />}
+    };
+    view! {{rendered}}
 }

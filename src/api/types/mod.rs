@@ -12,3 +12,4 @@ pub mod room;
 pub mod signup_result;
 pub mod signup_user;
 pub mod text_format;
+pub mod socket_msg;
