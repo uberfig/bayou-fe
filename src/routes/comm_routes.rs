@@ -1,4 +1,4 @@
-use crate::components::{comm::comm_rooms_bar::CommunityRoomsBar, room::chat_log::ChatLogWrap};
+use crate::components::{comm::comm_rooms_bar::CommunityRoomsBar, room::room::Room};
 use leptos::prelude::*;
 use leptos_router::{
     components::{Outlet, ParentRoute, Route},
@@ -23,7 +23,7 @@ pub fn CommRoutes() -> impl MatchNestedRoutes + Clone {
       <ParentRoute path=path!("/:community_id") view=CommContainer >
         <Route path=path!("") view=|| view! { <p>"meow the community description goes here"</p> } />
         // should display rooms with the current highlighted
-        <Route path=path!("/:room_id") view=|| view! { <p>"meow the community room goes here"</p> <ChatLogWrap /> }/>
+        <Route path=path!("/:room_id") view=|| view! { <p>"meow the community room goes here"</p> <Room /> }/>
       </ParentRoute>
     }
     .into_inner()

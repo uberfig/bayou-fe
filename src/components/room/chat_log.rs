@@ -15,6 +15,8 @@ use crate::{
     state::{State, AUTH_TOKEN},
 };
 
+use super::message_sender::MessageReply;
+
 #[component]
 pub fn Loader(
     room: Uuid,
@@ -99,7 +101,7 @@ where
 }
 
 #[component]
-pub fn ChatLog(room: Uuid) -> impl IntoView {
+pub fn ChatLog(replying: RwSignal<Option<MessageReply>>, room: Uuid) -> impl IntoView {
     let (logged_in, _, _) = use_local_storage::<Option<AuthToken>, JsonSerdeCodec>(AUTH_TOKEN);
     let loading = RwSignal::new(true);
     let state = use_context::<ReadSignal<State>>().expect("state should be provided");
@@ -162,27 +164,4 @@ pub fn ChatLog(room: Uuid) -> impl IntoView {
     });
 
     view! {<SegmentList segments=log />}
-}
-
-#[derive(Params, PartialEq)]
-struct RoomId {
-    room_id: Option<Uuid>,
-}
-
-#[component]
-pub fn ChatLogWrap() -> impl IntoView {
-    let params = use_params::<RoomId>();
-    let id = move || {
-        params
-            .read()
-            .as_ref()
-            .ok()
-            .and_then(|params| params.room_id)
-            .unwrap_or_default()
-    };
-    let rendered = move || {
-        let id = id();
-        view! {<ChatLog room=id />}
-    };
-    view! {{rendered}}
 }
