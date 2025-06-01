@@ -151,7 +151,7 @@ pub fn ChatLog(room: Uuid) -> impl IntoView {
                                         log.push(Segment::Live(vec![message.to_owned()]));
                                     }
                                 });
-                            },
+                            }
                             false => todo!(), // we will want to send a notification to the user
                         }
                     }

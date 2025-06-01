@@ -1,6 +1,4 @@
-use crate::components::{
-    comm::comm_rooms_bar::CommunityRoomsBar, room::chat_log::ChatLogWrap,
-};
+use crate::components::{comm::comm_rooms_bar::CommunityRoomsBar, room::chat_log::ChatLogWrap};
 use leptos::prelude::*;
 use leptos_router::{
     components::{Outlet, ParentRoute, Route},

@@ -3,10 +3,7 @@ use bayou_fe::{
         methods::auth::register::register_device,
         types::devices::{device_info::DeviceInfo, registered_device::RegisteredDevice},
     },
-    components::{
-        login_protect::LoginProtect,
-        registering::Registering,
-    },
+    components::{login_protect::LoginProtect, registering::Registering},
     routes::{login::Login, room_routes::RoomRoutes, signup::Signup},
     state::{State, DEVICE_TOKEN},
 };

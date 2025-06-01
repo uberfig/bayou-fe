@@ -1,6 +1,4 @@
-use crate::components::{communities::CommunitiesBar, 
-    login_protect::LoginProtect}
-;
+use crate::components::{communities::CommunitiesBar, login_protect::LoginProtect};
 use leptos::prelude::*;
 use leptos_router::{
     components::{Outlet, ParentRoute, Redirect, Route},
