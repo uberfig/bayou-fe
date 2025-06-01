@@ -4,30 +4,18 @@ use bayou_fe::{
         types::devices::{device_info::DeviceInfo, registered_device::RegisteredDevice},
     },
     components::{
-        comm::comm_routes::CommRoutes, login_protect::LoginProtect,
-        personal::personal_routes::PersonalRoutes, registering::Registering,
+        login_protect::LoginProtect,
+        registering::Registering,
     },
-    routes::{login::Login, signup::Signup},
+    routes::{login::Login, room_routes::RoomRoutes, signup::Signup},
     state::{State, DEVICE_TOKEN},
 };
 use leptos::{prelude::*, server::codee::string::JsonSerdeCodec};
 use leptos_router::{
-    components::{Outlet, ParentRoute, Redirect, Route, Router, Routes},
-    path, MatchNestedRoutes,
+    components::{Redirect, Route, Router, Routes},
+    path,
 };
 use leptos_use::storage::use_local_storage;
-
-#[component(transparent)]
-fn RoomRoutes() -> impl MatchNestedRoutes + Clone {
-    view! {
-      <ParentRoute path=path!("/rooms") view=Outlet >
-        <Route path=path!("") view=|| view! { <LoginProtect view=|| view! {<Redirect path="/rooms/@me"/>} /> } />
-        <PersonalRoutes />
-        <CommRoutes />
-      </ParentRoute>
-    }
-    .into_inner()
-}
 
 #[component]
 pub fn AppRoutes() -> impl IntoView {
