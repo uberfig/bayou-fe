@@ -1,4 +1,4 @@
-use leptos::{prelude::*, server::codee::string::JsonSerdeCodec};
+use leptos::{html::Input, prelude::*, server::codee::string::JsonSerdeCodec};
 use leptos_use::storage::use_local_storage;
 use uuid::Uuid;
 
@@ -62,15 +62,24 @@ pub fn MessageInput(replying: RwSignal<Option<MessageReply>>, room: Uuid) -> imp
         }
     };
 
+    let node_ref = NodeRef::<Input>::new();
+
     let finished_sending = move |success: bool| {
         if success {
             message.set("".to_string());
         }
         loading.set(false);
+        if let Some(input) = node_ref.get_untracked() {
+            input.set_disabled(false);
+            let _ = input.focus();
+        }
     };
 
     let send_clicked = move || {
         loading.set(true);
+        if let Some(input) = node_ref.get_untracked() {
+            input.set_disabled(true);
+        }
         let message = Messageinfo {
             is_reply: replying.get_untracked().is_some(), 
             in_reply_to: replying.get_untracked().map(|x| x.message_id), 
@@ -87,9 +96,10 @@ pub fn MessageInput(replying: RwSignal<Option<MessageReply>>, room: Uuid) -> imp
         {replying_disp}
         <form>
             <p>
-                <input type="text" id="text"
+                <input type="text" id="text" node_ref=node_ref
+                        autofocus=true
                         bind:value=message
-                        disabled=move || loading.get()
+                        // disabled=move || loading.get()
                         required
                 />
                 <button type="submit"
