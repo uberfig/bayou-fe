@@ -1,4 +1,4 @@
-use leptos::{prelude::*, server::codee::string::JsonSerdeCodec};
+use leptos::{leptos_dom::logging::console_log, prelude::*, server::codee::string::JsonSerdeCodec};
 use leptos_router::{hooks::use_params, params::Params};
 use leptos_use::{
     core::ConnectionReadyState, storage::use_local_storage, use_websocket_with_options,
@@ -30,9 +30,9 @@ pub fn Loader(
     let load_older = move || {
         loading.set(true);
         let completed = move |messages: &Vec<ApiMessage>| {
-            loading.set(false);
-            let last = messages.last().map(|x| x.id);
+            let last = messages.get(0).map(|x| x.id);
             oldest.set(last);
+            loading.set(false);
         };
         log.update(|log| {
             log.insert(
@@ -86,7 +86,7 @@ where
         let auth = auth.to_owned();
         let completed = completed.clone();
         async move {
-            let posts = get_messages(state, auth, room, selector).await;
+            let posts = get_messages(state, auth, room, false, selector).await;
             match posts {
                 Ok(posts) => {
                     completed(&posts);
@@ -108,14 +108,28 @@ pub fn ChatLog(replying: RwSignal<Option<MessageReply>>, room: Uuid) -> impl Int
     let oldest: RwSignal<Option<Uuid>> = RwSignal::new(None);
     let completed = move |messages: &Vec<ApiMessage>| {
         loading.set(false);
-        let last = messages.last().map(|x| x.id);
+        let last = messages.get(0).map(|x| x.id);
         oldest.set(last);
     };
     // log in form oldest segment to newest segment
     let log: RwSignal<Vec<Segment>> = RwSignal::new(vec![
-        // load(state.get_untracked(), logged_in.get_untracked().expect("not logged in"), room, MessageSelector::Latest, completed),
+        load(state.get_untracked(), logged_in.get_untracked().expect("not logged in"), room, MessageSelector::Latest, completed),
         Segment::Live(Vec::new()),
     ]);
+
+    Effect::new(move |_| {
+        console_log(&oldest.get().map(|x| x.as_hyphenated().to_string()).unwrap_or("no oldest".to_string()));
+    });
+
+    Effect::new(move |_| {
+        let log: Vec<String> = log.get().into_iter().map(|x| {
+            match x {
+                Segment::Loaded(local_resource) => "loaded".to_string(),
+                Segment::Live(api_messages) => "live messages".to_string(),
+            }
+        }).collect();
+        console_log(&serde_json::to_string(&log).unwrap());
+    });
 
     let UseWebSocketReturn {
         ready_state,
@@ -163,5 +177,8 @@ pub fn ChatLog(replying: RwSignal<Option<MessageReply>>, room: Uuid) -> impl Int
         })
     });
 
-    view! {<SegmentList segments=log />}
+    view! {
+        <Loader log=log room=room oldest=oldest loading=loading/>
+        <SegmentList segments=log />
+    }
 }

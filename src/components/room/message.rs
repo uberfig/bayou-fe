@@ -25,6 +25,9 @@ pub fn Message(message: ApiMessage, render_user: bool) -> impl IntoView {
             {topper}
             {user}
             <p>{message.content}</p>
+            <p>
+            // "uuid: " {message.id.as_simple().to_string()}
+            </p>
         </div>
     }
 }
