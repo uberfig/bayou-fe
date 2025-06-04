@@ -2,31 +2,10 @@ use bayou_fe::{
     api::{
         methods::auth::register::register_device,
         types::devices::{device_info::DeviceInfo, registered_device::RegisteredDevice},
-    },
-    components::{login_protect::LoginProtect, registering::Registering},
-    routes::{login::Login, room_routes::RoomRoutes, signup::Signup},
-    state::{State, DEVICE_TOKEN},
+    }, components::registering::Registering, routes::app_routes::AppRoutes, state::{State, DEVICE_TOKEN}
 };
 use leptos::{prelude::*, server::codee::string::JsonSerdeCodec};
-use leptos_router::{
-    components::{Redirect, Route, Router, Routes},
-    path,
-};
 use leptos_use::storage::use_local_storage;
-
-#[component]
-pub fn AppRoutes() -> impl IntoView {
-    view! {
-        <Router>
-            <Routes fallback=|| "Not found.">
-                <Route path=path!("/") view=|| view! {<LoginProtect view=|| view! {<Redirect path="/rooms/@me"/>} />}/>
-                <Route path=path!("/login") view=Login/>
-                <Route path=path!("/signup") view=Signup/>
-                <RoomRoutes />
-            </Routes>
-        </Router>
-    }
-}
 
 #[component]
 pub fn App() -> impl IntoView {

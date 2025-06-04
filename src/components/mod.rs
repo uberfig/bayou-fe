@@ -6,3 +6,4 @@ pub mod registering;
 pub mod room;
 pub mod unimplimented;
 pub mod username;
+pub mod modal;

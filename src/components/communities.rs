@@ -21,6 +21,8 @@ pub fn CommunitiesBar() -> impl IntoView {
     view! {
         <div class="comm_bar">
             <ul>
+                <li><a href="/rooms/@home">"home"</a></li>
+                <li><a href="/community/new">"new"</a></li>
                 {move || {
                     match loaded.get() {
                         Some(Ok(comms)) => {

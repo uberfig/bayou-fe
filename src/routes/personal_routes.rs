@@ -20,7 +20,7 @@ pub fn PersonalContainer() -> impl IntoView {
 #[component(transparent)]
 pub fn PersonalRoutes() -> impl MatchNestedRoutes + Clone {
     view! {
-      <ParentRoute path=path!("/@me") view=PersonalContainer >
+      <ParentRoute path=path!("/@home") view=PersonalContainer >
         <Route path=path!("") view=|| view! { <p>"meow should display the dms on this page but none open, maybe have a pic of a logo/mascot here on pc"</p> } />
         // should display user dms with the current one highlighted in nav
         <Route path=path!("/:room_id") view=NotFinished/>

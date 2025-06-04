@@ -22,7 +22,7 @@ pub fn AuthRoutesContainter() -> impl IntoView {
 pub fn RoomRoutes() -> impl MatchNestedRoutes + Clone {
     view! {
       <ParentRoute path=path!("/rooms") view=|| view! {<LoginProtect view=AuthRoutesContainter />} >
-        <Route path=path!("") view=|| view! {<Redirect path="/rooms/@me"/>} />
+        <Route path=path!("") view=|| view! {<Redirect path="/rooms/@home"/>} />
         <PersonalRoutes />
         <CommRoutes />
       </ParentRoute>
