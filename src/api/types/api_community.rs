@@ -37,6 +37,6 @@ impl ApiCommunity {
                 second.chars().next().unwrap()
             );
         }
-        truncate(first, 3).to_string()
+        truncate(first, 5).to_string()
     }
 }

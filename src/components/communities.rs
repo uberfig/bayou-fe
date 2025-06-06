@@ -7,7 +7,7 @@ use crate::{
 };
 
 #[component]
-pub fn CommunitiesBar(refresh: RwSignal<()>) -> impl IntoView {
+pub fn CommunitiesBar(refresh: RwSignal<()>, create_modal: RwSignal<bool>) -> impl IntoView {
     let (logged_in, _, _) = use_local_storage::<Option<AuthToken>, JsonSerdeCodec>(AUTH_TOKEN);
     let state = use_context::<ReadSignal<State>>().expect("state should be provided");
 
@@ -44,7 +44,15 @@ pub fn CommunitiesBar(refresh: RwSignal<()>) -> impl IntoView {
             <div class="comm_bar">
                 <ul>
                     <li><a href="/rooms/@home">"home"</a></li>
-                    <li><a href="/community/new">"new"</a></li>
+                    <li>
+                        <button 
+                            on:click= move |_| {
+                                create_modal.set(true);
+                            }
+                        >
+                            "new"
+                        </button>
+                    </li>
                     {move || {
                         match loaded.get() {
                             Some(Ok(comms)) => {
