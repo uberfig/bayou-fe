@@ -13,7 +13,7 @@ pub fn AppRoutes() -> impl IntoView {
     view! {
         <Router>
             <Routes fallback=|| "Not found.">
-                <Route path=path!("/") view=|| view! {<LoginProtect view=|| view! {<Redirect path="/rooms/@me"/>} />}/>
+                <Route path=path!("/") view=|| view! {<LoginProtect view=|| view! {<Redirect path="/rooms/@home"/>} />}/>
                 <Route path=path!("/login") view=Login/>
                 <Route path=path!("/signup") view=Signup/>
                 <RoomRoutes />

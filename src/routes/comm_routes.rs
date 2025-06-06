@@ -7,9 +7,10 @@ use leptos_router::{
 
 #[component]
 pub fn CommContainer() -> impl IntoView {
+    let refresh = RwSignal::new(());
     view! {
         <nav>
-            <CommunityRoomsBar />
+            <CommunityRoomsBar refresh=refresh/>
         </nav>
         <main>
             <Outlet/>

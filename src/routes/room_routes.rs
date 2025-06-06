@@ -9,9 +9,10 @@ use super::{comm_routes::CommRoutes, personal_routes::PersonalRoutes};
 
 #[component]
 pub fn AuthRoutesContainter() -> impl IntoView {
+    let refresh = RwSignal::new(());
     view! {
         <nav>
-            <CommunitiesBar />
+            <CommunitiesBar refresh=refresh />
             <p>"above me are the joined communities"</p>
         </nav>
         <Outlet/>

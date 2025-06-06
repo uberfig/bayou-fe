@@ -1,3 +1,4 @@
+use leptos::leptos_dom::logging::console_log;
 use leptos::Params;
 use leptos::{prelude::*, server::codee::string::JsonSerdeCodec};
 use leptos_router::{hooks::use_params, params::Params};
@@ -15,7 +16,7 @@ struct CommId {
 }
 
 #[component]
-pub fn CommunityRoomsBar() -> impl IntoView {
+pub fn CommunityRoomsBar(refresh: RwSignal<()>) -> impl IntoView {
     let params = use_params::<CommId>();
     let (logged_in, _, _) = use_local_storage::<Option<AuthToken>, JsonSerdeCodec>(AUTH_TOKEN);
     let state = use_context::<ReadSignal<State>>().expect("state should be provided");
@@ -38,7 +39,22 @@ pub fn CommunityRoomsBar() -> impl IntoView {
             community_rooms(state, token, community)
         })
     };
-    let (rooms, _set_rooms) = signal(resource());
+    let (rooms, set_rooms) = signal(resource());
+    let mut first_time = true;
+    
+    Effect::new(move || {
+        refresh.get();
+        match first_time {
+            true => {
+                first_time=false;
+            },
+            false => {
+                console_log("refreshing rooms");
+                set_rooms.set(resource());
+            },
+        }
+    });
+
     let render_rooms =
         move || {
             let rooms = rooms.get();
