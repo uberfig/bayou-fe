@@ -1,7 +1,5 @@
 use leptos::leptos_dom::logging::console_log;
-use leptos::Params;
 use leptos::{prelude::*, server::codee::string::JsonSerdeCodec};
-use leptos_router::{hooks::use_params, params::Params};
 use leptos_use::storage::use_local_storage;
 use uuid::Uuid;
 
@@ -11,32 +9,18 @@ use crate::{
     state::{State, AUTH_TOKEN},
 };
 
-#[derive(Params, PartialEq)]
-struct CommId {
-    community_id: Option<Uuid>,
-}
-
 #[component]
-pub fn CommunityRoomsBar(refresh: RwSignal<()>) -> impl IntoView {
-    let params = use_params::<CommId>();
+pub fn CommunityRoomsBar(id: Uuid, refresh: RwSignal<()>, create_modal: RwSignal<bool>, room_count: RwSignal<usize>) -> impl IntoView {
     let (logged_in, _, _) = use_local_storage::<Option<AuthToken>, JsonSerdeCodec>(AUTH_TOKEN);
     let state = use_context::<ReadSignal<State>>().expect("state should be provided");
 
-    let id = move || {
-        params
-            .read()
-            .as_ref()
-            .ok()
-            .and_then(|params| params.community_id)
-            .unwrap_or_default()
-    };
     let resource = move || {
         LocalResource::new(move || {
             let token = logged_in
                 .get_untracked()
                 .expect("trying to get comm rooms when not logged in");
             let state = state.get_untracked();
-            let community = id();
+            let community = id;
             community_rooms(state, token, community)
         })
     };
@@ -61,13 +45,23 @@ pub fn CommunityRoomsBar(refresh: RwSignal<()>) -> impl IntoView {
             let rooms = rooms.get();
             match rooms.get() {
                 Some(Ok(rooms)) => {
+                    room_count.set(rooms.len());
                     let rooms = rooms.into_iter()
                     .map(|x| view! {
-                        <li><a href={format!("{}/{}/{}", AUTH_PREFIX, id(), x.id)}>{x.info.name}</a></li>
+                        <li><a href={format!("{}/{}/{}", AUTH_PREFIX, id, x.id)}>{x.info.name}</a></li>
                     })
                     .collect::<Vec<_>>();
                     view! {
                         <ul>
+                            <li>
+                                <button
+                                    on:click= move |_| {
+                                        create_modal.set(true);
+                                    }
+                                >
+                                    "new"
+                                </button>
+                            </li>
                             {rooms}
                         </ul>
                     }

@@ -1,21 +1,52 @@
-use crate::components::{comm::comm_rooms_bar::CommunityRoomsBar, room::room::Room};
+use crate::components::{comm::comm_rooms_bar::CommunityRoomsBar, modal::{base_modal::BaseModal, create_room::CreateRoom}, room::room::Room};
+use leptos::Params;
+use leptos_router::{hooks::use_params, params::Params};
 use leptos::prelude::*;
 use leptos_router::{
     components::{Outlet, ParentRoute, Route},
     path, MatchNestedRoutes,
 };
+use uuid::Uuid;
+
+#[derive(Params, PartialEq)]
+pub struct CommId {
+    pub community_id: Option<Uuid>,
+}
 
 #[component]
 pub fn CommContainer() -> impl IntoView {
-    let refresh = RwSignal::new(());
-    view! {
-        <nav>
-            <CommunityRoomsBar refresh=refresh/>
-        </nav>
-        <main>
-            <Outlet/>
-        </main>
-    }
+    let refresh_rooms = RwSignal::new(());
+    let params = use_params::<CommId>();
+    let create_room_modal = RwSignal::new(false);
+    let room_count: RwSignal<usize> = RwSignal::new(0);
+
+    let id = move || {
+        params
+            .read()
+            .as_ref()
+            .ok()
+            .and_then(|params| params.community_id)
+            .unwrap_or_default()
+    };
+
+    let get_view = move || {
+        let id = id();
+
+        view! {
+            <nav>
+                <BaseModal 
+                    view=move || view! {<CreateRoom display=create_room_modal refresh=refresh_rooms comm=id room_count=room_count />}
+                    display=create_room_modal 
+                />
+                <CommunityRoomsBar refresh=refresh_rooms id=id create_modal=create_room_modal room_count=room_count />
+            </nav>
+            <main>
+                <Outlet/>
+            </main>
+        }
+    };
+    
+    view! {{get_view}}
 }
 
 #[component(transparent)]
