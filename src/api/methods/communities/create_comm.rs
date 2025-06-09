@@ -14,7 +14,11 @@ pub struct Communityinfo {
     pub description: Option<String>,
 }
 
-pub async fn create_comm(state: State, token: AuthToken, comm: Communityinfo) -> Result<ApiCommunity, ()> {
+pub async fn create_comm(
+    state: State,
+    token: AuthToken,
+    comm: Communityinfo,
+) -> Result<ApiCommunity, ()> {
     let result = Request::post(&format!("{}{PATH}", state.get_prefix()))
         .header("content-type", "application/json")
         .header(

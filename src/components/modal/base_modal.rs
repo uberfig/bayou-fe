@@ -1,7 +1,10 @@
 use leptos::{html::Dialog, prelude::*};
 
 #[component]
-pub fn BaseModal<View: IntoView + Clone + 'static>(view: View, display: RwSignal<bool>) -> impl IntoView {
+pub fn BaseModal<View: IntoView + Clone + 'static>(
+    view: View,
+    display: RwSignal<bool>,
+) -> impl IntoView {
     let view = move || view.clone().into_any();
     let node_ref = NodeRef::<Dialog>::new();
     Effect::new(move || {
@@ -10,10 +13,10 @@ pub fn BaseModal<View: IntoView + Clone + 'static>(view: View, display: RwSignal
             match disp {
                 true => {
                     let _ = dialog.show_modal();
-                },
+                }
                 false => {
                     let _ = dialog.close();
-                },
+                }
             };
         }
     });

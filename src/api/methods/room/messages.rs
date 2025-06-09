@@ -28,7 +28,7 @@ pub async fn get_messages(
 ) -> Result<Vec<ApiMessage>, ()> {
     let mut query = format!("?room={}&inclusive={}", room.as_simple(), inclusive);
     match selector {
-        MessageSelector::Latest => {},
+        MessageSelector::Latest => {}
         MessageSelector::Older(uuid) => query.push_str(&format!("&older={}", uuid.as_simple())),
         MessageSelector::Newer(uuid) => query.push_str(&format!("&newer={}", uuid.as_simple())),
     };

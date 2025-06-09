@@ -3,11 +3,10 @@ use leptos_use::storage::use_local_storage;
 use uuid::Uuid;
 
 use crate::{
-    api::{methods::message::send_message::send_message, 
-        types::{
-            auth_token::AuthToken, message_info::Messageinfo, text_format::TextFormat,
-        }}
-    ,
+    api::{
+        methods::message::send_message::send_message,
+        types::{auth_token::AuthToken, message_info::Messageinfo, text_format::TextFormat},
+    },
     state::{State, AUTH_TOKEN},
 };
 
@@ -46,20 +45,17 @@ pub fn MessageInput(replying: RwSignal<Option<MessageReply>>, room: Uuid) -> imp
     let message = RwSignal::new("".to_string());
 
     let loading = RwSignal::new(false);
-    let send_result: RwSignal<Option<LocalResource<Result<(), ()>>>> =
-        RwSignal::new(None);
+    let send_result: RwSignal<Option<LocalResource<Result<(), ()>>>> = RwSignal::new(None);
 
-    let (auth, _, _) =
-        use_local_storage::<Option<AuthToken>, JsonSerdeCodec>(AUTH_TOKEN);
+    let (auth, _, _) = use_local_storage::<Option<AuthToken>, JsonSerdeCodec>(AUTH_TOKEN);
     let state = use_context::<ReadSignal<State>>().expect("state should be provided");
 
-    let replying_disp = move || {
-        match replying.get() {
-            Some(reply_to) => view! {
-                <p>"replying to: "{reply_to.display_name}</p>
-            }.into_any(),
-            None => view! {}.into_any(),
+    let replying_disp = move || match replying.get() {
+        Some(reply_to) => view! {
+            <p>"replying to: "{reply_to.display_name}</p>
         }
+        .into_any(),
+        None => view! {}.into_any(),
     };
 
     let node_ref = NodeRef::<Input>::new();
@@ -81,15 +77,20 @@ pub fn MessageInput(replying: RwSignal<Option<MessageReply>>, room: Uuid) -> imp
             input.set_disabled(true);
         }
         let message = Messageinfo {
-            is_reply: replying.get_untracked().is_some(), 
-            in_reply_to: replying.get_untracked().map(|x| x.message_id), 
-            proxy_id: None, 
-            content: message.get_untracked(), 
-            format: TextFormat::Markdown, 
-            language: None, 
-            room
+            is_reply: replying.get_untracked().is_some(),
+            in_reply_to: replying.get_untracked().map(|x| x.message_id),
+            proxy_id: None,
+            content: message.get_untracked(),
+            format: TextFormat::Markdown,
+            language: None,
+            room,
         };
-        send_result.set(Some(send(state.get_untracked(), auth.get_untracked().expect("not logged in"), message, finished_sending)));
+        send_result.set(Some(send(
+            state.get_untracked(),
+            auth.get_untracked().expect("not logged in"),
+            message,
+            finished_sending,
+        )));
     };
 
     view! {

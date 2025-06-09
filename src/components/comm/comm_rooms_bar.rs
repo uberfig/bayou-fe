@@ -41,17 +41,17 @@ pub fn CommunityRoomsBar(refresh: RwSignal<()>) -> impl IntoView {
     };
     let (rooms, set_rooms) = signal(resource());
     let mut first_time = true;
-    
+
     Effect::new(move || {
         refresh.get();
         match first_time {
             true => {
-                first_time=false;
-            },
+                first_time = false;
+            }
             false => {
                 console_log("refreshing rooms");
                 set_rooms.set(resource());
-            },
+            }
         }
     });
 

@@ -2,8 +2,10 @@ use leptos::prelude::*;
 use leptos_router::{hooks::use_params, params::Params};
 use uuid::Uuid;
 
-use crate::components::room::{chat_log::ChatLog, message_sender::{MessageInput, MessageReply}};
-
+use crate::components::room::{
+    chat_log::ChatLog,
+    message_sender::{MessageInput, MessageReply},
+};
 
 #[derive(Params, PartialEq)]
 struct RoomId {
@@ -21,7 +23,7 @@ pub fn Room() -> impl IntoView {
             .and_then(|params| params.room_id)
             .unwrap_or_default()
     };
-    // todo get room info and have things use that like the title etc 
+    // todo get room info and have things use that like the title etc
     // and set page metadata like title
     let room = move || {
         let replying: RwSignal<Option<MessageReply>> = RwSignal::new(None);

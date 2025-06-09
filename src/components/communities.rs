@@ -24,17 +24,17 @@ pub fn CommunitiesBar(refresh: RwSignal<()>, create_modal: RwSignal<bool>) -> im
     let loaded = RwSignal::new(resource());
 
     let mut first_time = true;
-    
+
     Effect::new(move || {
         refresh.get();
         match first_time {
             true => {
-                first_time=false;
-            },
+                first_time = false;
+            }
             false => {
                 console_log("refreshing comms");
                 loaded.set(resource());
-            },
+            }
         }
     });
 
@@ -45,7 +45,7 @@ pub fn CommunitiesBar(refresh: RwSignal<()>, create_modal: RwSignal<bool>) -> im
                 <ul>
                     <li><a href="/rooms/@home">"home"</a></li>
                     <li>
-                        <button 
+                        <button
                             on:click= move |_| {
                                 create_modal.set(true);
                             }

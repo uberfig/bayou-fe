@@ -2,7 +2,10 @@ use bayou_fe::{
     api::{
         methods::auth::register::register_device,
         types::devices::{device_info::DeviceInfo, registered_device::RegisteredDevice},
-    }, components::registering::Registering, routes::app_routes::AppRoutes, state::{State, DEVICE_TOKEN}
+    },
+    components::registering::Registering,
+    routes::app_routes::AppRoutes,
+    state::{State, DEVICE_TOKEN},
 };
 use leptos::{prelude::*, server::codee::string::JsonSerdeCodec};
 use leptos_use::storage::use_local_storage;

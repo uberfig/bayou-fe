@@ -1,9 +1,15 @@
 use codee::string::JsonSerdeCodec;
-use leptos::{leptos_dom::logging::console_log, prelude::*};
+use leptos::prelude::*;
 use leptos_router::components::Redirect;
 use leptos_use::storage::use_local_storage;
 
-use crate::{api::{methods::communities::create_comm::{create_comm, Communityinfo}, types::{api_community::ApiCommunity, auth_token::AuthToken}}, state::{State, AUTH_TOKEN}};
+use crate::{
+    api::{
+        methods::communities::create_comm::{create_comm, Communityinfo},
+        types::{api_community::ApiCommunity, auth_token::AuthToken},
+    },
+    state::{State, AUTH_TOKEN},
+};
 
 pub fn create<F>(
     state: State,
@@ -43,11 +49,19 @@ pub fn CreateComm(display: RwSignal<bool>, refresh: RwSignal<()>) -> impl IntoVi
         loading.set(false);
         refresh.set(());
     };
-    
+
     let create_clicked = move || {
         loading.set(true);
-        let comm = Communityinfo { name: name.get_untracked(), description: None };
-        create_result.set(Some(create(state.get_untracked(), auth.get_untracked().expect("not logged in"), comm, completed)));
+        let comm = Communityinfo {
+            name: name.get_untracked(),
+            description: None,
+        };
+        create_result.set(Some(create(
+            state.get_untracked(),
+            auth.get_untracked().expect("not logged in"),
+            comm,
+            completed,
+        )));
     };
 
     view! {
