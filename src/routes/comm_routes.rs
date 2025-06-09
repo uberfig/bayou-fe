@@ -33,11 +33,12 @@ pub fn CommContainer() -> impl IntoView {
         let id = id();
 
         view! {
+            <BaseModal 
+                view=move || view! {<CreateRoom display=create_room_modal refresh=refresh_rooms comm=id room_count=room_count />}
+                display=create_room_modal 
+            />
+            <h1>"todo display comm name"</h1>
             <nav>
-                <BaseModal 
-                    view=move || view! {<CreateRoom display=create_room_modal refresh=refresh_rooms comm=id room_count=room_count />}
-                    display=create_room_modal 
-                />
                 <CommunityRoomsBar refresh=refresh_rooms id=id create_modal=create_room_modal room_count=room_count />
             </nav>
             <main>
@@ -55,7 +56,7 @@ pub fn CommRoutes() -> impl MatchNestedRoutes + Clone {
       <ParentRoute path=path!("/:community_id") view=CommContainer >
         <Route path=path!("") view=|| view! { <p>"meow the community description goes here"</p> } />
         // should display rooms with the current highlighted
-        <Route path=path!("/:room_id") view=|| view! { <p>"meow the community room goes here"</p> <Room /> }/>
+        <Route path=path!("/:room_id") view=|| view! { <h2>"todo display room name here"</h2> <Room /> }/>
       </ParentRoute>
     }
     .into_inner()
