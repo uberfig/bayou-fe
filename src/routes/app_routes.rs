@@ -1,6 +1,6 @@
 use crate::{
     components::login_protect::LoginProtect,
-    routes::{login::Login, room_routes::RoomRoutes, signup::Signup},
+    routes::{login::Login, auth_routes::AuthRoutes, signup::Signup},
 };
 use leptos::prelude::*;
 use leptos_router::{
@@ -13,10 +13,10 @@ pub fn AppRoutes() -> impl IntoView {
     view! {
         <Router>
             <Routes fallback=|| "Not found.">
-                <Route path=path!("/") view=|| view! {<LoginProtect view=|| view! {<Redirect path="/rooms/@home"/>} />}/>
+                <Route path=path!("/") view=|| view! {<LoginProtect view=|| view! {<Redirect path="/app/@home"/>} />}/>
                 <Route path=path!("/login") view=Login/>
                 <Route path=path!("/signup") view=Signup/>
-                <RoomRoutes />
+                <AuthRoutes />
             </Routes>
         </Router>
     }

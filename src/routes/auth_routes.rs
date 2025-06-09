@@ -9,6 +9,9 @@ use leptos_router::{
     path, MatchNestedRoutes,
 };
 
+pub const HOME_PREFIX: &str = "/app/@home";
+pub const AUTH_PREFIX: &str = "/app";
+
 use super::{comm_routes::CommRoutes, personal_routes::PersonalRoutes};
 
 #[component]
@@ -27,10 +30,10 @@ pub fn AuthRoutesContainter() -> impl IntoView {
 }
 
 #[component(transparent)]
-pub fn RoomRoutes() -> impl MatchNestedRoutes + Clone {
+pub fn AuthRoutes() -> impl MatchNestedRoutes + Clone {
     view! {
-      <ParentRoute path=path!("/rooms") view=|| view! {<LoginProtect view=AuthRoutesContainter />} >
-        <Route path=path!("") view=|| view! {<Redirect path="/rooms/@home"/>} />
+      <ParentRoute path=path!("/app") view=|| view! {<LoginProtect view=AuthRoutesContainter />} >
+        <Route path=path!("") view=|| view! {<Redirect path=HOME_PREFIX/>} />
         <PersonalRoutes />
         <CommRoutes />
       </ParentRoute>

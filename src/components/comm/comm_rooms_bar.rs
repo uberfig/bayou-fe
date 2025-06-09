@@ -5,6 +5,7 @@ use leptos_router::{hooks::use_params, params::Params};
 use leptos_use::storage::use_local_storage;
 use uuid::Uuid;
 
+use crate::routes::auth_routes::AUTH_PREFIX;
 use crate::{
     api::{methods::communities::get_comm_rooms::community_rooms, types::auth_token::AuthToken},
     state::{State, AUTH_TOKEN},
@@ -62,7 +63,7 @@ pub fn CommunityRoomsBar(refresh: RwSignal<()>) -> impl IntoView {
                 Some(Ok(rooms)) => {
                     let rooms = rooms.into_iter()
                     .map(|x| view! {
-                        <li><a href={format!("/rooms/{}/{}", id(), x.id)}>{x.info.name}</a></li>
+                        <li><a href={format!("{}/{}/{}", AUTH_PREFIX, id(), x.id)}>{x.info.name}</a></li>
                     })
                     .collect::<Vec<_>>();
                     view! {

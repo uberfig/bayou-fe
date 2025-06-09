@@ -39,6 +39,7 @@ where
 pub fn CreateComm(display: RwSignal<bool>, refresh: RwSignal<()>) -> impl IntoView {
     let name = RwSignal::new("".to_string());
     let loading = RwSignal::new(false);
+    let empty_display = RwSignal::new(false);
     let create_result: RwSignal<Option<LocalResource<Result<ApiCommunity, ()>>>> =
         RwSignal::new(None);
 
@@ -51,9 +52,15 @@ pub fn CreateComm(display: RwSignal<bool>, refresh: RwSignal<()>) -> impl IntoVi
     };
 
     let create_clicked = move || {
+        let name_cleaned = name.get_untracked().trim().to_string();
+        name.set(name_cleaned.clone());
+        if name_cleaned.is_empty() {
+            empty_display.set(true);
+            return;
+        }
         loading.set(true);
         let comm = Communityinfo {
-            name: name.get_untracked(),
+            name: name_cleaned,
             description: None,
         };
         create_result.set(Some(create(
@@ -62,6 +69,13 @@ pub fn CreateComm(display: RwSignal<bool>, refresh: RwSignal<()>) -> impl IntoVi
             comm,
             completed,
         )));
+    };
+
+    let hide = move || {
+        create_result.set(None);
+        name.set("".to_string());
+        empty_display.set(false);
+        display.set(false);
     };
 
     view! {
@@ -88,7 +102,7 @@ pub fn CreateComm(display: RwSignal<bool>, refresh: RwSignal<()>) -> impl IntoVi
         </form>
         <button
             on:click=move |_| {
-                display.set(false);
+                hide();
             }
         >
         "cancel"
@@ -105,9 +119,7 @@ pub fn CreateComm(display: RwSignal<bool>, refresh: RwSignal<()>) -> impl IntoVi
                 if let Some(val) = create_result.get() {
                     if let Some(val) = val.get() {
                         if let Ok(completed) = val {
-                            create_result.set(None);
-                            display.set(false);
-                            name.set("".to_string());
+                            hide();
                             return view! {
                                 <Redirect path=format!("/rooms/{}", completed.id.as_simple().to_string())/>
                             }.into_any();
@@ -116,6 +128,9 @@ pub fn CreateComm(display: RwSignal<bool>, refresh: RwSignal<()>) -> impl IntoVi
                 }
                 view! {<p>"an unexpected error has occured".to_string()</p>}.into_any()
             }}
+        </Show>
+        <Show when=move || empty_display.get() >
+            <p>"name cannot be empty"</p>
         </Show>
     }
 }

@@ -2,8 +2,7 @@ use leptos::{leptos_dom::logging::console_log, prelude::*, server::codee::string
 use leptos_use::storage::use_local_storage;
 
 use crate::{
-    api::{methods::communities::get_communities::joined_communites, types::auth_token::AuthToken},
-    state::{State, AUTH_TOKEN},
+    api::{methods::communities::get_communities::joined_communites, types::auth_token::AuthToken}, routes::auth_routes::{AUTH_PREFIX, HOME_PREFIX}, state::{State, AUTH_TOKEN}
 };
 
 #[component]
@@ -43,7 +42,7 @@ pub fn CommunitiesBar(refresh: RwSignal<()>, create_modal: RwSignal<bool>) -> im
         view! {
             <div class="comm_bar">
                 <ul>
-                    <li><a href="/rooms/@home">"home"</a></li>
+                    <li><a href=HOME_PREFIX>"home"</a></li>
                     <li>
                         <button
                             on:click= move |_| {
@@ -58,7 +57,7 @@ pub fn CommunitiesBar(refresh: RwSignal<()>, create_modal: RwSignal<bool>) -> im
                             Some(Ok(comms)) => {
                                 comms.into_iter()
                                     .map(|c| view! {
-                                        <li><a href={format!("/rooms/{}", c.id)}>{c.get_abbrv()}</a></li>
+                                        <li><a href={format!("{}/{}", AUTH_PREFIX, c.id)}>{c.get_abbrv()}</a></li>
                                     })
                                     .collect::<Vec<_>>()
                                     .into_any()
