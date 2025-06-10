@@ -8,8 +8,7 @@ use crate::{
     api::{
         methods::communities::create_room::{create_room, NewRoom},
         types::{auth_token::AuthToken, room::{Room, RoomInfo}},
-    },
-    state::{State, AUTH_TOKEN},
+    }, routes::auth_routes::AUTH_PREFIX, state::{State, AUTH_TOKEN}
 };
 
 pub fn create<F>(
@@ -125,7 +124,7 @@ pub fn CreateRoom(display: RwSignal<bool>, refresh: RwSignal<()>, comm: Uuid, ro
                         if let Ok(completed) = val {
                             hide();
                             return view! {
-                                <Redirect path=format!("/app/{}/{}", comm.as_simple().to_string(), completed.id.as_simple().to_string())/>
+                                <Redirect path=format!("{}/{}/{}", AUTH_PREFIX, comm.as_simple().to_string(), completed.id.as_simple().to_string())/>
                             }.into_any();
                         }
                     }

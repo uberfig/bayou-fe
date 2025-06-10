@@ -7,8 +7,7 @@ use crate::{
     api::{
         methods::communities::create_comm::{create_comm, Communityinfo},
         types::{api_community::ApiCommunity, auth_token::AuthToken},
-    },
-    state::{State, AUTH_TOKEN},
+    }, routes::auth_routes::AUTH_PREFIX, state::{State, AUTH_TOKEN}
 };
 
 pub fn create<F>(
@@ -121,7 +120,7 @@ pub fn CreateComm(display: RwSignal<bool>, refresh: RwSignal<()>) -> impl IntoVi
                         if let Ok(completed) = val {
                             hide();
                             return view! {
-                                <Redirect path=format!("/rooms/{}", completed.id.as_simple().to_string())/>
+                                <Redirect path=format!("{}/{}", AUTH_PREFIX, completed.id.as_simple().to_string())/>
                             }.into_any();
                         }
                     }
