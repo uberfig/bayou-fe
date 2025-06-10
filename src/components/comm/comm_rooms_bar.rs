@@ -1,24 +1,22 @@
 use leptos::leptos_dom::logging::console_log;
-use leptos::{prelude::*, server::codee::string::JsonSerdeCodec};
-use leptos_use::storage::use_local_storage;
+use leptos::prelude::*;
 use uuid::Uuid;
 
 use crate::routes::auth_routes::AUTH_PREFIX;
 use crate::{
     api::{methods::communities::get_comm_rooms::community_rooms, types::auth_token::AuthToken},
-    state::{State, AUTH_TOKEN},
+    state::State,
 };
 
 #[component]
 pub fn CommunityRoomsBar(id: Uuid, refresh: RwSignal<()>, create_modal: RwSignal<bool>, room_count: RwSignal<usize>) -> impl IntoView {
-    let (logged_in, _, _) = use_local_storage::<Option<AuthToken>, JsonSerdeCodec>(AUTH_TOKEN);
+    let logged_in = use_context::<ReadSignal<AuthToken>>().expect("token should be provided");
     let state = use_context::<ReadSignal<State>>().expect("state should be provided");
 
     let resource = move || {
         LocalResource::new(move || {
             let token = logged_in
-                .get_untracked()
-                .expect("trying to get comm rooms when not logged in");
+                .get_untracked();
             let state = state.get_untracked();
             let community = id;
             community_rooms(state, token, community)

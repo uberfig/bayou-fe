@@ -2,10 +2,10 @@ use leptos::prelude::*;
 use leptos_router::{hooks::use_params, params::Params};
 use uuid::Uuid;
 
-use crate::components::room::{
+use crate::{api::types::socket_msg::SocketMsg, components::room::{
     chat_log::ChatLog,
     message_sender::{MessageInput, MessageReply},
-};
+}};
 
 #[derive(Params, PartialEq)]
 struct RoomId {
@@ -13,7 +13,7 @@ struct RoomId {
 }
 
 #[component]
-pub fn Room() -> impl IntoView {
+pub fn Room(message: Signal<Option<SocketMsg>>) -> impl IntoView {
     let params = use_params::<RoomId>();
     let id = move || {
         params
@@ -30,7 +30,7 @@ pub fn Room() -> impl IntoView {
         let room_id = id();
 
         view! {
-            <ChatLog replying=replying room=room_id />
+            <ChatLog replying=replying room=room_id message=message />
             <MessageInput replying=replying room=room_id />
         }
     };

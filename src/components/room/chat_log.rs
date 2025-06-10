@@ -1,8 +1,4 @@
-use leptos::{leptos_dom::logging::console_log, prelude::*, server::codee::string::JsonSerdeCodec};
-use leptos_use::{
-    core::ConnectionReadyState, storage::use_local_storage, use_websocket_with_options,
-    ReconnectLimit, UseWebSocketOptions, UseWebSocketReturn,
-};
+use leptos::{leptos_dom::logging::console_log, prelude::*};
 use uuid::Uuid;
 
 use crate::{
@@ -11,7 +7,7 @@ use crate::{
         types::{api_message::ApiMessage, auth_token::AuthToken, socket_msg::SocketMsg},
     },
     components::room::segment::{Segment, SegmentList},
-    state::{State, AUTH_TOKEN},
+    state::State,
 };
 
 use super::message_sender::MessageReply;
@@ -24,7 +20,7 @@ pub fn Loader(
     log: RwSignal<Vec<Segment>>,
 ) -> impl IntoView {
     let state = use_context::<ReadSignal<State>>().expect("state should be provided");
-    let (logged_in, _, _) = use_local_storage::<Option<AuthToken>, JsonSerdeCodec>(AUTH_TOKEN);
+    let logged_in = use_context::<ReadSignal<AuthToken>>().expect("token should be provided");
 
     let load_older = move || {
         loading.set(true);
@@ -38,7 +34,7 @@ pub fn Loader(
                 0,
                 load(
                     state.get_untracked(),
-                    logged_in.get_untracked().expect("not logged in"),
+                    logged_in.get_untracked(),
                     room,
                     MessageSelector::Older(
                         oldest
@@ -100,8 +96,8 @@ where
 }
 
 #[component]
-pub fn ChatLog(replying: RwSignal<Option<MessageReply>>, room: Uuid) -> impl IntoView {
-    let (logged_in, _, _) = use_local_storage::<Option<AuthToken>, JsonSerdeCodec>(AUTH_TOKEN);
+pub fn ChatLog(replying: RwSignal<Option<MessageReply>>, room: Uuid, message: Signal<Option<SocketMsg>>) -> impl IntoView {
+    let logged_in = use_context::<ReadSignal<AuthToken>>().expect("token should be provided");
     let loading = RwSignal::new(true);
     let state = use_context::<ReadSignal<State>>().expect("state should be provided");
     let oldest: RwSignal<Option<Uuid>> = RwSignal::new(None);
@@ -114,7 +110,7 @@ pub fn ChatLog(replying: RwSignal<Option<MessageReply>>, room: Uuid) -> impl Int
     let log: RwSignal<Vec<Segment>> = RwSignal::new(vec![
         load(
             state.get_untracked(),
-            logged_in.get_untracked().expect("not logged in"),
+            logged_in.get_untracked(),
             room,
             MessageSelector::Latest,
             completed,
@@ -143,27 +139,6 @@ pub fn ChatLog(replying: RwSignal<Option<MessageReply>>, room: Uuid) -> impl Int
         console_log(&serde_json::to_string(&log).unwrap());
     });
 
-    let UseWebSocketReturn {
-        ready_state,
-        message,
-        send,
-        // open,
-        // close,
-        ..
-    } = use_websocket_with_options::<AuthToken, SocketMsg, JsonSerdeCodec, _, _>(
-        "ws://127.0.0.1:8020/api/bayou_v1/ws",
-        UseWebSocketOptions::default()
-            .immediate(true)
-            .reconnect_limit(ReconnectLimit::Infinite), // .on_open()
-    );
-
-    Effect::new(move |_| {
-        if ConnectionReadyState::Open == ready_state.get() {
-            send(&logged_in.get_untracked().expect("not logged in"));
-        }
-    });
-    // open();
-    // send(&logged_in.get_untracked().expect("not logged in"));
     Effect::new(move |_| {
         message.with(move |message| {
             if let Some(message) = message {

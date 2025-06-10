@@ -1,21 +1,18 @@
-use leptos::{leptos_dom::logging::console_log, prelude::*, server::codee::string::JsonSerdeCodec};
-use leptos_use::storage::use_local_storage;
-
+use leptos::{leptos_dom::logging::console_log, prelude::*};
 use crate::{
-    api::{methods::communities::get_communities::joined_communites, types::auth_token::AuthToken}, routes::auth_routes::{AUTH_PREFIX, HOME_PREFIX}, state::{State, AUTH_TOKEN}
+    api::{methods::communities::get_communities::joined_communites, types::auth_token::AuthToken}, routes::auth_routes::{AUTH_PREFIX, HOME_PREFIX}, state::State
 };
 
 #[component]
 pub fn CommunitiesBar(refresh: RwSignal<()>, create_modal: RwSignal<bool>) -> impl IntoView {
-    let (logged_in, _, _) = use_local_storage::<Option<AuthToken>, JsonSerdeCodec>(AUTH_TOKEN);
+    let logged_in = use_context::<ReadSignal<AuthToken>>().expect("token should be provided");
     let state = use_context::<ReadSignal<State>>().expect("state should be provided");
 
     let resource = move || {
         LocalResource::new(move || {
             let state = state.get_untracked();
             let token = logged_in
-                .get_untracked()
-                .expect("communities bar visable when not logged in");
+                .get_untracked();
             joined_communites(state, token)
         })
     };

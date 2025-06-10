@@ -1,4 +1,4 @@
-use crate::components::{comm::comm_rooms_bar::CommunityRoomsBar, modal::{base_modal::BaseModal, create_room::CreateRoom}, room::room::Room};
+use crate::{api::types::socket_msg::SocketMsg, components::{comm::comm_rooms_bar::CommunityRoomsBar, modal::{base_modal::BaseModal, create_room::CreateRoom}, room::room::Room}};
 use leptos::Params;
 use leptos_router::{hooks::use_params, params::Params};
 use leptos::prelude::*;
@@ -51,12 +51,12 @@ pub fn CommContainer() -> impl IntoView {
 }
 
 #[component(transparent)]
-pub fn CommRoutes() -> impl MatchNestedRoutes + Clone {
+pub fn CommRoutes(message: Signal<Option<SocketMsg>>) -> impl MatchNestedRoutes + Clone {
     view! {
       <ParentRoute path=path!("/:community_id") view=CommContainer >
         <Route path=path!("") view=|| view! { <p>"meow the community description goes here"</p> } />
         // should display rooms with the current highlighted
-        <Route path=path!("/:room_id") view=|| view! { <h2>"todo display room name here"</h2> <Room /> }/>
+        <Route path=path!("/:room_id") view=move || view! { <h2>"todo display room name here"</h2> <Room message=message /> }/>
       </ParentRoute>
     }
     .into_inner()

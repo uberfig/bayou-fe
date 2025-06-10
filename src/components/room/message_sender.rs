@@ -1,5 +1,4 @@
-use leptos::{html::Input, prelude::*, server::codee::string::JsonSerdeCodec};
-use leptos_use::storage::use_local_storage;
+use leptos::{html::Input, prelude::*};
 use uuid::Uuid;
 
 use crate::{
@@ -7,7 +6,7 @@ use crate::{
         methods::message::send_message::send_message,
         types::{auth_token::AuthToken, message_info::Messageinfo, text_format::TextFormat},
     },
-    state::{State, AUTH_TOKEN},
+    state::State,
 };
 
 #[derive(Debug, Clone)]
@@ -47,7 +46,7 @@ pub fn MessageInput(replying: RwSignal<Option<MessageReply>>, room: Uuid) -> imp
     let loading = RwSignal::new(false);
     let send_result: RwSignal<Option<LocalResource<Result<(), ()>>>> = RwSignal::new(None);
 
-    let (auth, _, _) = use_local_storage::<Option<AuthToken>, JsonSerdeCodec>(AUTH_TOKEN);
+    let auth = use_context::<ReadSignal<AuthToken>>().expect("token should be provided");
     let state = use_context::<ReadSignal<State>>().expect("state should be provided");
 
     let replying_disp = move || match replying.get() {
@@ -87,7 +86,7 @@ pub fn MessageInput(replying: RwSignal<Option<MessageReply>>, room: Uuid) -> imp
         };
         send_result.set(Some(send(
             state.get_untracked(),
-            auth.get_untracked().expect("not logged in"),
+            auth.get_untracked(),
             message,
             finished_sending,
         )));
