@@ -166,6 +166,6 @@ pub fn ChatLog(replying: RwSignal<Option<MessageReply>>, room: Uuid, message: Si
 
     view! {
         <Loader log=log room=room oldest=oldest loading=loading/>
-        <SegmentList segments=log />
+        <SegmentList segments=log replying=replying />
     }
 }

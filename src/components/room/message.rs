@@ -1,13 +1,13 @@
 use leptos::prelude::*;
 
-use crate::api::types::api_message::ApiMessage;
+use crate::{api::types::api_message::ApiMessage, components::room::message_sender::MessageReply};
 
 #[component]
-pub fn Message(message: ApiMessage, render_user: bool) -> impl IntoView {
+pub fn Message(message: ApiMessage, render_user: bool, replying: RwSignal<Option<MessageReply>>) -> impl IntoView {
     let display_name = message.user.display_name.unwrap_or(message.user.username);
     let user = view! {
         <img src="https://picsum.photos/64" />
-        <h2>{display_name}</h2>
+        <h2>{display_name.clone()}</h2>
     };
     let user = match render_user {
         true => user.into_any(),
@@ -24,10 +24,19 @@ pub fn Message(message: ApiMessage, render_user: bool) -> impl IntoView {
         <div>
             {topper}
             {user}
-            <p>{message.content}</p>
             <p>
-            // "uuid: " {message.id.as_simple().to_string()}
+                {message.content}
             </p>
+            <button
+                    on:click=move |_| {
+                        replying.set(Some(MessageReply { display_name: display_name.clone(), message_id: message.id }));
+                    }
+                >
+                "Reply"
+            </button>
+            // <p>
+            // // "uuid: " {message.id.as_simple().to_string()}
+            // </p>
         </div>
     }
 }

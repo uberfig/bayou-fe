@@ -51,7 +51,16 @@ pub fn MessageInput(replying: RwSignal<Option<MessageReply>>, room: Uuid) -> imp
 
     let replying_disp = move || match replying.get() {
         Some(reply_to) => view! {
-            <p>"replying to: "{reply_to.display_name}</p>
+            <p>
+                "replying to: "{reply_to.display_name}
+                <button
+                    on:click=move |_| {
+                        replying.set(None);
+                    }
+                >
+                "cancel"
+            </button>
+            </p>
         }
         .into_any(),
         None => view! {}.into_any(),
@@ -68,6 +77,7 @@ pub fn MessageInput(replying: RwSignal<Option<MessageReply>>, room: Uuid) -> imp
             input.set_disabled(false);
             let _ = input.focus();
         }
+        replying.set(None);
     };
 
     let send_clicked = move || {
