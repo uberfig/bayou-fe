@@ -33,7 +33,7 @@ pub fn AuthRoutesContainter() -> impl IntoView {
 
 #[component(transparent)]
 pub fn AuthRoutes() -> impl MatchNestedRoutes + Clone {
-    let (logged_in_storage, _, _) = use_local_storage::<Option<AuthToken>, JsonSerdeCodec>(AUTH_TOKEN);
+    let (logged_in, set_logged_in, _) = use_local_storage::<Option<AuthToken>, JsonSerdeCodec>(AUTH_TOKEN);
     let UseWebSocketReturn {
         ready_state,
         message,
@@ -48,15 +48,15 @@ pub fn AuthRoutes() -> impl MatchNestedRoutes + Clone {
             .reconnect_limit(ReconnectLimit::Infinite), // .on_open()
     );
 
-    let (logged_in, set_logged_in) = signal(logged_in_storage.get_untracked().expect("not logged in"));
-    Effect::new(move |_| {
-        set_logged_in.set(logged_in_storage.get().expect("not logged in"));
-    });
+    // let (logged_in, set_logged_in) = signal(logged_in_storage.get_untracked().expect("not logged in"));
+    // Effect::new(move |_| {
+    //     set_logged_in.set(logged_in_storage.get().expect("not logged in"));
+    // });
     provide_context(logged_in);
 
     Effect::new(move |_| {
         if ConnectionReadyState::Open == ready_state.get() {
-            send(&logged_in.get_untracked());
+            send(&logged_in.get_untracked().unwrap_or_default());
         }
     });
 

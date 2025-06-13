@@ -6,7 +6,7 @@ use crate::{api::types::api_message::ApiMessage, components::room::message_sende
 pub fn Message(message: ApiMessage, render_user: bool, replying: RwSignal<Option<MessageReply>>) -> impl IntoView {
     let display_name = message.user.display_name.unwrap_or(message.user.username);
     let user = view! {
-        <img src="https://picsum.photos/64" />
+        // <img src="https://picsum.photos/64" />
         <h2>{display_name.clone()}</h2>
     };
     let user = match render_user {

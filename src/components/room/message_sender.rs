@@ -46,7 +46,7 @@ pub fn MessageInput(replying: RwSignal<Option<MessageReply>>, room: Uuid) -> imp
     let loading = RwSignal::new(false);
     let send_result: RwSignal<Option<LocalResource<Result<(), ()>>>> = RwSignal::new(None);
 
-    let auth = use_context::<ReadSignal<AuthToken>>().expect("token should be provided");
+    let auth = use_context::<Signal<Option<AuthToken>>>().expect("token should be provided");
     let state = use_context::<ReadSignal<State>>().expect("state should be provided");
 
     let replying_disp = move || match replying.get() {
@@ -96,7 +96,7 @@ pub fn MessageInput(replying: RwSignal<Option<MessageReply>>, room: Uuid) -> imp
         };
         send_result.set(Some(send(
             state.get_untracked(),
-            auth.get_untracked(),
+            auth.get_untracked().unwrap_or_default(),
             message,
             finished_sending,
         )));

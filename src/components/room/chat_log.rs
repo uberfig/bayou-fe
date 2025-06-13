@@ -20,7 +20,7 @@ pub fn Loader(
     log: RwSignal<Vec<Segment>>,
 ) -> impl IntoView {
     let state = use_context::<ReadSignal<State>>().expect("state should be provided");
-    let logged_in = use_context::<ReadSignal<AuthToken>>().expect("token should be provided");
+    let logged_in = use_context::<Signal<Option<AuthToken>>>().expect("token should be provided");
 
     let load_older = move || {
         loading.set(true);
@@ -34,7 +34,7 @@ pub fn Loader(
                 0,
                 load(
                     state.get_untracked(),
-                    logged_in.get_untracked(),
+                    logged_in.get_untracked().unwrap_or_default(),
                     room,
                     MessageSelector::Older(
                         oldest
@@ -97,7 +97,7 @@ where
 
 #[component]
 pub fn ChatLog(replying: RwSignal<Option<MessageReply>>, room: Uuid, message: Signal<Option<SocketMsg>>) -> impl IntoView {
-    let logged_in = use_context::<ReadSignal<AuthToken>>().expect("token should be provided");
+    let logged_in = use_context::<Signal<Option<AuthToken>>>().expect("token should be provided");
     let loading = RwSignal::new(true);
     let state = use_context::<ReadSignal<State>>().expect("state should be provided");
     let oldest: RwSignal<Option<Uuid>> = RwSignal::new(None);
@@ -110,7 +110,7 @@ pub fn ChatLog(replying: RwSignal<Option<MessageReply>>, room: Uuid, message: Si
     let log: RwSignal<Vec<Segment>> = RwSignal::new(vec![
         load(
             state.get_untracked(),
-            logged_in.get_untracked(),
+            logged_in.get_untracked().unwrap_or_default(),
             room,
             MessageSelector::Latest,
             completed,
@@ -140,6 +140,7 @@ pub fn ChatLog(replying: RwSignal<Option<MessageReply>>, room: Uuid, message: Si
     });
 
     Effect::new(move |_| {
+        console_log("message recieved");
         message.with(move |message| {
             if let Some(message) = message {
                 match message {
@@ -155,7 +156,11 @@ pub fn ChatLog(replying: RwSignal<Option<MessageReply>>, room: Uuid, message: Si
                                     }
                                 });
                             }
-                            false => todo!(), // we will want to send a notification to the user
+                            // we will want to send a notification to the user
+                            false => {
+                                console_log("message in other room, todo impliment notifications");
+                                console_log(&serde_json::to_string_pretty(&message).unwrap());
+                            }, 
                         }
                     }
                     SocketMsg::SystemMessage(_) => todo!(),

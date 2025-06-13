@@ -7,7 +7,7 @@ pub struct DBAuthToken {
     pub expiry: i64,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Default)]
 pub struct AuthToken {
     pub token: Uuid,
     /// auth tokens will only be valid for the device they were

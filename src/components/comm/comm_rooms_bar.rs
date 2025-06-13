@@ -10,7 +10,7 @@ use crate::{
 
 #[component]
 pub fn CommunityRoomsBar(id: Uuid, refresh: RwSignal<()>, create_modal: RwSignal<bool>, room_count: RwSignal<usize>) -> impl IntoView {
-    let logged_in = use_context::<ReadSignal<AuthToken>>().expect("token should be provided");
+    let logged_in = use_context::<Signal<Option<AuthToken>>>().expect("token should be provided");
     let state = use_context::<ReadSignal<State>>().expect("state should be provided");
 
     let resource = move || {
@@ -19,7 +19,7 @@ pub fn CommunityRoomsBar(id: Uuid, refresh: RwSignal<()>, create_modal: RwSignal
                 .get_untracked();
             let state = state.get_untracked();
             let community = id;
-            community_rooms(state, token, community)
+            community_rooms(state, token.unwrap_or_default(), community)
         })
     };
     let (rooms, set_rooms) = signal(resource());

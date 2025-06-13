@@ -14,3 +14,4 @@ pub mod signup_result;
 pub mod signup_user;
 pub mod socket_msg;
 pub mod text_format;
+pub mod proxy_user;
